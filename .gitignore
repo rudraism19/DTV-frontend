@@ -1,0 +1,10 @@
+node_modules
+.env
+.env.*
+!.env.example
+logs
+uploads
+coverage
+extensions
+my-app
+digital-twin-project

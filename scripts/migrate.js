@@ -8,9 +8,14 @@ async function run() {
   const client = new Client({ connectionString: env.DATABASE_URL });
   await client.connect();
 
-  const filePath = path.join(__dirname, '..', 'migrations', '001_init.sql');
-  const sql = fs.readFileSync(filePath, 'utf8');
-  await client.query(sql);
+  const migrationsDir = path.join(__dirname, '..', 'migrations');
+  const files = fs.readdirSync(migrationsDir).filter(f => f.endsWith('.sql')).sort();
+  for (const file of files) {
+    const filePath = path.join(migrationsDir, file);
+    const sql = fs.readFileSync(filePath, 'utf8');
+    await client.query(sql);
+    logger.info(`Applied migration: ${file}`);
+  }
 
   await client.end();
   logger.info('Database migrations applied.');

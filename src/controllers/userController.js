@@ -41,7 +41,29 @@ const updateRole = asyncHandler(async function(req, res) {
   });
 });
 
+const updateStatus = asyncHandler(async function(req, res) {
+  const userId = req.params.id;
+  const isActive = req.body.isActive;
+
+  if (userId === req.user.id) {
+    throw new ApiError(403, 'You cannot block yourself.');
+  }
+
+  const updated = await userService.updateActiveStatus(userId, isActive);
+  if (!updated) {
+    throw new ApiError(404, 'User not found.');
+  }
+  res.json({
+    user: {
+      id: updated.id,
+      email: updated.email,
+      isActive: updated.isActive
+    }
+  });
+});
+
 module.exports = {
   listUsers,
-  updateRole
+  updateRole,
+  updateStatus
 };

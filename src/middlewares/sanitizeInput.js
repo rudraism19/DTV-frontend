@@ -31,6 +31,10 @@ function sanitizeInput(req, _res, next) {
     req.params = sanitizeValue(req.params);
   }
 
+  if (req.query && typeof req.query === 'object') {
+    req.query = sanitizeValue(req.query);
+  }
+
   return next();
 }
 

@@ -3,7 +3,7 @@ const Joi = require('joi');
 const authController = require('../controllers/authController');
 const validate = require('../middlewares/validate');
 const { authLimiter } = require('../middlewares/rateLimiter');
-const { authenticate } = require('../middlewares/auth');
+const { authenticate, authorize } = require('../middlewares/auth');
 
 const router = express.Router();
 
@@ -149,5 +149,11 @@ router.post('/logout', authLimiter, authController.logout);
  *         description: Current user
  */
 router.get('/me', authenticate, authController.me);
+
+router.post('/verify-otp', authenticate, authController.verifyOTP);
+router.post('/resend-otp', authenticate, authController.resendOTP);
+router.post('/forgot-password', authLimiter, authController.forgotPassword);
+router.post('/reset-password', authLimiter, authController.resetPassword);
+router.get('/smtp-debug', authenticate, authorize('admin'), authController.smtpDebug);
 
 module.exports = router;

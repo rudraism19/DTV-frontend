@@ -1,0 +1,1 @@
+const db = require('../src/db'); async function run() { try { await db.query('DELETE FROM users WHERE email LIKE $1', ['%@example.com']); await db.query('DELETE FROM users WHERE email LIKE $1', ['test_%']); await db.query('DELETE FROM users WHERE email LIKE $1', ['%tempmail%']); console.log('done'); } catch(e) { console.error(e); } finally { process.exit(0); } } run();

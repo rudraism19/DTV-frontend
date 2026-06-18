@@ -33,7 +33,45 @@ function authorize() {
   };
 }
 
+function requireVerified(req, res, next) {
+  if (!req.user || !req.user.emailVerified) {
+    return next(new ApiError(403, 'Email verification required.'));
+  }
+  return next();
+}
+
+async function authorizeParentOfStudent(req, res, next) {
+  if (!req.user) {
+    return next(new ApiError(401, 'Unauthorized.'));
+  }
+  
+  if (req.user.role === 'admin') {
+    return next(); // Admins can access any data
+  }
+
+  const studentId = req.params.studentId || req.body.studentId;
+  if (!studentId) {
+    return next(new ApiError(400, 'Student ID is required to verify parent access.'));
+  }
+
+  if (req.user.role === 'student' && req.user.id === studentId) {
+    return next(); // Student can access their own data
+  }
+
+  if (req.user.role === 'parent') {
+    const linkedStudents = await userModel.getLinkedStudents(req.user.id);
+    const isLinked = linkedStudents.some(s => s.id === studentId);
+    if (isLinked) {
+      return next(); // Linked parent can access student data
+    }
+  }
+
+  return next(new ApiError(403, 'Insufficient permissions to access this student data.'));
+}
+
 module.exports = {
   authenticate,
-  authorize
+  authorize,
+  requireVerified,
+  authorizeParentOfStudent
 };

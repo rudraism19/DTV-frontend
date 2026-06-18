@@ -2,6 +2,7 @@ const express = require('express');
 const Joi = require('joi');
 const aiController = require('../controllers/aiController');
 const validate = require('../middlewares/validate');
+const { authenticate, requireVerified } = require('../middlewares/auth');
 
 const router = express.Router();
 
@@ -48,7 +49,7 @@ const aiSchema = Joi.object({
  *       200:
  *         description: AI response
  */
-router.post('/ai/messages', validate(aiSchema), aiController.sendMessages);
-router.post('/messages', validate(aiSchema), aiController.sendMessages);
+router.post('/ai/messages', authenticate, requireVerified, validate(aiSchema), aiController.sendMessages);
+router.post('/messages', authenticate, requireVerified, validate(aiSchema), aiController.sendMessages);
 
 module.exports = router;

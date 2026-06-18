@@ -10,6 +10,8 @@ CREATE TABLE IF NOT EXISTS users (
   oauth_provider text,
   oauth_subject text,
   email_verified boolean NOT NULL DEFAULT false,
+  otp_code text,
+  otp_expires_at timestamptz,
   is_active boolean NOT NULL DEFAULT true,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),

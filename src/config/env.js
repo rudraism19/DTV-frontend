@@ -38,7 +38,12 @@ const schema = Joi.object({
   ANTHROPIC_MODEL: Joi.string().allow(''),
   OPENAI_API_KEY: Joi.string().allow(''),
   OPENAI_MODEL: Joi.string().allow(''),
-  AI_PROVIDER: Joi.string().lowercase().valid('auto', 'anthropic', 'openai').default('auto')
+  AI_PROVIDER: Joi.string().lowercase().valid('auto', 'anthropic', 'openai').default('auto'),
+  SMTP_USER: Joi.string().allow(''),
+  SMTP_PASS: Joi.string().allow(''),
+  BREVO_API_KEY: Joi.string().allow(''),
+  RAZORPAY_KEY_ID: Joi.string().allow(''),
+  RAZORPAY_KEY_SECRET: Joi.string().allow('')
 }).unknown();
 
 const result = schema.validate(process.env, { abortEarly: false });

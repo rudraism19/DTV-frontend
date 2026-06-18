@@ -25,6 +25,15 @@ const roleSchema = Joi.object({
   }).required()
 });
 
+const statusSchema = Joi.object({
+  body: Joi.object({
+    isActive: Joi.boolean().required()
+  }).required(),
+  params: Joi.object({
+    id: Joi.string().uuid().required()
+  }).required()
+});
+
 /**
  * @openapi
  * /users:
@@ -70,5 +79,36 @@ router.get('/', authenticate, authorize('admin'), validate(listSchema), cacheRes
  *         description: Updated user
  */
 router.patch('/:id/role', authenticate, authorize('admin'), validate(roleSchema), userController.updateRole);
+
+/**
+ * @openapi
+ * /users/{id}/status:
+ *   patch:
+ *     summary: Update user active status (admin only)
+ *     tags:
+ *       - Users
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [isActive]
+ *             properties:
+ *               isActive:
+ *                 type: boolean
+ *     responses:
+ *       200:
+ *         description: Updated user status
+ */
+router.patch('/:id/status', authenticate, authorize('admin'), validate(statusSchema), userController.updateStatus);
 
 module.exports = router;

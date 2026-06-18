@@ -8,7 +8,12 @@ async function updateRole(userId, role) {
   return userModel.updateRole(userId, role);
 }
 
+async function updateActiveStatus(userId, isActive) {
+  return userModel.updateActiveStatus(userId, isActive);
+}
+
 module.exports = {
   listUsers,
-  updateRole
+  updateRole,
+  updateActiveStatus
 };

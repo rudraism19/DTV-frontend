@@ -12,10 +12,14 @@ function mapUser(row) {
     oauthProvider: row.oauth_provider,
     oauthSubject: row.oauth_subject,
     emailVerified: row.email_verified,
+    otpCode: row.otp_code,
+    otpExpiresAt: row.otp_expires_at,
     isActive: row.is_active,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
-    lastLoginAt: row.last_login_at
+    lastLoginAt: row.last_login_at,
+    trialExpiresAt: row.trial_expires_at,
+    subscriptionExpiresAt: row.subscription_expires_at
   };
 }
 
@@ -71,7 +75,7 @@ async function listUsers(options) {
   const limit = options.limit;
   const offset = options.offset;
   const result = await db.query(
-    'SELECT id, email, role, name, avatar_url, is_active, created_at, last_login_at, count(*) OVER() AS total FROM users WHERE ($1::text IS NULL OR email ILIKE $1 OR name ILIKE $1) ORDER BY created_at DESC LIMIT $2 OFFSET $3',
+    'SELECT id, email, role, name, avatar_url, is_active, created_at, last_login_at, count(*) OVER() AS total FROM users WHERE ($1::text IS NULL OR email ILIKE $1 OR name ILIKE $1) ORDER BY created_at DESC, id ASC LIMIT $2 OFFSET $3',
     [search, limit, offset]
   );
 
@@ -100,6 +104,83 @@ async function updateRole(userId, role) {
   return mapUser(result.rows[0]);
 }
 
+async function verifyEmail(id) {
+  const result = await db.query(
+    'UPDATE users SET email_verified = true, updated_at = now() WHERE id = $1 RETURNING *',
+    [id]
+  );
+  return mapUser(result.rows[0]);
+}
+
+async function setOTP(id, otpCode, expiresAt) {
+  const result = await db.query(
+    'UPDATE users SET otp_code = $1, otp_expires_at = $2, updated_at = now() WHERE id = $3 RETURNING *',
+    [otpCode, expiresAt, id]
+  );
+  return mapUser(result.rows[0]);
+}
+
+async function clearOTP(id) {
+  const result = await db.query(
+    'UPDATE users SET otp_code = null, otp_expires_at = null, updated_at = now() WHERE id = $1 RETURNING *',
+    [id]
+  );
+  return mapUser(result.rows[0]);
+}
+
+async function updatePassword(id, passwordHash) {
+  const result = await db.query(
+    'UPDATE users SET password_hash = $1, otp_code = null, otp_expires_at = null, updated_at = now() WHERE id = $2 RETURNING *',
+    [passwordHash, id]
+  );
+  return mapUser(result.rows[0]);
+}
+
+async function updateActiveStatus(id, isActive) {
+  const result = await db.query(
+    'UPDATE users SET is_active = $1, updated_at = now() WHERE id = $2 RETURNING *',
+    [isActive, id]
+  );
+  return mapUser(result.rows[0]);
+}
+
+async function linkParentStudent(parentId, studentId) {
+  const result = await db.query(
+    'INSERT INTO parent_student_link (parent_id, student_id) VALUES ($1, $2) ON CONFLICT DO NOTHING RETURNING *',
+    [parentId, studentId]
+  );
+  return result.rows[0];
+}
+
+async function getLinkedStudents(parentId) {
+  const result = await db.query(
+    'SELECT u.* FROM users u JOIN parent_student_link psl ON u.id = psl.student_id WHERE psl.parent_id = $1',
+    [parentId]
+  );
+  return result.rows.map(mapUser);
+}
+
+async function getLinkedParents(studentId) {
+  const result = await db.query(
+    'SELECT u.* FROM users u JOIN parent_student_link psl ON u.id = psl.parent_id WHERE psl.student_id = $1',
+    [studentId]
+  );
+  return result.rows.map(mapUser);
+}
+
+async function getAppData(userId) {
+  const result = await db.query('SELECT app_data FROM users WHERE id = $1', [userId]);
+  return result.rows[0]?.app_data || {};
+}
+
+async function saveAppData(userId, appData) {
+  const result = await db.query(
+    'UPDATE users SET app_data = $1, updated_at = now() WHERE id = $2 RETURNING app_data',
+    [JSON.stringify(appData), userId]
+  );
+  return result.rows[0].app_data;
+}
+
 module.exports = {
   create,
   findByEmail,
@@ -108,5 +189,15 @@ module.exports = {
   linkOAuth,
   updateLastLogin,
   listUsers,
-  updateRole
+  updateRole,
+  verifyEmail,
+  setOTP,
+  clearOTP,
+  updatePassword,
+  updateActiveStatus,
+  linkParentStudent,
+  getLinkedStudents,
+  getLinkedParents,
+  getAppData,
+  saveAppData
 };

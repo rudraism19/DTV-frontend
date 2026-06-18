@@ -10,6 +10,7 @@ async function run() {
 
   const migrationsDir = path.join(__dirname, '..', 'migrations');
   const files = fs.readdirSync(migrationsDir).filter(f => f.endsWith('.sql')).sort();
+  
   for (const file of files) {
     const filePath = path.join(migrationsDir, file);
     const sql = fs.readFileSync(filePath, 'utf8');
@@ -18,7 +19,7 @@ async function run() {
   }
 
   await client.end();
-  logger.info('Database migrations applied.');
+  logger.info('Database migrations applied successfully.');
 }
 
 run().catch(function(err) {

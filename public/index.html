@@ -12,7 +12,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/dist/main.063079e4.css">
+    <link rel="stylesheet" href="/dist/main.6b2201ba.css">
 
     <!-- Razorpay checkout.js temporarily removed — will be re-added with payment integration -->
     <style>
@@ -271,7 +271,7 @@
     <!-- NAV -->
     <nav id="nav">
         <div class="logo" onclick="goHome()">
-                        <img src="/img/dtv-logo.jpg" alt="DTV" style="width:36px; height:36px; border-radius:8px;">
+            <img src="/img/dtv-logo.jpg" alt="DTV" style="width:36px; height:36px; border-radius:8px;">
             <div>
                 <div class="logo-text">Digital<em>Twin Verse</em></div>
                 <div class="logo-sub">by Eco-Novators</div>
@@ -279,15 +279,15 @@
         </div>
         <ul class="nav-ul">
             <li><a href="#how">How It Works</a></li>
-            <li><a href="#student-dashboard" class="nav-pill" onclick="openDashboardShortcut()">Personalised Dashboard</a></li>
+            <li><a href="#student-dashboard" onclick="openDashboardShortcut()">Personalised Dashboard</a></li>
             <li><a href="#dashboard">Career Explorer</a></li>
             <li><a href="#ai-section">AI Advisor</a></li>
             <li><a href="#rev">Reviews</a></li>
             <li><a href="#team">Team</a></li>
-            <li><button type="button" onclick="openPricingPage(); return false;" class="nav-pill" style="background: var(--amb); color: #fff; border-color: var(--amb); font-weight: 600;">💎 Go Premium</button></li>
+            <li><button type="button" onclick="openPricingPage(); return false;" class="nav-pill">💎 Go Premium</button></li>
             
             <li class="account-menu" id="nav-account-wrap">
-                <button class="account-btn nav-pill" id="nav-account-btn" onclick="toggleAccountMenu(event)">
+                <button class="account-btn" id="nav-account-btn" onclick="toggleAccountMenu(event)">
                     <span class="account-avatar" id="nav-account-avatar">DT</span>
                     <span id="nav-account-label">Account</span>
                 </button>
@@ -296,8 +296,7 @@
                     <button class="acc-item logout" id="nav-account-logout" onclick="if (doLogout()) hideAccountMenu()">Log Out</button>
                 </div>
             </li>
-            <li><button type="button" onclick="window.location.href='https://analyzer.niat.tech/'" class="nav-pill" style="background: var(--amb2); color: #000; font-weight: 600; border: none; cursor:pointer;">🧠 Analyzer</button></li>
-
+            <li><button type="button" onclick="window.location.href='https://analyzer.niat.tech/'" class="nav-pill-purple">🧠 Analyzer</button></li>
         </ul>
         <div class="hbg" id="hbg" onclick="togMenu()"><span></span><span></span><span></span></div>
     </nav>

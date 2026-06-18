@@ -1,4 +1,4 @@
-const CACHE_NAME = 'app-cache-fe9abb1e108b314f'; // Updated to bust cache
+const CACHE_NAME = 'app-cache-e8d1765fdded2b23'; // Updated to bust cache
 
 self.addEventListener('install', (e) => {
   self.skipWaiting();

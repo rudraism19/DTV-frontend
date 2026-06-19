@@ -11,7 +11,9 @@
     <title>Digital Twin Verse for Students | Eco-Novators</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="/dist/main.172fc5c8.css">
 
     <!-- Razorpay checkout.js temporarily removed — will be re-added with payment integration -->
@@ -21,8 +23,17 @@
             --bdr-hover: rgba(255, 255, 255, 0.15);
             --card-glow: 0 16px 48px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.05);
         }
-        
-        .auth-card, .feat-card, .dash-card, .glass-panel, .info-card, .step-card, .mc, .sp-card, .career-card, .faq-item {
+
+        .auth-card,
+        .feat-card,
+        .dash-card,
+        .glass-panel,
+        .info-card,
+        .step-card,
+        .mc,
+        .sp-card,
+        .career-card,
+        .faq-item {
             background: linear-gradient(135deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.01)) !important;
             backdrop-filter: blur(24px) !important;
             -webkit-backdrop-filter: blur(24px) !important;
@@ -35,7 +46,7 @@
             border-bottom: 1px solid rgba(0, 0, 0, 0.6) !important;
             transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease, border-color 0.4s ease !important;
             /* 3D Thickness & Shadows */
-            box-shadow: 
+            box-shadow:
                 inset 0 1px 1px rgba(255, 255, 255, 0.15),
                 inset 0 -4px 10px rgba(0, 0, 0, 0.6),
                 inset 0 -1px 0 rgba(0, 0, 0, 0.8),
@@ -46,38 +57,56 @@
         }
 
         /* The Premium Spotlight Effect */
-        .auth-card::before, .feat-card::before, .dash-card::before, .glass-panel::before, .info-card::before, .step-card::before {
+        .auth-card::before,
+        .feat-card::before,
+        .dash-card::before,
+        .glass-panel::before,
+        .info-card::before,
+        .step-card::before {
             content: "";
             position: absolute;
             inset: 0;
             border-radius: inherit;
-            background: radial-gradient(
-                400px circle at var(--mouse-x, 0) var(--mouse-y, 0), 
-                rgba(0, 240, 255, 0.15),
-                transparent 40%
-            );
+            background: radial-gradient(400px circle at var(--mouse-x, 0) var(--mouse-y, 0),
+                    rgba(0, 240, 255, 0.15),
+                    transparent 40%);
             z-index: 0;
             pointer-events: none;
             opacity: 0;
             transition: opacity 0.4s ease;
         }
 
-        .auth-card:hover::before, .feat-card:hover::before, .dash-card:hover::before, .glass-panel:hover::before, .info-card:hover::before, .step-card:hover::before, .mc:hover::before, .sp-card:hover::before, .career-card:hover::before {
+        .auth-card:hover::before,
+        .feat-card:hover::before,
+        .dash-card:hover::before,
+        .glass-panel:hover::before,
+        .info-card:hover::before,
+        .step-card:hover::before,
+        .mc:hover::before,
+        .sp-card:hover::before,
+        .career-card:hover::before {
             opacity: 1;
         }
-        
+
         /* Ensure content stays above the spotlight */
-        .auth-card > *, .feat-card > *, .dash-card > *, .glass-panel > *, .info-card > * {
+        .auth-card>*,
+        .feat-card>*,
+        .dash-card>*,
+        .glass-panel>*,
+        .info-card>* {
             position: relative;
             z-index: 1;
         }
 
-        .auth-card:hover, .feat-card:hover, .dash-card:hover, .info-card:hover {
+        .auth-card:hover,
+        .feat-card:hover,
+        .dash-card:hover,
+        .info-card:hover {
             transform: translateY(-8px) scale(1.01) !important;
             border-color: rgba(0, 240, 255, 0.3) !important;
             border-top-color: rgba(0, 240, 255, 0.6) !important;
             /* Enhance 3D shadow on hover */
-            box-shadow: 
+            box-shadow:
                 inset 0 1px 2px rgba(255, 255, 255, 0.3),
                 inset 0 -6px 15px rgba(0, 0, 0, 0.8),
                 inset 0 -1px 0 rgba(0, 0, 0, 0.9),
@@ -112,12 +141,13 @@
             opacity: 0;
             visibility: hidden;
         }
-</style>
+    </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <style>
         /* ═══ RESPONSIVE GUARDRAILS (320px to 1920px) ════ */
-        html, body {
+        html,
+        body {
             width: 100%;
             overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
@@ -126,56 +156,133 @@
 
         /* 1440px & 1920px (Ultrawide support) */
         @media(min-width: 1440px) {
-            .wrap { max-width: 1280px !important; }
-            .auth-shell { max-width: 1300px !important; }
-            html { font-size: 105%; }
+            .wrap {
+                max-width: 1280px !important;
+            }
+
+            .auth-shell {
+                max-width: 1300px !important;
+            }
+
+            html {
+                font-size: 105%;
+            }
         }
 
         @media(min-width: 1920px) {
-            .wrap { max-width: 1440px !important; }
-            .auth-shell { max-width: 1440px !important; }
-            html { font-size: 115%; }
+            .wrap {
+                max-width: 1440px !important;
+            }
+
+            .auth-shell {
+                max-width: 1440px !important;
+            }
+
+            html {
+                font-size: 115%;
+            }
         }
 
         /* Mobile fixes (320px, 375px, 425px) */
         @media(max-width: 425px) {
-            .grid2 { grid-template-columns: 1fr !important; gap: 2rem !important; }
-            .auth-shell { grid-template-columns: 1fr !important; }
-            .auth-hero h1 { font-size: 2rem !important; }
-            .sec { padding: 3rem 5% !important; }
-            .auth-actions { flex-direction: column; align-items: stretch; }
-            .auth-actions .btn { width: 100%; justify-content: center; }
-            .nav-ul { display: none; }
+            .grid2 {
+                grid-template-columns: 1fr !important;
+                gap: 2rem !important;
+            }
+
+            .auth-shell {
+                grid-template-columns: 1fr !important;
+            }
+
+            .auth-hero h1 {
+                font-size: 2rem !important;
+            }
+
+            .sec {
+                padding: 3rem 5% !important;
+            }
+
+            .auth-actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .auth-actions .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .nav-ul {
+                display: none;
+            }
         }
 
         @media(max-width: 320px) {
-            html { font-size: 90%; }
+            html {
+                font-size: 90%;
+            }
         }
 
         /* EXTREME MOBILE PERFORMANCE HACK */
         @media(max-width: 768px) {
-            html, body {
-                background: #0a0d14 !important; /* Force dark background, prevent white flashes */
+
+            html,
+            body {
+                background: #0a0d14 !important;
+                /* Force dark background, prevent white flashes */
             }
 
             /* 1. Eliminate all expensive GPU blurs on mobile */
-            .auth-card, .feat-card, .dash-card, .glass-panel, .info-card, .step-card, .mc, .sp-card, .career-card, .faq-item, .glass-nav, .sr, .bot-msg, .glass-btn, .top-nav, header {
+            .auth-card,
+            .feat-card,
+            .dash-card,
+            .glass-panel,
+            .info-card,
+            .step-card,
+            .mc,
+            .sp-card,
+            .career-card,
+            .faq-item,
+            .glass-nav,
+            .sr,
+            .bot-msg,
+            .glass-btn,
+            .top-nav,
+            header {
                 -webkit-backdrop-filter: none !important;
                 backdrop-filter: none !important;
             }
-            
+
             /* 2. Optimize large panels with solid fallbacks and cheap shadows */
-            .auth-card, .feat-card, .dash-card, .glass-panel, .info-card, .step-card, .mc, .sp-card, .career-card, .faq-item, .glass-nav {
+            .story-card,
+            .auth-card,
+            .feat-card,
+            .dash-card,
+            .glass-panel,
+            .info-card,
+            .step-card,
+            .mc,
+            .sp-card,
+            .career-card,
+            .faq-item,
+            .glass-nav {
                 background: linear-gradient(135deg, rgba(20, 20, 25, 0.95), rgba(10, 10, 15, 0.98)) !important;
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5) !important; 
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5) !important;
                 border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
-                transform: none !important; 
-                transition: none !important; /* Strip CSS animations on mobile for raw speed */
+                transform: none !important;
+                transition: none !important;
+                /* Strip CSS animations on mobile for raw speed */
                 will-change: auto !important;
             }
 
             /* 3. Disable heavy overlapping gradients/blobs completely */
-            .b, .gradient-bg, .noise-overlay, body::after, #tsparticles, .orb, .flare {
+            .b,
+            .gradient-bg,
+            .noise-overlay,
+            body::after,
+            #tsparticles,
+            .orb,
+            .flare {
                 display: none !important;
                 animation: none !important;
                 background-image: none !important;
@@ -195,10 +302,12 @@
             justify-content: center;
             transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.8s;
         }
+
         #splash-screen.hidden {
             opacity: 0;
             visibility: hidden;
         }
+
         .splash-logo {
             font-size: 2.5rem;
             font-weight: 800;
@@ -209,6 +318,7 @@
             align-items: center;
             gap: 1rem;
         }
+
         .splash-logo-mark {
             width: 54px;
             height: 54px;
@@ -222,10 +332,12 @@
             box-shadow: 0 0 30px rgba(232, 140, 42, 0.4);
             animation: pulseMark 1.5s infinite alternate;
         }
+
         .splash-text em {
             color: var(--amb);
             font-style: normal;
         }
+
         .splash-loader {
             width: 240px;
             height: 3px;
@@ -234,44 +346,68 @@
             overflow: hidden;
             position: relative;
         }
+
         .splash-loader-bar {
             position: absolute;
-            top: 0; left: 0; height: 100%;
+            top: 0;
+            left: 0;
+            height: 100%;
             background: var(--cyan);
             width: 0%;
             box-shadow: 0 0 15px var(--cyan);
             animation: loadBar 2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
         }
+
         @keyframes pulseMark {
-            0% { transform: scale(0.95); box-shadow: 0 0 20px rgba(232, 140, 42, 0.2); }
-            100% { transform: scale(1.05); box-shadow: 0 0 40px rgba(232, 140, 42, 0.6); }
+            0% {
+                transform: scale(0.95);
+                box-shadow: 0 0 20px rgba(232, 140, 42, 0.2);
+            }
+
+            100% {
+                transform: scale(1.05);
+                box-shadow: 0 0 40px rgba(232, 140, 42, 0.6);
+            }
         }
+
         @keyframes loadBar {
-            0% { width: 0%; }
-            40% { width: 40%; }
-            70% { width: 80%; }
-            100% { width: 100%; }
+            0% {
+                width: 0%;
+            }
+
+            40% {
+                width: 40%;
+            }
+
+            70% {
+                width: 80%;
+            }
+
+            100% {
+                width: 100%;
+            }
         }
-</style>
+    </style>
 </head>
 
 <body class="gate-locked">
     <!-- PREMIUM SPLASH SCREEN -->
     <div id="splash-screen">
         <div class="splash-logo">
-            <img src="/img/dtv-logo.jpg" alt="DTV" style="width:100px; height:auto; border-radius:12px; box-shadow: 0 4px 15px rgba(232, 140, 42, 0.4);">
+            <img src="/img/dtv-logo.jpg" alt="DTV" fetchpriority="high" width="100" height="100"
+                style="width:100px; height:auto; border-radius:12px; box-shadow: 0 4px 15px rgba(232, 140, 42, 0.4);">
             <div class="splash-text">Digital<em>Twin Verse</em></div>
         </div>
         <div class="splash-loader">
             <div class="splash-loader-bar"></div>
         </div>
     </div>
-    
+
     <div class="noise-overlay"></div>
     <!-- NAV -->
     <nav id="nav">
         <div class="logo" onclick="goHome()">
-            <img src="/img/dtv-logo.jpg" alt="DTV" style="width:36px; height:36px; border-radius:8px;">
+            <img src="/img/dtv-logo.jpg" alt="DTV" fetchpriority="high" width="36" height="36" style="width:36px; height:36px; border-radius:8px;">
             <div>
                 <div class="logo-text">Digital<em>Twin Verse</em></div>
                 <div class="logo-sub">by Eco-Novators</div>
@@ -284,26 +420,31 @@
             <li><a href="#ai-section">AI Advisor</a></li>
             <li><a href="#rev">Reviews</a></li>
             <li><a href="#team">Team</a></li>
-            <li><button type="button" onclick="openPricingPage(); return false;" class="nav-pill">💎 Go Premium</button></li>
-            
+            <li><button type="button" onclick="openPricingPage(); return false;" class="nav-pill">💎 Go Premium</button>
+            </li>
+
             <li class="account-menu" id="nav-account-wrap">
                 <button class="account-btn" id="nav-account-btn" onclick="toggleAccountMenu(event)">
                     <span class="account-avatar" id="nav-account-avatar">DT</span>
                     <span id="nav-account-label">Account</span>
                 </button>
                 <div class="account-panel" id="nav-account-panel">
-                    <button class="acc-item" id="nav-account-admindb" onclick="openAdminDashboard(); hideAccountMenu()" style="display:none; color:#f5a94e;">Developer DB</button>
-                    <button class="acc-item logout" id="nav-account-logout" onclick="if (doLogout()) hideAccountMenu()">Log Out</button>
+                    <button class="acc-item" id="nav-account-admindb" onclick="openAdminDashboard(); hideAccountMenu()"
+                        style="display:none; color:#f5a94e;">Developer DB</button>
+                    <button class="acc-item logout" id="nav-account-logout"
+                        onclick="if (doLogout()) hideAccountMenu()">Log Out</button>
                 </div>
             </li>
-            <li><button type="button" onclick="window.location.href='https://analyzer.niat.tech/'" class="nav-pill-purple">🧠 Analyzer</button></li>
+            <li><button type="button" onclick="window.location.href='https://analyzer.niat.tech/'"
+                    class="nav-pill-purple">🧠 Analyzer</button></li>
         </ul>
         <div class="hbg" id="hbg" onclick="togMenu()"><span></span><span></span><span></span></div>
     </nav>
     <div class="mob" id="mob">
-        
+
         <button type="button" id="mob-signup" onclick="openSignupPage(); togMenu()" class="btn-reset">Sign Up</button>
-        <button type="button" id="mob-admindb" onclick="openAdminDashboard(); togMenu()" style="display:none; color:#f5a94e;" class="btn-reset">Developer DB</button>
+        <button type="button" id="mob-admindb" onclick="openAdminDashboard(); togMenu()"
+            style="display:none; color:#f5a94e;" class="btn-reset">Developer DB</button>
         <button type="button" id="mob-logout" onclick="if (doLogout()) togMenu()" class="btn-reset">Log Out</button>
         <a href="#student-dashboard" onclick="openDashboardShortcut(); togMenu()">Personalised Dashboard</a>
         <a href="#how" onclick="togMenu()">How It Works</a>
@@ -311,7 +452,9 @@
         <a href="#ai-section" onclick="togMenu()">AI Advisor</a>
         <a href="#rev" onclick="togMenu()">Reviews</a>
         <a href="#team" onclick="togMenu()">Team</a>
-        <button type="button" onclick="window.location.href='https://analyzer.niat.tech/'; togMenu();" class="btn-reset" style="cursor:pointer; display:block; padding: 1rem 1.5rem; text-decoration: none; color: var(--wh, #fff); width: 100%; text-align: left; font-size: 1.1rem; font-weight: 600;">🧠 Achievement Analyzer</button>
+        <button type="button" onclick="window.location.href='https://analyzer.niat.tech/'; togMenu();" class="btn-reset"
+            style="cursor:pointer; display:block; padding: 1rem 1.5rem; text-decoration: none; color: var(--wh, #fff); width: 100%; text-align: left; font-size: 1.1rem; font-weight: 600;">🧠
+            Achievement Analyzer</button>
 
     </div>
 
@@ -324,8 +467,12 @@
             <div class="auth-hero rv">
                 <div>
                     <div class="badge"><span class="bdot"></span>Secure Sign In Required</div>
-                    <h1 class="fluid-text" style="line-height: 1.2;">Welcome back to <br><span class="serif amb" style="display: inline-block; margin-top: 0.5rem; background: linear-gradient(90deg, #f5a94e, #e88c2a); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">Digital Twin Verse</span></h1>
-                    <p class="desc" style="max-width:560px;">Sign in first to unlock the student journey, continue your profile, and enter the main site. If you do not have an account yet, create one from this screen.</p>
+                    <h1 class="fluid-text" style="line-height: 1.2;">Welcome back to <br><span class="serif amb"
+                            style="display: inline-block; margin-top: 0.5rem; background: linear-gradient(90deg, #f5a94e, #e88c2a); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">Digital
+                            Twin Verse</span></h1>
+                    <p class="desc" style="max-width:560px;">Sign in first to unlock the student journey, continue your
+                        profile, and enter the main site. If you do not have an account yet, create one from this
+                        screen.</p>
                 </div>
                 <div class="auth-points">
                     <div class="auth-point">
@@ -334,37 +481,49 @@
                     </div>
                     <div class="auth-point">
                         <div class="logo-mark" style="flex:0 0 auto;">2</div>
-                        <div><strong>Step 2: Resume access</strong><span>Your profile and dashboard open after authentication.</span></div>
+                        <div><strong>Step 2: Resume access</strong><span>Your profile and dashboard open after
+                                authentication.</span></div>
                     </div>
                     <div class="auth-point">
                         <div class="logo-mark" style="flex:0 0 auto;">3</div>
-                        <div><strong>Step 3: Explore the platform</strong><span>Career simulation, AI advisor, and student tools become available.</span></div>
+                        <div><strong>Step 3: Explore the platform</strong><span>Career simulation, AI advisor, and
+                                student tools become available.</span></div>
                     </div>
                 </div>
             </div>
             <div class="auth-card rv d1">
-                <div style="width: 60px; height: 60px; border-radius: 16px; background: linear-gradient(135deg, rgba(245,169,78,0.2), rgba(232,140,42,0.2)); border: 1px solid rgba(232,140,42,0.3); display: flex; align-items: center; justify-content: center; font-size: 1.8rem; margin-bottom: 1.2rem; box-shadow: 0 8px 16px rgba(232,140,42,0.15);">🔐</div>
-                <h2 style="background: linear-gradient(90deg, #f5a94e, #e88c2a); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">Sign In to Continue</h2>
+                <div
+                    style="width: 60px; height: 60px; border-radius: 16px; background: linear-gradient(135deg, rgba(245,169,78,0.2), rgba(232,140,42,0.2)); border: 1px solid rgba(232,140,42,0.3); display: flex; align-items: center; justify-content: center; font-size: 1.8rem; margin-bottom: 1.2rem; box-shadow: 0 8px 16px rgba(232,140,42,0.15);">
+                    🔐</div>
+                <h2
+                    style="background: linear-gradient(90deg, #f5a94e, #e88c2a); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">
+                    Sign In to Continue</h2>
                 <p class="mod-sub">Enter your account details to unlock the site.</p>
-                <div class="fg"><label>Email Address</label><input class="fi" id="li-e" type="email" placeholder="you@email.com" autocomplete="off"><span class="err" id="li-ee">Please enter a valid email.</span></div>
+                <div class="fg"><label>Email Address</label><input class="fi" id="li-e" type="email"
+                        placeholder="you@email.com" autocomplete="off"><span class="err" id="li-ee">Please enter a valid
+                        email.</span></div>
                 <div class="fg" style="margin-bottom: 0;"><label>Password</label>
-                    <div class="pw"><input class="fi" id="li-pw" type="password" placeholder="Your password"><span class="eye" onclick="togEye('li-pw',this)">👁</span></div>
+                    <div class="pw"><input class="fi" id="li-pw" type="password" placeholder="Your password"><span
+                            class="eye" onclick="togEye('li-pw',this)">👁</span></div>
                     <span class="err" id="li-pe">Please enter your password.</span>
                 </div>
                 <div style="text-align: right; margin-bottom: 1.5rem;">
-                    <button type="button" class="auth-link btn-reset" style="font-size: 0.9rem;" onclick="openForgotPasswordPage()">Forgot Password?</button>
+                    <button type="button" class="auth-link btn-reset" style="font-size: 0.9rem;"
+                        onclick="openForgotPasswordPage()">Forgot Password?</button>
                 </div>
                 <button class="msub" onclick="doLogin()">Sign In →</button>
                 <div class="auth-actions">
                     <span class="mod-sub" style="margin:0;">Need an account?</span>
-                    <button type="button" class="auth-link btn-reset" onclick="openSignupPage()">Create one here</button>
+                    <button type="button" class="auth-link btn-reset" onclick="openSignupPage()">Create one
+                        here</button>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- FLOATING AI BUTTON -->
-    <button class="ai-fab" onclick="togChat()" id="ai-fab" title="Talk to Career AI">🤖<div class="notif">AI</div></button>
+    <button class="ai-fab" onclick="togChat()" id="ai-fab" title="Talk to Career AI">🤖<div class="notif">AI</div>
+    </button>
 
     <!-- CHAT PANEL -->
     <div class="chat-panel" id="chat-panel">
@@ -386,10 +545,14 @@
             <span class="agent-chip" id="chip-intern">💼 Internship</span>
         </div>
         <div class="ai-modes" id="ai-modes">
-            <button class="ai-mode-btn active" id="mode-advisor" onclick="setAIMode('advisor',this)" title="General career guidance">🎯 Advisor</button>
-            <button class="ai-mode-btn" id="mode-mentor" onclick="setAIMode('mentor',this)" title="Skill learning guidance">📚 Skill Mentor</button>
-            <button class="ai-mode-btn" id="mode-coach" onclick="setAIMode('coach',this)" title="Interview preparation">🎤 Interview Coach</button>
-            <button class="ai-mode-btn" id="mode-predictor" onclick="setAIMode('predictor',this)" title="Future career prediction">🔮 Predictor</button>
+            <button class="ai-mode-btn active" id="mode-advisor" onclick="setAIMode('advisor',this)"
+                title="General career guidance">🎯 Advisor</button>
+            <button class="ai-mode-btn" id="mode-mentor" onclick="setAIMode('mentor',this)"
+                title="Skill learning guidance">📚 Skill Mentor</button>
+            <button class="ai-mode-btn" id="mode-coach" onclick="setAIMode('coach',this)"
+                title="Interview preparation">🎤 Interview Coach</button>
+            <button class="ai-mode-btn" id="mode-predictor" onclick="setAIMode('predictor',this)"
+                title="Future career prediction">🔮 Predictor</button>
             <div class="tone-toggle">
                 <span id="tone-lbl">Pro</span>
                 <div class="tone-sw" id="tone-sw" onclick="togTone()"></div>
@@ -411,18 +574,28 @@
         <!-- HERO -->
         <section id="hero" class="sec">
             <div class="blobs">
-                <div class="b" style="width:650px;height:650px;top:-180px;left:-200px;background:rgba(42,125,225,.16);animation-delay:0s;"></div>
-                <div class="b" style="width:550px;height:550px;bottom:-120px;right:-160px;background:rgba(232,140,42,.13);animation-delay:5s;"></div>
+                <div class="b"
+                    style="width:650px;height:650px;top:-180px;left:-200px;background:rgba(42,125,225,.16);animation-delay:0s;">
+                </div>
+                <div class="b"
+                    style="width:550px;height:550px;bottom:-120px;right:-160px;background:rgba(232,140,42,.13);animation-delay:5s;">
+                </div>
             </div>
             <div class="hero-shell">
                 <div class="hero-copy rv">
-                    <div class="badge"><span class="bdot"></span>India's First AI Career Simulation Platform · Eco-Novators</div>
-                    <h1 class="hero-h fluid-text">Don't Guess Your Future<br><span class="serif amb">Simulate It.</span></h1>
-                    <p class="hero-sub">Digital Twin Verse uses a multi-agent AI system to model your skills, interests, and goals — mapping real-world career paths so you decide with confidence, not guesswork.</p>
+                    <div class="badge"><span class="bdot"></span>India's First AI Career Simulation Platform ·
+                        Eco-Novators</div>
+                    <h1 class="hero-h fluid-text">Don't Guess Your Future<br><span class="serif amb">Simulate It.</span>
+                    </h1>
+                    <p class="hero-sub">Digital Twin Verse uses a multi-agent AI system to model your skills, interests,
+                        and goals — mapping real-world career paths so you decide with confidence, not guesswork.</p>
                     <div class="hero-btns">
-                        
+
                         <a href="#ai-section" class="btn btn-out">Talk to Career AI</a>
-                        <button type="button" onclick="window.location.href='https://analyzer.niat.tech/'" class="btn btn-out" style="border-color:rgba(167,139,250,.4);color:var(--purple,#a78bfa); cursor:pointer;">🧠 Analyze My Profile</button>
+                        <button type="button" onclick="window.location.href='https://analyzer.niat.tech/'"
+                            class="btn btn-out"
+                            style="border-color:rgba(167,139,250,.4);color:var(--purple,#a78bfa); cursor:pointer;">🧠
+                            Analyze My Profile</button>
                     </div>
                     <div class="hstats">
                         <div class="hs">
@@ -474,37 +647,47 @@
                 <div class="rv center-head">
                     <p class="lbl">Student Journeys</p>
                     <h2 class="ttl">See The Energy Behind<br><span class="serif">Real Career Growth</span></h2>
-                    <p class="desc">Interactive visuals that represent how students explore options, learn skills, and become placement-ready using Digital Twin Verse.</p>
+                    <p class="desc">Interactive visuals that represent how students explore options, learn skills, and
+                        become placement-ready using Digital Twin Verse.</p>
                 </div>
                 <div class="story-grid">
                     <article class="story-card rv d1">
                         <div class="story-media">
-                            <img src="https://images.unsplash.com/photo-1523580846011-d3a5bc25702b?auto=format&fit=crop&w=1400&q=80" alt="Students collaborating in a modern classroom" decoding="async" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=1400&q=80';">
+                            <img src="https://images.unsplash.com/photo-1523580846011-d3a5bc25702b?auto=format&fit=crop&w=600&fm=webp&q=80"
+                                alt="Students collaborating in a modern classroom" loading="lazy"
+                                onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=600&fm=webp&q=80';">
                         </div>
                         <div class="story-overlay">
                             <span class="story-tag">Explore</span>
                             <h3 class="story-title">Compare Career Paths With Confidence</h3>
-                            <p class="story-copy">Students can switch streams, inspect salary trends, and test what-if scenarios in minutes.</p>
+                            <p class="story-copy">Students can switch streams, inspect salary trends, and test what-if
+                                scenarios in minutes.</p>
                         </div>
                     </article>
                     <article class="story-card rv d2">
                         <div class="story-media">
-                            <img src="https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=1400&q=80" alt="Mentor guiding students during a planning session" decoding="async" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=1400&q=80';">
+                            <img src="https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=600&fm=webp&q=80"
+                                alt="Mentor guiding students during a planning session" loading="lazy"
+                                onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=600&fm=webp&q=80';">
                         </div>
                         <div class="story-overlay">
                             <span class="story-tag">Plan</span>
                             <h3 class="story-title">AI Roadmaps That Feel Personal</h3>
-                            <p class="story-copy">The AI mentor creates step-by-step goals based on current skills, interests, and role demand.</p>
+                            <p class="story-copy">The AI mentor creates step-by-step goals based on current skills,
+                                interests, and role demand.</p>
                         </div>
                     </article>
                     <article class="story-card rv d3">
                         <div class="story-media">
-                            <img src="https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&w=1400&q=80" alt="Students preparing together with digital tools" decoding="async" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=1400&q=80';">
+                            <img src="https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&w=600&fm=webp&q=80"
+                                alt="Students preparing together with digital tools" loading="lazy"
+                                onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=600&fm=webp&q=80';">
                         </div>
                         <div class="story-overlay">
                             <span class="story-tag">Launch</span>
                             <h3 class="story-title">Track Progress And Get Job Ready</h3>
-                            <p class="story-copy">From skill checklists to AI interview guidance, every milestone is visible and measurable.</p>
+                            <p class="story-copy">From skill checklists to AI interview guidance, every milestone is
+                                visible and measurable.</p>
                         </div>
                     </article>
                 </div>
@@ -517,7 +700,8 @@
                 <div class="rv">
                     <p class="lbl">The Problem</p>
                     <h2 class="ttl">Career Planning is Broken.<br><span class="serif">Here's why it matters.</span></h2>
-                    <p class="desc">Millions of students make costly, life-altering career decisions every year with zero personalised guidance. The consequences compound over decades.</p>
+                    <p class="desc">Millions of students make costly, life-altering career decisions every year with
+                        zero personalised guidance. The consequences compound over decades.</p>
                 </div>
                 <div class="pcg rv d1">
                     <div class="pc">
@@ -528,17 +712,20 @@
                     <div class="pc">
                         <div class="pc-ic">😰</div>
                         <h4>Mounting Stress</h4>
-                        <p>Family pressure, peer comparison, and zero clarity create a widespread career-anxiety crisis.</p>
+                        <p>Family pressure, peer comparison, and zero clarity create a widespread career-anxiety crisis.
+                        </p>
                     </div>
                     <div class="pc">
                         <div class="pc-ic">🎯</div>
                         <h4>No Personalisation</h4>
-                        <p>Generic counsellors give generic advice. Your unique profile, strengths and potential are ignored.</p>
+                        <p>Generic counsellors give generic advice. Your unique profile, strengths and potential are
+                            ignored.</p>
                     </div>
                     <div class="pc">
                         <div class="pc-ic">💸</div>
                         <h4>Missed Earnings</h4>
-                        <p>Wrong decisions at the right age directly reduce lifetime earnings and career satisfaction.</p>
+                        <p>Wrong decisions at the right age directly reduce lifetime earnings and career satisfaction.
+                        </p>
                     </div>
                 </div>
             </div>
@@ -547,35 +734,50 @@
         <!-- HOW IT WORKS -->
         <section id="how" class="sec" style="text-align:center;">
             <div class="blobs">
-                <div class="b" style="width:600px;height:600px;top:10%;left:-10%;background:rgba(42,125,225,.07);"></div>
-                <div class="b" style="width:500px;height:500px;bottom:-10%;right:-5%;background:rgba(232,140,42,.07);animation-delay:3s;"></div>
+                <div class="b" style="width:600px;height:600px;top:10%;left:-10%;background:rgba(42,125,225,.07);">
+                </div>
+                <div class="b"
+                    style="width:500px;height:500px;bottom:-10%;right:-5%;background:rgba(232,140,42,.07);animation-delay:3s;">
+                </div>
             </div>
-            <div class="wrap glass-panel" style="position:relative;z-index:1;padding:4rem 2rem;border-radius:24px;box-shadow: 0 20px 40px rgba(0,0,0,0.5);">
+            <div class="wrap glass-panel"
+                style="position:relative;z-index:1;padding:4rem 2rem;border-radius:24px;box-shadow: 0 20px 40px rgba(0,0,0,0.5);">
                 <div class="rv">
                     <p class="lbl" style="justify-content:center;">How It Works</p>
                     <h2 class="ttl">From Uncertainty to Clarity<br>in 5 Simple Steps</h2>
-                    <p class="desc" style="text-align:center;margin:0 auto;">Predict. Explore. Decide. — Your future, simulated before you live it.</p>
+                    <p class="desc" style="text-align:center;margin:0 auto;">Predict. Explore. Decide. — Your future,
+                        simulated before you live it.</p>
                 </div>
                 <div class="steps">
                     <div class="sconn"></div>
                     <div class="step rv d1">
-                        <div class="sr" style="background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02)); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); border-top: 1px solid rgba(255,255,255,0.25); box-shadow: inset 0 1px 1px rgba(255,255,255,0.15), 0 10px 20px rgba(0,0,0,0.5);">01</div>
+                        <div class="sr"
+                            style="background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02)); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); border-top: 1px solid rgba(255,255,255,0.25); box-shadow: inset 0 1px 1px rgba(255,255,255,0.15), 0 10px 20px rgba(0,0,0,0.5);">
+                            01</div>
                         <div class="sl">Input Skills, Interests &amp; Goals</div>
                     </div>
                     <div class="step rv d2">
-                        <div class="sr" style="background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02)); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); border-top: 1px solid rgba(255,255,255,0.25); box-shadow: inset 0 1px 1px rgba(255,255,255,0.15), 0 10px 20px rgba(0,0,0,0.5);">02</div>
+                        <div class="sr"
+                            style="background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02)); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); border-top: 1px solid rgba(255,255,255,0.25); box-shadow: inset 0 1px 1px rgba(255,255,255,0.15), 0 10px 20px rgba(0,0,0,0.5);">
+                            02</div>
                         <div class="sl">AI Agents Analyse Your Profile</div>
                     </div>
                     <div class="step rv d3">
-                        <div class="sr" style="background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02)); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); border-top: 1px solid rgba(255,255,255,0.25); box-shadow: inset 0 1px 1px rgba(255,255,255,0.15), 0 10px 20px rgba(0,0,0,0.5);">03</div>
+                        <div class="sr"
+                            style="background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02)); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); border-top: 1px solid rgba(255,255,255,0.25); box-shadow: inset 0 1px 1px rgba(255,255,255,0.15), 0 10px 20px rgba(0,0,0,0.5);">
+                            03</div>
                         <div class="sl">View Simulated Career Paths</div>
                     </div>
                     <div class="step rv d1">
-                        <div class="sr" style="background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02)); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); border-top: 1px solid rgba(255,255,255,0.25); box-shadow: inset 0 1px 1px rgba(255,255,255,0.15), 0 10px 20px rgba(0,0,0,0.5);">04</div>
+                        <div class="sr"
+                            style="background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02)); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); border-top: 1px solid rgba(255,255,255,0.25); box-shadow: inset 0 1px 1px rgba(255,255,255,0.15), 0 10px 20px rgba(0,0,0,0.5);">
+                            04</div>
                         <div class="sl">Get Personalised Predictions</div>
                     </div>
                     <div class="step rv d2">
-                        <div class="sr" style="background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02)); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); border-top: 1px solid rgba(255,255,255,0.25); box-shadow: inset 0 1px 1px rgba(255,255,255,0.15), 0 10px 20px rgba(0,0,0,0.5);">05</div>
+                        <div class="sr"
+                            style="background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02)); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); border-top: 1px solid rgba(255,255,255,0.25); box-shadow: inset 0 1px 1px rgba(255,255,255,0.15), 0 10px 20px rgba(0,0,0,0.5);">
+                            05</div>
                         <div class="sl">Make an Informed Decision</div>
                     </div>
                 </div>
@@ -588,10 +790,12 @@
                 <div class="rv center-head">
                     <p class="lbl">Personalised Dashboard</p>
                     <h2 class="ttl">Class 5-12 and University<br><span class="serif">Success Toolkit</span></h2>
-                    <p class="desc">Choose your student profile and get a dashboard that tracks goals, progress, and the exact next steps you should take.</p>
+                    <p class="desc">Choose your student profile and get a dashboard that tracks goals, progress, and the
+                        exact next steps you should take.</p>
                 </div>
                 <div class="dashboard-shell rv">
-                    <button class="dash-toggle" id="dash-toggle" onclick="toggleDashboard()" aria-expanded="false" aria-controls="dashboard-panel">
+                    <button class="dash-toggle" id="dash-toggle" onclick="toggleDashboard()" aria-expanded="false"
+                        aria-controls="dashboard-panel">
                         <span class="dash-toggle-text">Open Personalised Dashboard</span>
                         <span class="dash-toggle-icon">▾</span>
                     </button>
@@ -599,8 +803,10 @@
                     <div class="dashboard-panel" id="dashboard-panel" aria-hidden="true">
                         <div class="student-switch rv">
                             <div class="seg-group">
-                                <button class="seg-btn" id="seg-school" onclick="setStudentType('school')">School Student</button>
-                                <button class="seg-btn" id="seg-university" onclick="setStudentType('university')">College Student</button>
+                                <button class="seg-btn" id="seg-school" onclick="setStudentType('school')">School
+                                    Student</button>
+                                <button class="seg-btn" id="seg-university"
+                                    onclick="setStudentType('university')">College Student</button>
                             </div>
                             <div class="profile-cards">
                                 <div class="profile-card">
@@ -641,30 +847,37 @@
                             </div>
                             <div class="control-card only-university">
                                 <label>Stream / Major</label>
-                                <input class="fi" id="uni-stream" type="text" placeholder="e.g., B.Tech CSE, B.Com, BA Economics" oninput="setUniStream(this.value)">
+                                <input class="fi" id="uni-stream" type="text"
+                                    placeholder="e.g., B.Tech CSE, B.Com, BA Economics"
+                                    oninput="setUniStream(this.value)">
                             </div>
                             <div class="control-card">
                                 <label>Personalised Focus</label>
-                                <div class="focus-box" id="focus-box">Select a class or university level to see a personalised focus plan.</div>
+                                <div class="focus-box" id="focus-box">Select a class or university level to see a
+                                    personalised focus plan.</div>
                             </div>
                         </div>
 
                         <div class="tool-grid rv">
-                            <div class="tool-section-title"><span>Quick Actions</span><small>Set goals and track progress</small></div>
+                            <div class="tool-section-title"><span>Quick Actions</span><small>Set goals and track
+                                    progress</small></div>
                             <article class="tool-card">
                                 <div class="tool-head">
                                     <div>
                                         <h3>Next Step Achievement</h3>
-                                        <p class="tool-desc">Pin the single most important milestone to complete next.</p>
+                                        <p class="tool-desc">Pin the single most important milestone to complete next.
+                                        </p>
                                     </div>
                                     <span class="tool-tag">Tool</span>
                                 </div>
                                 <div class="tool-input-row">
-                                    <input class="fi" id="next-step-input" placeholder="e.g., Finish chapter 3 practice set">
+                                    <input class="fi" id="next-step-input"
+                                        placeholder="e.g., Finish chapter 3 practice set">
                                     <button class="tool-btn" onclick="setNextStep()">Set</button>
                                 </div>
                                 <div class="tool-highlight" id="next-step-display">No next step pinned yet.</div>
-                                <button class="tool-link" onclick="useFirstPendingGoal()">Use first item from Things to Achieve</button>
+                                <button class="tool-link" onclick="useFirstPendingGoal()">Use first item from Things to
+                                    Achieve</button>
                             </article>
 
                             <article class="tool-card">
@@ -677,7 +890,8 @@
                                 </div>
                                 <div class="tool-input-row">
                                     <input class="fi" id="achieve-input" placeholder="Add a goal">
-                                    <button class="tool-btn" onclick="addToolItem('achieve','achieve-input')">Add</button>
+                                    <button class="tool-btn"
+                                        onclick="addToolItem('achieve','achieve-input')">Add</button>
                                 </div>
                                 <ul class="tool-list" id="tool-achieve-list"></ul>
                             </article>
@@ -692,7 +906,8 @@
                                 </div>
                                 <div class="tool-input-row">
                                     <input class="fi" id="achieved-input" placeholder="Add a completed item">
-                                    <button class="tool-btn" onclick="addToolItem('achieved','achieved-input')">Add</button>
+                                    <button class="tool-btn"
+                                        onclick="addToolItem('achieved','achieved-input')">Add</button>
                                 </div>
                                 <ul class="tool-list" id="tool-achieved-list"></ul>
                             </article>
@@ -706,14 +921,22 @@
                                     <span class="tool-tag">Summary</span>
                                 </div>
                                 <div class="summary-grid" id="weekly-summary">
-                                    <div class="summary-row"><span>Goals Completed</span><strong id="sum-goals">0/0</strong></div>
-                                    <div class="summary-row"><span>Accuracy</span><strong id="sum-accuracy">0%</strong></div>
-                                    <div class="summary-row"><span>Routine Blocks</span><strong id="sum-routine">0</strong></div>
-                                    <div class="summary-row"><span>Study Minutes</span><strong id="sum-study">0 min</strong></div>
-                                    <div class="summary-row"><span>Top Subject</span><strong id="sum-top">-</strong></div>
-                                    <div class="summary-row"><span>Upcoming Exams</span><strong id="sum-exams">0</strong></div>
-                                    <div class="summary-row"><span>Average Score</span><strong id="sum-avg">0%</strong></div>
-                                    <div class="summary-row"><span>Next Exam In</span><strong id="sum-countdown">-</strong></div>
+                                    <div class="summary-row"><span>Goals Completed</span><strong
+                                            id="sum-goals">0/0</strong></div>
+                                    <div class="summary-row"><span>Accuracy</span><strong id="sum-accuracy">0%</strong>
+                                    </div>
+                                    <div class="summary-row"><span>Routine Blocks</span><strong
+                                            id="sum-routine">0</strong></div>
+                                    <div class="summary-row"><span>Study Minutes</span><strong id="sum-study">0
+                                            min</strong></div>
+                                    <div class="summary-row"><span>Top Subject</span><strong id="sum-top">-</strong>
+                                    </div>
+                                    <div class="summary-row"><span>Upcoming Exams</span><strong
+                                            id="sum-exams">0</strong></div>
+                                    <div class="summary-row"><span>Average Score</span><strong id="sum-avg">0%</strong>
+                                    </div>
+                                    <div class="summary-row"><span>Next Exam In</span><strong
+                                            id="sum-countdown">-</strong></div>
                                 </div>
                                 <div class="mini-bar"><span id="sum-bar" style="width:0%"></span></div>
                                 <button class="tool-btn" onclick="refreshWeeklySummary()">Refresh Summary</button>
@@ -734,7 +957,8 @@
                                 </div>
                             </article>
 
-                            <div class="tool-section-title"><span>Study Tracker</span><small>Routine, syllabus, and exams</small></div>
+                            <div class="tool-section-title"><span>Study Tracker</span><small>Routine, syllabus, and
+                                    exams</small></div>
                             <article class="tool-card">
                                 <div class="tool-head">
                                     <div>
@@ -765,7 +989,8 @@
                                     <button class="tool-btn" onclick="addTimeEntry()">Log</button>
                                 </div>
                                 <div class="tool-input-row">
-                                    <input class="fi" id="tracker-target" type="number" min="30" placeholder="Weekly target (minutes)" oninput="setTrackerTarget(this.value)">
+                                    <input class="fi" id="tracker-target" type="number" min="30"
+                                        placeholder="Weekly target (minutes)" oninput="setTrackerTarget(this.value)">
                                 </div>
                                 <div class="tracker-bar"><span id="tracker-fill" style="width:0%"></span></div>
                                 <div class="tool-note" id="tracker-total">0 min logged</div>
@@ -836,7 +1061,8 @@
                                 <ul class="tool-list" id="tool-weak-list"></ul>
                             </article>
 
-                            <div class="tool-section-title"><span>Support &amp; Export</span><small>Get help and save plans</small></div>
+                            <div class="tool-section-title"><span>Support &amp; Export</span><small>Get help and save
+                                    plans</small></div>
                             <article class="tool-card">
                                 <div class="tool-head">
                                     <div>
@@ -857,7 +1083,8 @@
                                     </div>
                                     <span class="tool-tag">Export</span>
                                 </div>
-                                <button class="tool-btn alt" onclick="downloadStudentPlan()">Download Plan (PDF)</button>
+                                <button class="tool-btn alt" onclick="downloadStudentPlan()">Download Plan
+                                    (PDF)</button>
                                 <div class="tool-note">Includes goals, accuracy, routine, and time tracker.</div>
                             </article>
 
@@ -865,7 +1092,8 @@
                                 <div class="tool-head">
                                     <div>
                                         <h3>One-to-One Session</h3>
-                                        <p class="tool-desc">Schedule a session for a specific topic, chapter, or teacher.</p>
+                                        <p class="tool-desc">Schedule a session for a specific topic, chapter, or
+                                            teacher.</p>
                                     </div>
                                     <span class="tool-tag">Session</span>
                                 </div>
@@ -898,12 +1126,14 @@
                     <div class="fc rv d1" data-feature="simulation" role="button" tabindex="0" aria-pressed="false">
                         <div class="fc-ic">🧠</div>
                         <h3>AI Career Simulation Engine</h3>
-                        <p>Predictive algorithms model thousands of trajectories based on your profile and live market data.</p>
+                        <p>Predictive algorithms model thousands of trajectories based on your profile and live market
+                            data.</p>
                     </div>
                     <div class="fc rv d2" data-feature="gap" role="button" tabindex="0" aria-pressed="false">
                         <div class="fc-ic">📊</div>
                         <h3>Skill Gap Analysis</h3>
-                        <p>Identify missing skills and receive AI recommendations to close gaps and accelerate your growth.</p>
+                        <p>Identify missing skills and receive AI recommendations to close gaps and accelerate your
+                            growth.</p>
                     </div>
                     <div class="fc rv d3" data-feature="whatif" role="button" tabindex="0" aria-pressed="false">
                         <div class="fc-ic">🔀</div>
@@ -918,19 +1148,22 @@
                     <div class="fc rv d2" data-feature="alerts" role="button" tabindex="0" aria-pressed="false">
                         <div class="fc-ic">🔔</div>
                         <h3>Smart Career Alerts</h3>
-                        <p>Real-time market trend alerts — rising demand, new skills, obsolete roles — curated for your career.</p>
+                        <p>Real-time market trend alerts — rising demand, new skills, obsolete roles — curated for your
+                            career.</p>
                     </div>
                     <div class="fc rv d3" data-feature="internship" role="button" tabindex="0" aria-pressed="false">
                         <div class="fc-ic">💼</div>
                         <h3>Internship Recommendations</h3>
-                        <p>AI-matched internship and job opportunities with application strategies and preparation tips.</p>
+                        <p>AI-matched internship and job opportunities with application strategies and preparation tips.
+                        </p>
                     </div>
                 </div>
                 <div class="feature-detail open" id="feature-detail" aria-live="polite">
                     <div class="fd-icon">🧠</div>
                     <div class="fd-body">
                         <h3>AI Career Simulation Engine</h3>
-                        <p>Predictive algorithms model thousands of trajectories based on your profile and live market data.</p>
+                        <p>Predictive algorithms model thousands of trajectories based on your profile and live market
+                            data.</p>
                         <div class="fd-pills">
                             <span class="fd-pill">Trajectory comparisons</span>
                             <span class="fd-pill">Live market signals</span>
@@ -947,26 +1180,39 @@
                 <div class="rv">
                     <p class="lbl">Multi-Agent AI System</p>
                     <h2 class="ttl">Your Personal<br><span class="serif amb">Career AI Advisor</span></h2>
-                    <p class="desc">Powered by 4 specialised AI agents — Career Roadmap, Skill Gap, Market Alerts, and Internship — all coordinated by a Manager AI. Chat via text or voice.</p>
+                    <p class="desc">Powered by 4 specialised AI agents — Career Roadmap, Skill Gap, Market Alerts, and
+                        Internship — all coordinated by a Manager AI. Chat via text or voice.</p>
                     <div style="display:flex;flex-direction:column;gap:.6rem;margin-top:1.8rem;">
                         <div style="display:flex;align-items:center;gap:.75rem;font-size:.84rem;color:var(--mu);">
-                            <span style="color:var(--amb);font-size:1rem;">⚙</span><strong style="color:var(--wh2);">Manager Agent</strong> — Analyses profile &amp; coordinates guidance
+                            <span style="color:var(--amb);font-size:1rem;">⚙</span><strong
+                                style="color:var(--wh2);">Manager Agent</strong> — Analyses profile &amp; coordinates
+                            guidance
                         </div>
                         <div style="display:flex;align-items:center;gap:.75rem;font-size:.84rem;color:var(--mu);">
-                            <span style="color:var(--blue2);font-size:1rem;">🗺</span><strong style="color:var(--wh2);">Roadmap Agent</strong> — 3–5 year career roadmaps with milestones
+                            <span style="color:var(--blue2);font-size:1rem;">🗺</span><strong
+                                style="color:var(--wh2);">Roadmap Agent</strong> — 3–5 year career roadmaps with
+                            milestones
                         </div>
                         <div style="display:flex;align-items:center;gap:.75rem;font-size:.84rem;color:var(--mu);">
-                            <span style="color:var(--green);font-size:1rem;">📊</span><strong style="color:var(--wh2);">Skill Gap Agent</strong> — Identifies missing skills &amp; learning paths
+                            <span style="color:var(--green);font-size:1rem;">📊</span><strong
+                                style="color:var(--wh2);">Skill Gap Agent</strong> — Identifies missing skills &amp;
+                            learning paths
                         </div>
                         <div style="display:flex;align-items:center;gap:.75rem;font-size:.84rem;color:var(--mu);">
-                            <span style="color:var(--amb2);font-size:1rem;">🔔</span><strong style="color:var(--wh2);">Alert Agent</strong> — Real-time market trends &amp; demand signals
+                            <span style="color:var(--amb2);font-size:1rem;">🔔</span><strong
+                                style="color:var(--wh2);">Alert Agent</strong> — Real-time market trends &amp; demand
+                            signals
                         </div>
                         <div style="display:flex;align-items:center;gap:.75rem;font-size:.84rem;color:var(--mu);">
-                            <span style="color:var(--blue);font-size:1rem;">💼</span><strong style="color:var(--wh2);">Internship Agent</strong> — Matched opportunities &amp; application tips
+                            <span style="color:var(--blue);font-size:1rem;">💼</span><strong
+                                style="color:var(--wh2);">Internship Agent</strong> — Matched opportunities &amp;
+                            application tips
                         </div>
                     </div>
                     <div style="margin-top:2rem;display:flex;gap:.8rem;flex-wrap:wrap;">
-                        <button class="btn btn-amb btn-sm" onclick="togChat();setTimeout(()=>document.getElementById('cp-inp').focus(),300)">Chat with AI →</button>
+                        <button class="btn btn-amb btn-sm"
+                            onclick="togChat();setTimeout(()=>document.getElementById('cp-inp').focus(),300)">Chat with
+                            AI →</button>
                         <button class="btn btn-out btn-sm" onclick="startVoiceFromSection()">🎤 Voice Chat</button>
                     </div>
                 </div>
@@ -981,12 +1227,20 @@
                         </div>
                     </div>
                     <div class="ai-msgs" id="ai-preview-msgs">
-                        <div class="ai-bubble bot">👋 Hi! I'm your Digital Twin Verse Career Advisor. Tell me your education background and interests — I'll give you a personalised career plan, skill roadmap, and internship suggestions.</div>
-                        <div class="ai-bubble user">I'm a 2nd year B.Tech CSE student interested in AI and Data Science.</div>
-                        <div class="ai-bubble bot">Great profile! 🎯 Based on your background, here's what I recommend:<br><br>📍 <strong>Top Career Path:</strong> AI/ML Engineer (₹12–50 LPA)<br>📊 <strong>Skill Gaps:</strong> MLOps, LLMs, System Design<br>💼 <strong>Next Step:</strong> Apply for AI internships on Internshala &amp; LinkedIn<br><br>Want the full 3-year roadmap?</div>
+                        <div class="ai-bubble bot">👋 Hi! I'm your Digital Twin Verse Career Advisor. Tell me your
+                            education background and interests — I'll give you a personalised career plan, skill
+                            roadmap, and internship suggestions.</div>
+                        <div class="ai-bubble user">I'm a 2nd year B.Tech CSE student interested in AI and Data Science.
+                        </div>
+                        <div class="ai-bubble bot">Great profile! 🎯 Based on your background, here's what I
+                            recommend:<br><br>📍 <strong>Top Career Path:</strong> AI/ML Engineer (₹12–50 LPA)<br>📊
+                            <strong>Skill Gaps:</strong> MLOps, LLMs, System Design<br>💼 <strong>Next Step:</strong>
+                            Apply for AI internships on Internshala &amp; LinkedIn<br><br>Want the full 3-year roadmap?
+                        </div>
                     </div>
                     <div class="ai-input-row">
-                        <input class="fi" placeholder="Type your question here or click the button above…" readonly onclick="togChat()">
+                        <input class="fi" placeholder="Type your question here or click the button above…" readonly
+                            onclick="togChat()">
                         <button class="ai-send" onclick="togChat()">➤</button>
                         <button class="ai-voice-btn" onclick="togChat();setTimeout(()=>togVoice(),300)">🎤</button>
                     </div>
@@ -1000,41 +1254,69 @@
                 <div class="rv analyzer-grid">
                     <div>
                         <p class="lbl">New Feature</p>
-                        <h2 class="ttl">Upload Your Achievements.<br><span class="ttl-serif amb">Get Your Roadmap.</span></h2>
-                        <p class="desc">Our AI-powered Achievement Analyzer reads your resume, certificates, CGPA, and skills — then generates a personalised, step-by-step career roadmap with a confidence score, skill gap analysis, and internship suggestions.</p>
+                        <h2 class="ttl">Upload Your Achievements.<br><span class="ttl-serif amb">Get Your
+                                Roadmap.</span></h2>
+                        <p class="desc">Our AI-powered Achievement Analyzer reads your resume, certificates, CGPA, and
+                            skills — then generates a personalised, step-by-step career roadmap with a confidence score,
+                            skill gap analysis, and internship suggestions.</p>
                         <div style="display:flex;flex-direction:column;gap:.65rem;margin:1.5rem 0 2rem;">
                             <div style="display:flex;align-items:center;gap:.7rem;font-size:.84rem;color:var(--mu);">
-                                <span style="width:22px;height:22px;border-radius:6px;background:rgba(167,139,250,.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:.75rem;">📤</span>
+                                <span
+                                    style="width:22px;height:22px;border-radius:6px;background:rgba(167,139,250,.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:.75rem;">📤</span>
                                 <span>Drag &amp; drop your resume, certs and projects</span>
                             </div>
                             <div style="display:flex;align-items:center;gap:.7rem;font-size:.84rem;color:var(--mu);">
-                                <span style="width:22px;height:22px;border-radius:6px;background:rgba(79,142,247,.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:.75rem;">🧠</span>
+                                <span
+                                    style="width:22px;height:22px;border-radius:6px;background:rgba(79,142,247,.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:.75rem;">🧠</span>
                                 <span>AI analyses your profile and generates a personalized dashboard</span>
                             </div>
                             <div style="display:flex;align-items:center;gap:.7rem;font-size:.84rem;color:var(--mu);">
-                                <span style="width:22px;height:22px;border-radius:6px;background:rgba(34,211,153,.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:.75rem;">📄</span>
+                                <span
+                                    style="width:22px;height:22px;border-radius:6px;background:rgba(34,211,153,.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:.75rem;">📄</span>
                                 <span>Download a full colorful PDF report with your roadmap</span>
                             </div>
                         </div>
-                        <button type="button" onclick="window.location.href='https://analyzer.niat.tech/'" class="btn btn-amb" style="display:inline-flex;align-items:center;gap:.5rem;text-decoration:none; cursor:pointer;">🚀 Launch Achievement Analyzer →</button>
+                        <button type="button" onclick="window.location.href='https://analyzer.niat.tech/'"
+                            class="btn btn-amb"
+                            style="display:inline-flex;align-items:center;gap:.5rem;text-decoration:none; cursor:pointer;">🚀
+                            Launch Achievement Analyzer →</button>
                     </div>
                     <div class="analyzer-card">
-                        <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--blue,#2a7de1),var(--purple,#7b2fff));"></div>
-                        <div style="font-size:.7rem;font-weight:700;letter-spacing:.14em;color:var(--mu);text-transform:uppercase;margin-bottom:1.2rem;">AI Analysis Preview</div>
+                        <div
+                            style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--blue,#2a7de1),var(--purple,#7b2fff));">
+                        </div>
+                        <div
+                            style="font-size:.7rem;font-weight:700;letter-spacing:.14em;color:var(--mu);text-transform:uppercase;margin-bottom:1.2rem;">
+                            AI Analysis Preview</div>
                         <div style="display:flex;flex-direction:column;gap:.8rem;">
-                            <div class="glass-stat"><span style="font-size:.85rem;font-weight:600;color:var(--wh2);">AI Confidence Score</span><strong style="font-size:1.3rem;color:#34d399;">87%</strong></div>
-                            <div class="glass-stat"><span style="font-size:.85rem;font-weight:600;color:var(--wh2);">Best Career Match</span><strong style="font-size:.85rem;color:var(--blue2,#5ba3f5);">AI/ML Engineer</strong></div>
-                            <div style="padding:.75rem 1rem;background:rgba(167,139,250,.07);border:1px solid rgba(167,139,250,.15);border-radius:10px;">
-                                <div style="font-size:.72rem;font-weight:700;color:var(--mu);margin-bottom:.4rem;">ROADMAP PHASES</div>
+                            <div class="glass-stat"><span style="font-size:.85rem;font-weight:600;color:var(--wh2);">AI
+                                    Confidence Score</span><strong style="font-size:1.3rem;color:#34d399;">87%</strong>
+                            </div>
+                            <div class="glass-stat"><span
+                                    style="font-size:.85rem;font-weight:600;color:var(--wh2);">Best Career
+                                    Match</span><strong style="font-size:.85rem;color:var(--blue2,#5ba3f5);">AI/ML
+                                    Engineer</strong></div>
+                            <div
+                                style="padding:.75rem 1rem;background:rgba(167,139,250,.07);border:1px solid rgba(167,139,250,.15);border-radius:10px;">
+                                <div style="font-size:.72rem;font-weight:700;color:var(--mu);margin-bottom:.4rem;">
+                                    ROADMAP PHASES</div>
                                 <div class="glass-tags">
-                                    <span class="glass-tag" style="background:rgba(79,142,247,.15);border-color:rgba(79,142,247,.25);color:#93c5fd;">Foundation</span>
-                                    <span class="glass-tag" style="background:rgba(167,139,250,.15);border-color:rgba(167,139,250,.25);color:#c4b5fd;">Specialise</span>
-                                    <span class="glass-tag" style="background:rgba(34,211,153,.1);border-color:rgba(34,211,153,.2);color:#6ee7b7;">Internship</span>
-                                    <span class="glass-tag" style="background:rgba(251,191,36,.1);border-color:rgba(251,191,36,.2);color:#fde68a;">Job Ready</span>
+                                    <span class="glass-tag"
+                                        style="background:rgba(79,142,247,.15);border-color:rgba(79,142,247,.25);color:#93c5fd;">Foundation</span>
+                                    <span class="glass-tag"
+                                        style="background:rgba(167,139,250,.15);border-color:rgba(167,139,250,.25);color:#c4b5fd;">Specialise</span>
+                                    <span class="glass-tag"
+                                        style="background:rgba(34,211,153,.1);border-color:rgba(34,211,153,.2);color:#6ee7b7;">Internship</span>
+                                    <span class="glass-tag"
+                                        style="background:rgba(251,191,36,.1);border-color:rgba(251,191,36,.2);color:#fde68a;">Job
+                                        Ready</span>
                                 </div>
                             </div>
                             <div style="text-align:center;margin-top:.3rem;">
-                                <button type="button" onclick="window.location.href='https://analyzer.niat.tech/'" class="btn-reset" style="font-size:.78rem;color:var(--amb,#e88c2a);font-weight:600;text-decoration:none; cursor:pointer;">Analyze my profile → </button>
+                                <button type="button" onclick="window.location.href='https://analyzer.niat.tech/'"
+                                    class="btn-reset"
+                                    style="font-size:.78rem;color:var(--amb,#e88c2a);font-weight:600;text-decoration:none; cursor:pointer;">Analyze
+                                    my profile → </button>
                             </div>
                         </div>
                     </div>
@@ -1048,10 +1330,13 @@
                 <div class="rv career-explorer-head">
                     <div>
                         <p class="lbl">Career Explorer</p>
-                        <h2 class="ttl">Explore 40+ Career Paths<br><span class="serif">with Your Personal Dashboard</span></h2>
-                        <p class="desc">Browse, select and track any career. Save your skill progress, write notes, and build your personalised roadmap — all saved locally on your device.</p>
+                        <h2 class="ttl">Explore 40+ Career Paths<br><span class="serif">with Your Personal
+                                Dashboard</span></h2>
+                        <p class="desc">Browse, select and track any career. Save your skill progress, write notes, and
+                            build your personalised roadmap — all saved locally on your device.</p>
                     </div>
-                    <button class="career-toggle" id="career-toggle" onclick="toggleCareerExplorer()" aria-expanded="false" aria-controls="career-explorer-body">
+                    <button class="career-toggle" id="career-toggle" onclick="toggleCareerExplorer()"
+                        aria-expanded="false" aria-controls="career-explorer-body">
                         <span class="career-toggle-text">Open Career Explorer</span>
                         <span class="career-toggle-icon">▾</span>
                     </button>
@@ -1059,7 +1344,8 @@
                 <div class="career-explorer-body" id="career-explorer-body" aria-hidden="true">
                     <!-- Session restore banner -->
                     <div class="restore-banner" id="restore-banner">
-                        <span>📂 You have a <strong>saved session</strong> from a previous visit. Want to restore your progress?</span>
+                        <span>📂 You have a <strong>saved session</strong> from a previous visit. Want to restore your
+                            progress?</span>
                         <div style="display:flex;gap:.5rem;align-items:center;">
                             <button class="restore-btn" onclick="restoreSession()">Restore</button>
                             <button class="restore-dismiss" onclick="dismissRestore()" title="Dismiss">✕</button>
@@ -1106,21 +1392,24 @@
             <div class="wrap grid2">
                 <div class="mgrid rv">
                     <div class="mc"><span class="mc-big">1.5 Billion</span>
-                        <p>Global student population — an unprecedented opportunity for AI-driven career guidance at scale.</p>
+                        <p>Global student population — an unprecedented opportunity for AI-driven career guidance at
+                            scale.</p>
                     </div>
                     <div class="mc"><span class="mc-big">350 Million</span>
                         <p>Students in India alone face critical decisions with limited personalised support.</p>
                     </div>
                     <div class="mc"><span class="mc-big">8x</span>
-                        <p>Projected revenue growth over 3 years, powered by premium subscriptions and B2B partnerships.</p>
+                        <p>Projected revenue growth over 3 years, powered by premium subscriptions and B2B partnerships.
+                        </p>
                     </div>
                 </div>
                 <div class="rv d1">
                     <p class="lbl">Market Opportunity</p>
                     <h2 class="ttl">Massive Market.<br>Perfect Timing.</h2>
-                    <p class="desc">AI adoption in education is accelerating. We are building the right solution at exactly the right moment — for India and the world.</p>
+                    <p class="desc">AI adoption in education is accelerating. We are building the right solution at
+                        exactly the right moment — for India and the world.</p>
                     <br><br>
-                    
+
                 </div>
             </div>
         </section>
@@ -1131,7 +1420,8 @@
                 <div class="rv">
                     <p class="lbl" style="justify-content:center;">Our Journey</p>
                     <h2 class="ttl">From Concept to Global Impact</h2>
-                    <p class="desc" style="text-align:center;margin:0 auto;">Each milestone brings us closer to empowering 1 billion students worldwide.</p>
+                    <p class="desc" style="text-align:center;margin:0 auto;">Each milestone brings us closer to
+                        empowering 1 billion students worldwide.</p>
                 </div>
                 <div class="rtracks rv">
                     <div class="ri">
@@ -1177,7 +1467,8 @@
                 <div class="rgrid">
                     <div class="rvc rv d1">
                         <div class="rvc-st">★★★★★</div>
-                        <p class="rvc-tx">"This is exactly what I needed in Class 12. If this had existed, I would never have wasted 2 years in the wrong course."</p>
+                        <p class="rvc-tx">"This is exactly what I needed in Class 12. If this had existed, I would never
+                            have wasted 2 years in the wrong course."</p>
                         <div class="rvc-u">
                             <div class="rav" style="background:linear-gradient(135deg,#2a7de1,#5ba3f5);">A</div>
                             <div>
@@ -1188,7 +1479,8 @@
                     </div>
                     <div class="rvc rv d2">
                         <div class="rvc-st">★★★★★</div>
-                        <p class="rvc-tx">"The AI advisor gave me a career plan in minutes — more personalised than any counsellor I've spoken to. The what-if scenarios are brilliant."</p>
+                        <p class="rvc-tx">"The AI advisor gave me a career plan in minutes — more personalised than any
+                            counsellor I've spoken to. The what-if scenarios are brilliant."</p>
                         <div class="rvc-u">
                             <div class="rav" style="background:linear-gradient(135deg,#e88c2a,#f5a94e);">P</div>
                             <div>
@@ -1199,7 +1491,8 @@
                     </div>
                     <div class="rvc rv d3">
                         <div class="rvc-st">★★★★☆</div>
-                        <p class="rvc-tx">"Explored 12 career paths in one afternoon. The dashboard with skill tracking is genuinely useful — I check it weekly now."</p>
+                        <p class="rvc-tx">"Explored 12 career paths in one afternoon. The dashboard with skill tracking
+                            is genuinely useful — I check it weekly now."</p>
                         <div class="rvc-u">
                             <div class="rav" style="background:linear-gradient(135deg,#1a7a4a,#2aad6a);">R</div>
                             <div>
@@ -1214,7 +1507,8 @@
                     <p>Your feedback helps us build better and inspires other students to take the right step.</p>
                     <!-- Primary fields -->
                     <div class="wg">
-                        <div class="fg"><label>Your Name *</label><input class="fi" id="rn" type="text" placeholder="e.g. Arjun Sharma"></div>
+                        <div class="fg"><label>Your Name *</label><input class="fi" id="rn" type="text"
+                                placeholder="e.g. Arjun Sharma"></div>
                         <div class="fg"><label>Your Role *</label>
                             <select class="fs" id="rr" onchange="togOtherRole(this)">
                                 <option value="" disabled selected>Select role…</option>
@@ -1225,16 +1519,21 @@
                                 <option>Career Counsellor / Teacher</option>
                                 <option>Other</option>
                             </select>
-                            <div id="rr-other-wrap"><input class="fi" id="rr-other" type="text" placeholder="Please specify your role…" style="margin-top:.4rem;"></div>
+                            <div id="rr-other-wrap"><input class="fi" id="rr-other" type="text"
+                                    placeholder="Please specify your role…" style="margin-top:.4rem;"></div>
                         </div>
                         <div class="fg full"><label>Rating *</label>
                             <div class="star-r" id="strow">
-                                <button class="sb" onclick="setStar(1)">★</button><button class="sb" onclick="setStar(2)">★</button>
-                                <button class="sb" onclick="setStar(3)">★</button><button class="sb" onclick="setStar(4)">★</button>
+                                <button class="sb" onclick="setStar(1)">★</button><button class="sb"
+                                    onclick="setStar(2)">★</button>
+                                <button class="sb" onclick="setStar(3)">★</button><button class="sb"
+                                    onclick="setStar(4)">★</button>
                                 <button class="sb" onclick="setStar(5)">★</button>
                             </div>
                         </div>
-                        <div class="fg full"><label>Your Review *</label><textarea class="ft" id="rt" rows="3" placeholder="Share your experience with Digital Twin Verse for Students…"></textarea></div>
+                        <div class="fg full"><label>Your Review *</label><textarea class="ft" id="rt" rows="3"
+                                placeholder="Share your experience with Digital Twin Verse for Students…"></textarea>
+                        </div>
                     </div>
                     <!-- Contact fields (at least one required) -->
                     <div class="rev-extra">
@@ -1246,7 +1545,8 @@
                             <label>Phone <span style="color:var(--mu);font-weight:400;">(optional)</span></label>
                             <input class="fi" id="rev-phone" type="tel" placeholder="+91 XXXXXXXXXX">
                         </div>
-                        <div class="full contact-note" id="contact-note">* Provide at least one — email or phone (required).</div>
+                        <div class="full contact-note" id="contact-note">* Provide at least one — email or phone
+                            (required).</div>
                         <!-- Strict validation error note — shown when both are empty -->
                         <div class="contact-required-note full" id="contact-req-note">
                             🚫 Enter the mandatory credentials — email or phone is required.
@@ -1255,7 +1555,8 @@
                         <div class="full">
                             <div class="wa-opt">
                                 <input type="checkbox" id="rev-wa" name="rev-wa">
-                                <label for="rev-wa"><strong>Join our WhatsApp Community</strong> — Get career updates, guidance, and be part of India's biggest student career network. (Optional)</label>
+                                <label for="rev-wa"><strong>Join our WhatsApp Community</strong> — Get career updates,
+                                    guidance, and be part of India's biggest student career network. (Optional)</label>
                             </div>
                         </div>
                     </div>
@@ -1273,43 +1574,66 @@
             <div class="wrap">
                 <div class="rv" style="text-align:center;margin-bottom:0;">
                     <p class="lbl" style="justify-content:center;">About the Team</p>
-                    <h2 class="ttl" style="text-align:center;">The Minds Behind<br><span class="serif amb">Digital Twin Verse</span></h2>
-                    <p class="desc" style="text-align:center;margin:0 auto 0;">A passionate team from Eco-Novators building the future of career guidance in India.</p>
+                    <h2 class="ttl" style="text-align:center;">The Minds Behind<br><span class="serif amb">Digital Twin
+                            Verse</span></h2>
+                    <p class="desc" style="text-align:center;margin:0 auto 0;">A passionate team from Eco-Novators
+                        building the future of career guidance in India.</p>
                 </div>
                 <div class="team-grid">
                     <div class="tcard leader rv d1">
                         <div class="t-avatar" style="background:linear-gradient(135deg,#e88c2a,#f5a94e);">K</div>
-                        <div class="t-badge" style="background:rgba(232,140,42,.15);border:1px solid rgba(232,140,42,.3);color:var(--amb2);">Founder, CEO & Creator</div>
+                        <div class="t-badge"
+                            style="background:rgba(232,140,42,.15);border:1px solid rgba(232,140,42,.3);color:var(--amb2);">
+                            Founder, CEO & Creator</div>
                         <div class="t-name">Kumar Kartikey</div>
                         <div class="t-role">Idea, Vision &amp; Sole Full-Stack Developer</div>
-                        <p class="t-desc">The visionary and sole developer behind Digital Twin Verse for Students. Kumar conceived the idea and single-handedly built the entire frontend and backend platform architecture to solve India's career guidance crisis.</p>
-                        <div class="t-skills"><span class="ts">Full-Stack Development</span><span class="ts">Product Strategy</span><span class="ts">UI/UX & Backend</span><span class="ts">Leadership</span></div>
+                        <p class="t-desc">The visionary and sole developer behind Digital Twin Verse for Students. Kumar
+                            conceived the idea and single-handedly built the entire frontend and backend platform
+                            architecture to solve India's career guidance crisis.</p>
+                        <div class="t-skills"><span class="ts">Full-Stack Development</span><span class="ts">Product
+                                Strategy</span><span class="ts">UI/UX & Backend</span><span class="ts">Leadership</span>
+                        </div>
                     </div>
 
                     <div class="tcard leader rv d1">
                         <div class="t-avatar" style="background:linear-gradient(135deg,#e88c2a,#f5a94e);">K</div>
-                        <div class="t-badge" style="background:rgba(232,140,42,.15);border:1px solid rgba(232,140,42,.3);color:var(--amb2);">Co-Founder</div>
+                        <div class="t-badge"
+                            style="background:rgba(232,140,42,.15);border:1px solid rgba(232,140,42,.3);color:var(--amb2);">
+                            Co-Founder</div>
                         <div class="t-name">Kaushiki Singh</div>
                         <div class="t-role">Visionary &amp; Architect </div>
-                        <p class="t-desc">Kaushiki Singh is the driving force behind the company’s vision and user-centric approach, excelling at understanding real-world problems and turning ideas into impactful solutions.</p>
-                        <div class="t-skills"><span class="ts">Product Strategy</span><span class="ts">Decision Making &amp; Financial Understanding </span><span class="ts">Creator</span><span class="ts">Core Team Leader</span></div>
+                        <p class="t-desc">Kaushiki Singh is the driving force behind the company’s vision and
+                            user-centric approach, excelling at understanding real-world problems and turning ideas into
+                            impactful solutions.</p>
+                        <div class="t-skills"><span class="ts">Product Strategy</span><span class="ts">Decision Making
+                                &amp; Financial Understanding </span><span class="ts">Creator</span><span
+                                class="ts">Core Team Leader</span></div>
                     </div>
 
                     <div class="tcard rv d2">
                         <div class="t-avatar" style="background:linear-gradient(135deg,#2a7de1,#5ba3f5);">P</div>
-                        <div class="t-badge" style="background:rgba(42,125,225,.12);border:1px solid rgba(42,125,225,.25);color:var(--blue2);">CTO</div>
+                        <div class="t-badge"
+                            style="background:rgba(42,125,225,.12);border:1px solid rgba(42,125,225,.25);color:var(--blue2);">
+                            CTO</div>
                         <div class="t-name">Priyanshu Kumar</div>
                         <div class="t-role">Operations &amp; Strategy Lead</div>
-                        <p class="t-desc">Priyanshu leads the operational strategy and platform management, ensuring that Digital Twin Verse's mission aligns with real-world execution and user feedback cycles.</p>
-                        <div class="t-skills"><span class="ts">Operations</span><span class="ts">Project Management</span><span class="ts">Research</span><span class="ts">Strategy</span></div>
+                        <p class="t-desc">Priyanshu leads the operational strategy and platform management, ensuring
+                            that Digital Twin Verse's mission aligns with real-world execution and user feedback cycles.
+                        </p>
+                        <div class="t-skills"><span class="ts">Operations</span><span class="ts">Project
+                                Management</span><span class="ts">Research</span><span class="ts">Strategy</span></div>
                     </div>
                     <div class="tcard rv d3">
                         <div class="t-avatar" style="background:linear-gradient(135deg,#1a7a4a,#2aad6a);">U</div>
-                        <div class="t-badge" style="background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.22);color:#4ade80;">CMO</div>
+                        <div class="t-badge"
+                            style="background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.22);color:#4ade80;">
+                            CMO</div>
                         <div class="t-name">Ujjwal Jha</div>
                         <div class="t-role">Growth &amp; Marketing Lead</div>
-                        <p class="t-desc">Ujjwal spearheads marketing, brand growth, and student outreach, making sure Digital Twin Verse reaches every student across India who needs career guidance.</p>
-                        <div class="t-skills"><span class="ts">Marketing</span><span class="ts">Growth</span><span class="ts">Outreach</span><span class="ts">Branding</span></div>
+                        <p class="t-desc">Ujjwal spearheads marketing, brand growth, and student outreach, making sure
+                            Digital Twin Verse reaches every student across India who needs career guidance.</p>
+                        <div class="t-skills"><span class="ts">Marketing</span><span class="ts">Growth</span><span
+                                class="ts">Outreach</span><span class="ts">Branding</span></div>
                     </div>
                 </div>
             </div>
@@ -1318,19 +1642,30 @@
         <!-- GOOGLE FORM -->
         <section id="survey-form" class="sec surf2" style="text-align: center; position: relative; overflow: hidden;">
             <div class="blobs">
-                <div class="b" style="width:400px;height:400px;top:10%;left:-100px;background:rgba(123,47,255,.08);"></div>
-                <div class="b" style="width:500px;height:500px;bottom:-50px;right:-100px;background:rgba(55,215,255,.08);animation-delay:3s;"></div>
+                <div class="b" style="width:400px;height:400px;top:10%;left:-100px;background:rgba(123,47,255,.08);">
+                </div>
+                <div class="b"
+                    style="width:500px;height:500px;bottom:-50px;right:-100px;background:rgba(55,215,255,.08);animation-delay:3s;">
+                </div>
             </div>
             <div class="wrap rv" style="position: relative; z-index: 1;">
                 <p class="lbl" style="justify-content:center;">We're Hiring</p>
                 <h2 class="ttl">Join the <span class="serif amb">Core Team</span></h2>
-                <p class="desc" style="margin:0 auto 2.5rem; max-width: 600px;">Are you passionate about guiding students toward a better future? Join the Digital Twin Verse team and be a part of the change.</p>
-                
-                <div class="feat-card" style="padding: 3rem 2rem; display: flex; flex-direction: column; align-items: center; justify-content: center; max-width: 600px; margin: 0 auto; text-align: center;">
+                <p class="desc" style="margin:0 auto 2.5rem; max-width: 600px;">Are you passionate about guiding
+                    students toward a better future? Join the Digital Twin Verse team and be a part of the change.</p>
+
+                <div class="feat-card"
+                    style="padding: 3rem 2rem; display: flex; flex-direction: column; align-items: center; justify-content: center; max-width: 600px; margin: 0 auto; text-align: center;">
                     <div style="font-size: 3rem; margin-bottom: 1rem;">🚀</div>
                     <h3 style="color: var(--wh); font-size: 1.5rem; margin-bottom: 1rem;">Ready to make an impact?</h3>
-                    <p style="color: var(--mu); max-width: 400px; text-align: center; margin-bottom: 2rem;">Click the button below to open the application form in a new secure tab and apply to join our core team.</p>
-                    <button type="button" onclick="window.open('https://docs.google.com/forms/d/e/1FAIpQLSfFTZe2t0XdzjRm6peuaBOgOvILkKWInSzWRE_IAJyl_ZEBxA/viewform', '_blank')" class="btn btn-amb" style="font-size:1.1rem; padding:1rem 2.5rem; box-shadow:0 8px 25px rgba(232,140,42,.3);">Apply Now →</button>
+                    <p style="color: var(--mu); max-width: 400px; text-align: center; margin-bottom: 2rem;">Click the
+                        button below to open the application form in a new secure tab and apply to join our core team.
+                    </p>
+                    <button type="button"
+                        onclick="window.open('https://docs.google.com/forms/d/e/1FAIpQLSfFTZe2t0XdzjRm6peuaBOgOvILkKWInSzWRE_IAJyl_ZEBxA/viewform', '_blank')"
+                        class="btn btn-amb"
+                        style="font-size:1.1rem; padding:1rem 2.5rem; box-shadow:0 8px 25px rgba(232,140,42,.3);">Apply
+                        Now →</button>
                 </div>
             </div>
         </section>
@@ -1339,13 +1674,19 @@
         <section id="cta" class="sec">
             <div class="blobs">
                 <div class="b" style="width:500px;height:500px;top:-80px;left:0;background:rgba(42,125,225,.1);"></div>
-                <div class="b" style="width:450px;height:450px;bottom:-60px;right:0;background:rgba(232,140,42,.1);animation-delay:4s;"></div>
+                <div class="b"
+                    style="width:450px;height:450px;bottom:-60px;right:0;background:rgba(232,140,42,.1);animation-delay:4s;">
+                </div>
             </div>
-            <div class="wrap rv glass-panel" style="text-align:center;position:relative;z-index:1;padding:4rem;border-radius:24px;max-width:800px;margin:0 auto;box-shadow: 0 20px 40px rgba(0,0,0,0.5);">
+            <div class="wrap rv glass-panel"
+                style="text-align:center;position:relative;z-index:1;padding:4rem;border-radius:24px;max-width:800px;margin:0 auto;box-shadow: 0 20px 40px rgba(0,0,0,0.5);">
                 <p class="lbl" style="justify-content:center;">Start Today</p>
                 <h2 class="ttl">Simulate Your Future<br><span class="serif amb">Before You Live It.</span></h2>
-                <p class="desc" style="margin:0 auto 2.8rem;">Join thousands of students making smarter career decisions. Free to start — no credit card required.</p>
-                <button type="button" onclick="openSignupPage()" class="btn btn-amb" style="font-size:1rem;padding:1rem 2.7rem;box-shadow:0 8px 25px rgba(232,140,42,.3);">Get Early Access — It's Free →</button>
+                <p class="desc" style="margin:0 auto 2.8rem;">Join thousands of students making smarter career
+                    decisions. Free to start — no credit card required.</p>
+                <button type="button" onclick="openSignupPage()" class="btn btn-amb"
+                    style="font-size:1rem;padding:1rem 2.7rem;box-shadow:0 8px 25px rgba(232,140,42,.3);">Get Early
+                    Access — It's Free →</button>
             </div>
         </section>
 
@@ -1354,17 +1695,19 @@
             <div class="footer-top wrap">
                 <div class="ft-brand">
                     <div class="logo" onclick="goHome()" style="margin-bottom:.9rem;">
-                                    <img src="/img/dtv-logo.jpg" alt="DTV" style="width:36px; height:36px; border-radius:8px;">
+                        <img src="/img/dtv-logo.jpg" alt="DTV" loading="lazy" width="36" height="36" style="width:36px; height:36px; border-radius:8px;">
                         <div>
                             <div class="logo-text">Digital<em>Twin Verse</em></div>
                             <div class="logo-sub">by Eco-Novators</div>
                         </div>
                     </div>
-                    <p>India's first AI-powered career simulation platform — helping students predict, explore, and decide their future with confidence. Built with ❤ by Eco-Novators.</p>
+                    <p>India's first AI-powered career simulation platform — helping students predict, explore, and
+                        decide their future with confidence. Built with ❤ by Eco-Novators.</p>
                     <div class="ft-social" style="margin-top:1.1rem;">
                         <a class="fsoc" href="https://wa.me/917520119837" target="_blank" title="WhatsApp">💬</a>
                         <a class="fsoc" href="mailto:econovators02@gmail.com" title="Email">✉ </a>
-                        <a class="fsoc" href="https://digital-twin-app.onrender.com/" target="_blank" title="Website">🌐</a>
+                        <a class="fsoc" href="https://digital-twin-app.onrender.com/" target="_blank"
+                            title="Website">🌐</a>
                     </div>
                 </div>
                 <div class="ft-col">
@@ -1373,7 +1716,9 @@
                     <a href="#student-dashboard">Student Dashboard</a>
                     <a href="#dashboard">Career Explorer</a>
                     <a href="#ai-section">AI Career Advisor</a>
-                    <button type="button" onclick="window.location.href='https://analyzer.niat.tech/'" class="btn-reset" style="cursor:pointer; color: var(--wh2); text-decoration: none;">🧠 Achievement Analyzer</button>
+                    <button type="button" onclick="window.location.href='https://analyzer.niat.tech/'" class="btn-reset"
+                        style="cursor:pointer; color: var(--wh2); text-decoration: none;">🧠 Achievement
+                        Analyzer</button>
                     <a href="#features">Features</a>
                     <a href="#road">Roadmap</a>
                 </div>
@@ -1386,18 +1731,24 @@
                 </div>
                 <div class="ft-col">
                     <h4>Contact Us</h4>
-                    <div class="ft-contact-item"><span class="ft-contact-icon">✉</span><a href="mailto:econovators02@gmail.com">econovators02@gmail.com</a></div>
-                    <div class="ft-contact-item"><span class="ft-contact-icon">📞</span><a href="tel:+917520119837">+91 75201 19837</a></div>
-                    <div class="ft-contact-item"><span class="ft-contact-icon">💬</span><a href="https://wa.me/917520119837" target="_blank">WhatsApp Us</a></div>
-                    <div class="ft-contact-item"><span class="ft-contact-icon">🌐</span><a href="https://digital-twin-app.onrender.com/" target="_blank">digital-twin-app.onrender.com</a></div>
+                    <div class="ft-contact-item"><span class="ft-contact-icon">✉</span><a
+                            href="mailto:econovators02@gmail.com">econovators02@gmail.com</a></div>
+                    <div class="ft-contact-item"><span class="ft-contact-icon">📞</span><a href="tel:+917520119837">+91
+                            75201 19837</a></div>
+                    <div class="ft-contact-item"><span class="ft-contact-icon">💬</span><a
+                            href="https://wa.me/917520119837" target="_blank">WhatsApp Us</a></div>
+                    <div class="ft-contact-item"><span class="ft-contact-icon">🌐</span><a
+                            href="https://digital-twin-app.onrender.com/"
+                            target="_blank">digital-twin-app.onrender.com</a></div>
                 </div>
             </div>
             <div class="ft-bottom wrap">
-                <p>© 2026 Eco-Novators. All rights reserved. Digital Twin Verse for Students™ is a product of Eco-Novators.</p>
+                <p>© 2026 Eco-Novators. All rights reserved. Digital Twin Verse for Students™ is a product of
+                    Eco-Novators.</p>
                 <div class="ft-legal">
-                    <button type="button"  class="btn-reset">Privacy Policy</button>
-                    <button type="button"  class="btn-reset">Terms of Use</button>
-                    <button type="button"  class="btn-reset">Sitemap</button>
+                    <button type="button" class="btn-reset">Privacy Policy</button>
+                    <button type="button" class="btn-reset">Terms of Use</button>
+                    <button type="button" class="btn-reset">Sitemap</button>
                 </div>
             </div>
         </footer>
@@ -1407,13 +1758,17 @@
     <!-- ████████  THANK YOU PAGE  ████████ -->
     <div id="page-ty" class="page">
         <div class="blobs">
-            <div class="b" style="width:700px;height:700px;top:-200px;left:-200px;background:rgba(232,140,42,.11);"></div>
-            <div class="b" style="width:600px;height:600px;bottom:-200px;right:-150px;background:rgba(42,125,225,.09);animation-delay:6s;"></div>
+            <div class="b" style="width:700px;height:700px;top:-200px;left:-200px;background:rgba(232,140,42,.11);">
+            </div>
+            <div class="b"
+                style="width:600px;height:600px;bottom:-200px;right:-150px;background:rgba(42,125,225,.09);animation-delay:6s;">
+            </div>
         </div>
         <div class="ty">
             <div class="ty-ic">🎉</div>
             <h1 class="ty-ttl fluid-text">Thank You for Your <em>Support!</em></h1>
-            <p class="ty-msg">You are now part of something truly exciting. We've received your details and you'll be among the very first to experience Digital Twin Verse for Students when it launches.</p>
+            <p class="ty-msg">You are now part of something truly exciting. We've received your details and you'll be
+                among the very first to experience Digital Twin Verse for Students when it launches.</p>
             <div class="ns-grid">
                 <div class="ns">
                     <div class="ns-n">01</div>
@@ -1433,7 +1788,8 @@
             </div>
             <div class="share-box">
                 <h3>Help a Fellow Student</h3>
-                <p>Know someone unsure about their career path? Share Digital Twin Verse — it could change their future.</p>
+                <p>Know someone unsure about their career path? Share Digital Twin Verse — it could change their future.
+                </p>
                 <div class="share-btns">
                     <button class="shbtn sh-wa" onclick="shareWA()">📱 WhatsApp</button>
                     <button class="shbtn sh-li" onclick="shareLI()">💼 LinkedIn</button>
@@ -1442,7 +1798,9 @@
             </div>
             <div class="ty-btns">
                 <button type="button" onclick="goHome()" class="btn btn-amb">Back to Home →</button>
-                <button type="button" onclick="goHome(); setTimeout(()=>{document.getElementById('rev').scrollIntoView({behavior:'smooth'})}, 200);" class="btn btn-out">Leave a Review</button>
+                <button type="button"
+                    onclick="goHome(); setTimeout(()=>{document.getElementById('rev').scrollIntoView({behavior:'smooth'})}, 200);"
+                    class="btn btn-out">Leave a Review</button>
             </div>
         </div>
     </div>
@@ -1454,7 +1812,8 @@
                 <div>
                     <div class="badge"><span class="bdot"></span>Create Your Account</div>
                     <h1 class="fluid-text">Start your<br><span class="serif amb">Digital Twin Verse</span> journey</h1>
-                    <p class="desc" style="max-width:560px;">Create an account to save your profile, unlock personalised guidance, and continue exactly where you left off on any visit.</p>
+                    <p class="desc" style="max-width:560px;">Create an account to save your profile, unlock personalised
+                        guidance, and continue exactly where you left off on any visit.</p>
                 </div>
                 <div class="auth-points">
                     <div class="auth-point">
@@ -1463,20 +1822,26 @@
                     </div>
                     <div class="auth-point">
                         <div class="logo-mark" style="flex:0 0 auto;">B</div>
-                        <div><strong>Personal dashboard</strong><span>Keep your student profile and progress saved locally.</span></div>
+                        <div><strong>Personal dashboard</strong><span>Keep your student profile and progress saved
+                                locally.</span></div>
                     </div>
                     <div class="auth-point">
                         <div class="logo-mark" style="flex:0 0 auto;">C</div>
-                        <div><strong>Instant access</strong><span>Sign in anytime to return to the main site.</span></div>
+                        <div><strong>Instant access</strong><span>Sign in anytime to return to the main site.</span>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="auth-card rv d1">
                 <h2>Create Account</h2>
                 <p class="mod-sub">Join students discovering their ideal career path with AI-powered simulation.</p>
-                <div class="fg"><label>Full Name</label><input class="fi" id="su-n" type="text" placeholder="Your full name"><span class="err" id="su-ne">Please enter your name.</span></div>
-                <div class="fg"><label>Email Address</label><input class="fi" id="su-e" type="email" placeholder="you@email.com" autocomplete="off"><span class="err" id="su-ee">Please enter a valid email.</span></div>
-                <div class="fg"><label>Phone Number</label><input class="fi" id="su-p" type="tel" placeholder="+91 XXXXXXXXXX"></div>
+                <div class="fg"><label>Full Name</label><input class="fi" id="su-n" type="text"
+                        placeholder="Your full name"><span class="err" id="su-ne">Please enter your name.</span></div>
+                <div class="fg"><label>Email Address</label><input class="fi" id="su-e" type="email"
+                        placeholder="you@email.com" autocomplete="off"><span class="err" id="su-ee">Please enter a valid
+                        email.</span></div>
+                <div class="fg"><label>Phone Number</label><input class="fi" id="su-p" type="tel"
+                        placeholder="+91 XXXXXXXXXX"></div>
                 <div class="fg"><label>I am a…</label>
                     <select class="fs" id="su-role">
                         <option value="" disabled selected>Select your role</option>
@@ -1488,9 +1853,12 @@
                         <option>Other</option>
                     </select>
                 </div>
-                <div class="fg"><label>City</label><input class="fi" id="su-c" type="text" placeholder="e.g. Jaipur"></div>
+                <div class="fg"><label>City</label><input class="fi" id="su-c" type="text" placeholder="e.g. Jaipur">
+                </div>
                 <div class="fg"><label>Password</label>
-                    <div class="pw"><input class="fi" id="su-pw" type="password" placeholder="Create a password (min 8 chars)"><span class="eye" onclick="togEye('su-pw',this)">👁</span></div>
+                    <div class="pw"><input class="fi" id="su-pw" type="password"
+                            placeholder="Create a password (min 8 chars)"><span class="eye"
+                            onclick="togEye('su-pw',this)">👁</span></div>
                     <div id="pw-strength-bar" class="pw-strength-bar"></div>
                     <span class="err" id="su-pe">Password must be at least 8 characters.</span>
                 </div>
@@ -1508,17 +1876,21 @@
         <div class="auth-shell" style="grid-template-columns: 1fr; max-width: 500px; margin: 0 auto;">
             <div class="auth-card rv d1" style="text-align: center;">
                 <h2>Verify Your Email</h2>
-                <p class="mod-sub">We've sent a 6-digit verification code to your email address. Please enter it below to activate your account.</p>
+                <p class="mod-sub">We've sent a 6-digit verification code to your email address. Please enter it below
+                    to activate your account.</p>
                 <div class="fg" style="margin-top: 1.5rem;">
-                    <input class="fi" id="otp-input" type="text" placeholder="------" maxlength="6" style="text-align: center; font-size: 2rem; letter-spacing: 0.5rem; font-weight: bold; padding: 1rem;">
+                    <input class="fi" id="otp-input" type="text" placeholder="------" maxlength="6"
+                        style="text-align: center; font-size: 2rem; letter-spacing: 0.5rem; font-weight: bold; padding: 1rem;">
                     <span class="err" id="otp-err">Please enter the 6-digit code.</span>
                 </div>
-                <button class="msub" id="verify-btn" onclick="verifyOTP()" style="margin-top: 1rem;">Verify Account →</button>
+                <button class="msub" id="verify-btn" onclick="verifyOTP()" style="margin-top: 1rem;">Verify Account
+                    →</button>
                 <div class="auth-actions" style="margin-top: 1.5rem;">
                     <span class="mod-sub" style="margin:0;">Didn't receive the code?</span>
                     <button type="button" class="auth-link btn-reset" onclick="resendOTP()">Resend Code</button>
                 </div>
-                <div id="otp-msg" style="margin-top: 1rem; color: #37d7ff; font-size: 0.9rem; display: none;">Code sent!</div>
+                <div id="otp-msg" style="margin-top: 1rem; color: #37d7ff; font-size: 0.9rem; display: none;">Code sent!
+                </div>
             </div>
         </div>
     </div>
@@ -1527,7 +1899,8 @@
     <div class="student-onboard-ov" id="student-onboard-ov">
         <div class="student-onboard-box">
             <h3>Welcome to Digital Twin Verse</h3>
-            <p>First question: Are you a school student or a college student? Choose one to personalize your dashboard.</p>
+            <p>First question: Are you a school student or a college student? Choose one to personalize your dashboard.
+            </p>
             <div class="student-onboard-actions">
                 <button class="so-btn" onclick="selectStudentType('school')">School Student (Class 5-12)</button>
                 <button class="so-btn alt" onclick="selectStudentType('university')">College Student</button>
@@ -1541,8 +1914,10 @@
         <div class="wa-redirect-box">
             <div class="wa-icon">📱</div>
             <h3>Join our WhatsApp Community!</h3>
-            <p>Get career updates, guidance sessions, and connect with students like you — all in one place. Redirecting in <span id="wa-cd">3</span> seconds…</p>
-            <a class="wa-join-btn" id="wa-join-link" href="https://chat.whatsapp.com/EoeMkImMW9u2NzEn2XTjr9?mode=gi_t" target="_blank" onclick="closeWAOverlay()">
+            <p>Get career updates, guidance sessions, and connect with students like you — all in one place. Redirecting
+                in <span id="wa-cd">3</span> seconds…</p>
+            <a class="wa-join-btn" id="wa-join-link" href="https://chat.whatsapp.com/EoeMkImMW9u2NzEn2XTjr9?mode=gi_t"
+                target="_blank" onclick="closeWAOverlay()">
                 💬 Join Now — It's Free
             </a>
             <button class="wa-skip-btn" onclick="closeWAOverlay()">No thanks, maybe later</button>
@@ -1557,7 +1932,8 @@
         <div class="auth-shell" style="grid-template-columns: 1fr; max-width: 500px; margin: 0 auto;">
             <div class="auth-card rv d1">
                 <h2>Reset Password</h2>
-                <p class="mod-sub">Enter your email address and we'll send you a 6-digit code to reset your password.</p>
+                <p class="mod-sub">Enter your email address and we'll send you a 6-digit code to reset your password.
+                </p>
                 <div class="fg">
                     <label>Email Address</label>
                     <input class="fi" id="fp-e" type="email" placeholder="you@email.com">
@@ -1579,7 +1955,8 @@
                 <p class="mod-sub">Enter the 6-digit code sent to your email and your new password.</p>
                 <div class="fg">
                     <label>6-Digit Code</label>
-                    <input class="fi" id="rp-otp" type="text" placeholder="------" maxlength="6" style="text-align: center; font-size: 1.5rem; letter-spacing: 0.5rem; font-weight: bold;">
+                    <input class="fi" id="rp-otp" type="text" placeholder="------" maxlength="6"
+                        style="text-align: center; font-size: 1.5rem; letter-spacing: 0.5rem; font-weight: bold;">
                     <span class="err" id="rp-oe">Please enter the 6-digit code.</span>
                 </div>
                 <div class="fg">
@@ -1605,8 +1982,10 @@
         <div class="wa-redirect-box">
             <div class="wa-icon">💬</div>
             <h3>Join our WhatsApp Community!</h3>
-            <p>Get career updates, guidance sessions, and connect with students like you — all in one place. Redirecting in <span id="wa-cd">3</span> seconds…</p>
-            <a class="wa-join-btn" id="wa-join-link" href="https://chat.whatsapp.com/EoeMkImMW9u2NzEn2XTjr9?mode=gi_t" target="_blank" onclick="closeWAOverlay()">
+            <p>Get career updates, guidance sessions, and connect with students like you — all in one place. Redirecting
+                in <span id="wa-cd">3</span> seconds…</p>
+            <a class="wa-join-btn" id="wa-join-link" href="https://chat.whatsapp.com/EoeMkImMW9u2NzEn2XTjr9?mode=gi_t"
+                target="_blank" onclick="closeWAOverlay()">
                 📱 Join Now — It's Free
             </a>
             <button class="wa-skip-btn" onclick="closeWAOverlay()">No thanks, maybe later</button>
@@ -1639,16 +2018,16 @@
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             const revealElements = document.querySelectorAll('.sec, .auth-hero, .auth-card, .feat-card, .rv');
-            
+
             try {
                 if (typeof gsap === 'undefined') throw new Error('GSAP not loaded');
                 gsap.registerPlugin(ScrollTrigger);
-                
+
                 revealElements.forEach((el, index) => {
                     // Pre-set visibility
                     el.style.opacity = 0;
                     el.style.transform = "translateY(30px)";
-                    
+
                     gsap.to(el, {
                         scrollTrigger: {
                             trigger: el,
@@ -1674,16 +2053,16 @@
                         },
                         y: 200
                     });
-                } catch(e) {}
-                
-            } catch(err) {
+                } catch (e) { }
+
+            } catch (err) {
                 console.error("GSAP Animation fallback triggered:", err);
                 // Fallback: Show elements if animations fail
                 revealElements.forEach(el => {
                     el.style.opacity = 1;
                     el.style.transform = "translateY(0)";
                 });
-                
+
                 document.querySelectorAll('.rv').forEach(el => {
                     el.style.opacity = 1;
                     el.style.transform = "translateY(0)";
@@ -1693,10 +2072,10 @@
         });
     </script>
     <!-- Ultimate Engagement Scripts -->
-    
-    
-    
-    
+
+
+
+
     <script src="/dist/careers.8267d4ec.js"></script>
     <script src="/dist/app.9ce20a3a.js"></script>
     <script src="/dist/ux-engine.072100c5.js"></script>

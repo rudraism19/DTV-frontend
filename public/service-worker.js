@@ -22,6 +22,10 @@ self.addEventListener('activate', (e) => {
 self.addEventListener('fetch', (e) => {
   const url = new URL(e.request.url);
   
+  if (url.hostname === 'images.unsplash.com') {
+    return;
+  }
+
   // Cache-first for hashed assets
   if (url.pathname.includes('/dist/') || url.pathname.match(/\.[0-9a-f]{8}\.(js|css)$/)) {
     e.respondWith(

@@ -8,7 +8,12 @@ const router = express.Router();
 
 const aiSchema = Joi.object({
   body: Joi.object({
-    system: Joi.string().allow('').optional(),
+    mode: Joi.string().valid('advisor', 'mentor', 'coach', 'predictor').optional(),
+    toneIsFriendly: Joi.boolean().optional(),
+    userProfile: Joi.object().optional(),
+    userData: Joi.object().optional(),
+    careerChoices: Joi.array().optional(),
+    chatHistoryLength: Joi.number().optional(),
     max_tokens: Joi.number().min(64).max(2000).optional(),
     messages: Joi.array().items(Joi.object({
       role: Joi.string().valid('user', 'assistant').required(),

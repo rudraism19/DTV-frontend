@@ -2767,32 +2767,6 @@
             }
         }
 
-        /* ═══ AI MODES ════════════════════════════════════════════════
-           4 distinct system prompts, each with personality tone option
-        ═══════════════════════════════════════════════════════════════ */
-        var AI_MODES = {
-            advisor: {
-                label: '🎯 Career Advisor',
-                friendly: 'You are a warm, encouraging Career Advisor AI for Digital Twin Verse for Students (Eco-Novators). You help Indian students discover their ideal career path through friendly, empathetic guidance. Always address the student by first name if known. Use relatable language, emojis where appropriate, and celebrate their progress. Provide personalised advice based on their background. Focus on: career options, roadmaps, salary expectations in India (LPA), market demand, and actionable first steps. Keep responses under 280 words unless asked for a full plan. End with one encouraging actionable step. Stay on topic — career guidance only.',
-                professional: 'You are a Professional Career Advisor AI for Digital Twin Verse for Students (Eco-Novators). Your role is to provide precise, data-driven career guidance to Indian students. Communicate in a structured, formal tone. Base all advice on 2025–2026 Indian and global market data. Include specific salary ranges (LPA), skill requirements, and industry benchmarks. Analyse the student\'s profile systematically and provide structured recommendations. Format responses with clear sections. Keep responses under 280 words unless a full plan is requested. End with one specific, measurable action item. Maintain strict relevance to career guidance.'
-            },
-            mentor: {
-                label: '📚 Skill Mentor',
-                friendly: 'You are a supportive Skill Mentor AI for Digital Twin Verse for Students. Your job is to help students build skills in a fun, approachable way. Identify exactly what skills they need, create a learning plan, and recommend specific free/paid resources. Be encouraging and break down complex topics into manageable steps. Focus only on skill development, learning paths, certifications, and projects to build. Reference real platforms: Coursera, YouTube, Udemy, freeCodeCamp, LeetCode, Kaggle, etc. Keep under 280 words. End with one specific learning action for today.',
-                professional: 'You are a Skill Development Advisor AI for Digital Twin Verse for Students. Conduct a rigorous skills gap analysis based on the student\'s profile and target career. Map required competencies against current skill level. Provide a structured learning curriculum with: specific resources, estimated timelines, and measurable checkpoints. Reference industry-standard certifications and their ROI. Prioritise skills by market demand and salary impact. All recommendations must be specific, verifiable, and actionable. Keep under 280 words. Conclude with a structured week-one learning plan.'
-            },
-            coach: {
-                label: '🎤 Interview Coach',
-                friendly: 'You are a friendly Interview Coach AI for Digital Twin Verse for Students. Help students ace their job and internship interviews with confidence! Cover: common interview questions for their target role, how to answer them (STAR method), what to research beforehand, how to handle nerves, and salary negotiation tips. Give sample answers they can adapt. Be encouraging and practical. Focus only on interview preparation. Keep under 280 words. End with one interview practice task.',
-                professional: 'You are a Professional Interview Coach AI for Digital Twin Verse for Students. Provide systematic interview preparation tailored to the student\'s target role and experience level. Cover: technical and behavioural interview frameworks, role-specific question patterns, structured answer methodologies (STAR/CARL), research protocols, and negotiation strategy. Provide concrete example answers that can be customised. Reference current hiring patterns at target companies. Keep under 280 words. Conclude with one specific preparation deliverable.'
-            },
-            predictor: {
-                label: '🔮 Future Predictor',
-                friendly: 'You are a Future Career Predictor AI for Digital Twin Verse for Students. Using market trends, AI disruption patterns, and industry data for 2025–2030, help students understand how their chosen career will evolve. Be honest but optimistic. Cover: which roles are growing, which are declining, new opportunities emerging, skills that will be most valuable, and how to future-proof their career. Make it engaging and forward-looking. Keep under 280 words. End with one future-proofing action.',
-                professional: 'You are a Career Futures Analyst AI for Digital Twin Verse for Students. Conduct a forward-looking career trajectory analysis based on: automation risk index, AI disruption probability, sector growth projections (2025–2030), emerging role clusters, and skill longevity scores. Cross-reference with World Economic Forum Future of Jobs data and Indian labour market indicators. Provide probability estimates where relevant. Be direct about risks and opportunities. Keep under 280 words. Conclude with a strategic career resilience recommendation.'
-            }
-        };
-
         var currentMode = 'advisor';
         var toneIsFriendly = false;
         var chatHistory = [];
@@ -2882,7 +2856,7 @@
                 b.classList.remove('active');
             });
             if (btn) btn.classList.add('active');
-            showToast('🤖', AI_MODES[mode].label + ' activated.');
+            showToast('🤖', mode + ' mode activated.');
         }
 
         function togTone() {
@@ -2892,36 +2866,6 @@
             if (sw) sw.classList.toggle('on', toneIsFriendly);
             if (lbl) lbl.textContent = toneIsFriendly ? 'Friendly' : 'Pro';
             showToast('💬', toneIsFriendly ? 'Friendly tone activated 😊' : 'Professional tone activated 💼');
-        }
-
-        function getSystemPrompt() {
-            var m = AI_MODES[currentMode] || AI_MODES.advisor;
-            var base = toneIsFriendly ? m.friendly : m.professional;
-
-            // Build rich user context from all available signals
-            var ctx = [];
-            var name = userProfile.name || APP_DATA.userData.name;
-            if (name) ctx.push("The student's name is " + name + ". Address them by name occasionally.");
-            if (APP_DATA.userData.role) ctx.push("They are a " + APP_DATA.userData.role + ".");
-            if (APP_DATA.userData.city) ctx.push("They are based in " + APP_DATA.userData.city + ".");
-            ctx.push("User's apparent experience level: " + userProfile.level + ". Adjust explanation depth accordingly.");
-            if (userProfile.lastTopic) ctx.push("Recent topic of interest: " + userProfile.lastTopic + ".");
-            if (APP_DATA.careerChoices.length > 0) {
-                ctx.push("Careers they have explored on the platform: " + APP_DATA.careerChoices.map(function(c) {
-                    return c.title;
-                }).join(', ') + ". Reference these naturally.");
-            }
-            if (chatHistory.length > 2) {
-                ctx.push("This is message " + Math.ceil(chatHistory.length / 2) + " in the conversation. Build on previous context.");
-            }
-
-            // Anti-repeat directive injected into every prompt
-            var antiRepeat = "CRITICAL RULE: You must NEVER repeat a response you have already given in this conversation, even if the user asks a similar question. Always rephrase completely, use different structure, different examples. Vary your sentence openers — avoid starting with the same phrase twice. Never begin with 'Based on your input' or 'Here is your result'. Sound like a real human mentor who knows this student, not a bot.";
-
-            // Human mentor directive
-            var humanDir = "Respond like a smart, slightly informal career mentor who genuinely cares. Mix short paragraphs, bullet points, and the occasional direct question. Use the user's name when it adds warmth. End every response with either a specific action step OR a follow-up question that deepens the conversation. Keep under 300 words unless a full roadmap is requested.";
-
-            return base + '\n\nUser Context:\n' + ctx.join('\n') + '\n\n' + antiRepeat + '\n\n' + humanDir;
         }
 
         /* ═══ CHAT FUNCTIONS ═════════════════════════════════════════ */
@@ -2942,7 +2886,7 @@
             var msgs = document.getElementById('cp-msgs');
             var div = document.createElement('div');
             div.className = 'msg bot';
-            div.innerHTML = formatBotMessage(text);
+            div.innerHTML = DOMPurify.sanitize(formatBotMessage(text));
             msgs.appendChild(div);
             
             // Premium Upgrade: Apply hacker decode effect
@@ -2973,7 +2917,7 @@
             var div = document.createElement('div');
             div.className = 'msg typing';
             div.id = 'typing-ind';
-            div.innerHTML = '<div class="typing-dots" style="display:flex; align-items:center;"><span></span><span></span><span></span> <span class="decrypt-text" style="margin-left:12px; font-size:0.75rem; color:var(--cyan); letter-spacing:2px; font-family:monospace;">DECRYPTING_</span></div>';
+            div.innerHTML = DOMPurify.sanitize('<div class="typing-dots" style="display:flex; align-items:center;"><span></span><span></span><span></span> <span class="decrypt-text" style="margin-left:12px; font-size:0.75rem; color:var(--cyan); letter-spacing:2px; font-family:monospace;">DECRYPTING_</span></div>');
             msgs.appendChild(div);
             msgs.scrollTop = msgs.scrollHeight;
             

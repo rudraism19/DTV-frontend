@@ -713,6 +713,26 @@
             var safeTime = escapeHTML(c.time);
             var safeStream = escapeHTML(c.stream);
             var safeBestFor = escapeHTML(c.bestFor);
+            
+            var dayInLifeHtml = c.dayInLife ? '<ul style="padding-left:1.2rem;margin-bottom:1.5rem;">' + c.dayInLife.map(function(item) {
+                return '<li style="margin-bottom:0.4rem;font-size:0.85rem;color:var(--mu);">' + escapeHTML(item) + '</li>';
+            }).join('') + '</ul>' : '';
+            
+            var toolsHtml = c.tools ? '<div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:1.5rem;">' + c.tools.map(function(item) {
+                return '<span class="tool-badge">' + escapeHTML(item) + '</span>';
+            }).join('') + '</div>' : '';
+            
+            var compsHtml = c.topCompanies ? '<div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:1.5rem;">' + c.topCompanies.map(function(item) {
+                return '<span class="comp-badge">' + escapeHTML(item) + '</span>';
+            }).join('') + '</div>' : '';
+            
+            var certsHtml = c.certifications ? '<div style="display:flex;flex-direction:column;gap:0.4rem;margin-bottom:1.5rem;">' + c.certifications.map(function(item) {
+                return '<div class="cert-item">🏆 ' + escapeHTML(item) + '</div>';
+            }).join('') + '</div>' : '';
+            
+            var trajHtml = c.trajectory ? '<div class="traj-container">' + c.trajectory.map(function(t) {
+                return '<div class="traj-step"><div class="traj-lvl">' + escapeHTML(t.level) + '</div><div class="traj-role">' + escapeHTML(t.role) + '</div><div class="traj-sal">' + escapeHTML(t.salary) + '</div></div>';
+            }).join('') + '</div>' : '';
 
             // Suggestions
             var sugs = getAISuggestions(id);
@@ -741,7 +761,11 @@
                 '<div class="cd-meta"><span class="meta-tag">' + safeSalary + '</span>' +
                 '<span class="meta-tag">' + safeDemand + ' Demand</span>' +
                 '<span class="meta-tag">Entry: ' + safeTime + '</span>' +
-                '<span class="meta-tag">' + safeStream + '</span></div></div>' +
+                '<span class="meta-tag">' + safeStream + '</span>' +
+                (c.growthRate ? '<span class="meta-tag" style="color:#4ade80; border-color:rgba(74,222,128,0.3)">' + escapeHTML(c.growthRate) + '</span>' : '') +
+                (c.remote ? '<span class="meta-tag">Remote: ' + escapeHTML(c.remote) + '</span>' : '') +
+                (c.wlb ? '<span class="meta-tag">WLB: ' + escapeHTML(c.wlb) + '</span>' : '') +
+                '</div></div>' +
                 '<div style="display:flex;flex-direction:column;gap:.6rem;align-items:flex-end;">' +
                 '<button class="cd-close" onclick="closeCareer()">✕ Close</button>' +
                 '<button class="dl-report-btn" id="dl-btn-' + id + '" onclick="downloadReport(\'' + id + '\')"><span class="dl-icon">⬇ Download Report</span><span class="spin"></span></button>' +
@@ -768,7 +792,10 @@
                 '<div class="cd-body">'
                 // Left: skills + notes
                 +
-                '<div class="cd-section"><h3>Skills to Master</h3>' + skillsHtml +
+                '<div class="cd-section">' +
+                (dayInLifeHtml ? '<h3>A Day in the Life</h3>' + dayInLifeHtml : '') +
+                (toolsHtml ? '<h3>Tools of the Trade</h3>' + toolsHtml : '') +
+                '<h3>Skills to Master</h3>' + skillsHtml +
                 '<div class="notes-area"><label>Your Notes &amp; Remarks</label>' +
                 '<textarea class="ft" id="notes-' + id + '" rows="3" placeholder="Write progress notes, targets, or plans here…"></textarea>' +
                 '<button class="save-note-btn" onclick="saveNote(\'' + id + '\')">💾 Save Notes</button></div>'
@@ -778,7 +805,11 @@
                 '</div>'
                 // Right: roadmap + best for
                 +
-                '<div class="cd-section"><h3>Career Roadmap</h3><div class="roadmap-steps">' + rmHtml + '</div>' +
+                '<div class="cd-section">' +
+                (trajHtml ? '<h3>Career & Salary Trajectory</h3>' + trajHtml : '') +
+                (compsHtml ? '<h3>Top Hiring Companies</h3>' + compsHtml : '') +
+                (certsHtml ? '<h3>Recommended Certifications</h3>' + certsHtml : '') +
+                '<h3>Career Roadmap</h3><div class="roadmap-steps">' + rmHtml + '</div>' +
                 '<div style="margin-top:1.5rem;padding:1rem;background:rgba(232,140,42,.07);border:1px solid rgba(232,140,42,.18);border-radius:10px;">' +
                 '<div style="font-size:.78rem;font-weight:700;color:var(--amb);margin-bottom:.4rem;">💡 Best Suited For</div>' +
                 '<div style="font-size:.82rem;color:var(--mu);">' + safeBestFor + '</div>' +

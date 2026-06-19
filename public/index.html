@@ -462,503 +462,62 @@
     <div class="toast" id="toast"><span id="tic">✅</span><span id="tmsg"></span></div>
 
     <!-- ████████  SIGN IN PAGE  ████████ -->
-    <div id="page-auth" class="page auth-page target-auth">
-        <style>
-            /* Scoped styles for the new login page */
-            .target-auth {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                min-height: 100vh;
-                background: #0b0f19;
-                font-family: 'Plus Jakarta Sans', sans-serif;
-                color: #fff;
-                position: relative;
-                overflow: hidden;
-                padding-top: 60px;
-                padding-bottom: 60px;
-            }
-            .target-auth * {
-                box-sizing: border-box;
-            }
-            .ta-bg-image {
-                position: absolute;
-                top: 0;
-                left: 50%;
-                transform: translateX(-50%);
-                width: 100%;
-                max-width: 800px;
-                opacity: 0.7;
-                z-index: 0;
-                pointer-events: none;
-                mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 80%);
-                -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 80%);
-            }
-            .ta-bottom-white {
-                position: absolute;
-                bottom: 60px;
-                left: 0;
-                width: 100%;
-                height: 350px;
-                background: linear-gradient(180deg, transparent 0%, rgba(255,255,255,0.9) 30%, #ffffff 100%);
-                z-index: 0;
-                pointer-events: none;
-            }
-            .ta-footer-bar {
-                position: absolute;
-                bottom: 0;
-                left: 0;
-                width: 100%;
-                height: 60px;
-                background: #0b0f19;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                gap: 1.5rem;
-                z-index: 10;
-                font-size: 0.85rem;
-            }
-            .ta-footer-bar a {
-                color: #94a3b8;
-                text-decoration: none;
-                transition: color 0.2s;
-            }
-            .ta-footer-bar a:hover {
-                color: #fff;
-            }
-            .ta-container {
-                position: relative;
-                z-index: 2;
-                width: 100%;
-                max-width: 460px;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                padding: 0 1.5rem;
-                margin-top: 2rem;
-            }
-            .ta-badge-top {
-                background: rgba(255, 255, 255, 0.15);
-                border: 1px solid rgba(255, 255, 255, 0.25);
-                border-radius: 20px;
-                padding: 0.4rem 1.2rem;
-                font-size: 0.85rem;
-                display: flex;
-                align-items: center;
-                gap: 0.5rem;
-                margin-bottom: 1.5rem;
-                backdrop-filter: blur(10px);
-                color: #f8fafc;
-            }
-            .ta-logo-img {
-                height: 80px;
-                margin-bottom: 0.5rem;
-                filter: drop-shadow(0 0 15px rgba(232,140,42,0.3));
-            }
-            .ta-welcome {
-                text-align: center;
-                margin-top: 140px;
-                margin-bottom: 2rem;
-                text-shadow: 0 4px 20px rgba(0,0,0,0.8);
-            }
-            .ta-welcome h1 {
-                font-size: 2.5rem;
-                line-height: 1.1;
-                font-weight: 800;
-                margin-bottom: 0.8rem;
-                background: linear-gradient(180deg, #fff, #cbd5e1);
-                -webkit-background-clip: text;
-                -webkit-text-fill-color: transparent;
-            }
-            .ta-welcome p {
-                font-size: 1rem;
-                color: #cbd5e1;
-                line-height: 1.5;
-                padding: 0 1rem;
-            }
-            .ta-card {
-                width: 100%;
-                background: linear-gradient(180deg, rgba(30, 41, 59, 0.7) 0%, rgba(255, 255, 255, 0.85) 100%);
-                backdrop-filter: blur(20px);
-                -webkit-backdrop-filter: blur(20px);
-                border: 1px solid rgba(255, 255, 255, 0.3);
-                border-top: 1px solid rgba(255,255,255,0.6);
-                border-radius: 24px;
-                padding: 2rem;
-                box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.5);
-                position: relative;
-            }
-            .ta-card::before {
-                content: '';
-                position: absolute;
-                top: -1px;
-                left: 15%;
-                width: 70%;
-                height: 2px;
-                background: linear-gradient(90deg, transparent, rgba(232,140,42,0.8), transparent);
-                border-radius: 50%;
-                filter: blur(1px);
-            }
-            .ta-card-title {
-                font-size: 1.8rem;
-                font-weight: 700;
-                color: #fff;
-                margin-bottom: 0.2rem;
-            }
-            .ta-title-stroke {
-                width: 50px;
-                height: 3px;
-                background: #e88c2a;
-                border-radius: 2px;
-                margin-bottom: 1.5rem;
-                box-shadow: 0 0 8px rgba(232,140,42,0.6);
-            }
-            .ta-input-group {
-                margin-bottom: 1.2rem;
-            }
-            .ta-label {
-                display: block;
-                font-size: 0.75rem;
-                letter-spacing: 1px;
-                color: #cbd5e1;
-                margin-bottom: 0.5rem;
-                font-weight: 600;
-            }
-            .ta-input-wrap {
-                display: flex;
-                align-items: center;
-                background: rgba(0, 0, 0, 0.4);
-                border: 1px solid rgba(255, 255, 255, 0.15);
-                border-radius: 12px;
-                padding: 0 1rem;
-                height: 48px;
-                transition: all 0.3s ease;
-            }
-            .ta-input-wrap:focus-within {
-                border-color: #e88c2a;
-                background: rgba(0, 0, 0, 0.6);
-                box-shadow: 0 0 0 2px rgba(232,140,42,0.2);
-            }
-            .ta-input-wrap.active {
-                border-color: #e88c2a;
-            }
-            .ta-input {
-                background: transparent;
-                border: none;
-                color: #fff;
-                width: 100%;
-                outline: none;
-                font-size: 0.95rem;
-                padding-left: 0.8rem;
-            }
-            .ta-input::placeholder {
-                color: #64748b;
-            }
-            .ta-icon {
-                font-size: 1.1rem;
-                color: #94a3b8;
-            }
-            .ta-eye {
-                cursor: pointer;
-                color: #e88c2a;
-                font-size: 1.1rem;
-            }
-            .ta-pw-row {
-                display: grid;
-                grid-template-columns: 1.2fr 1fr;
-                gap: 0.8rem;
-                align-items: end;
-                margin-bottom: 1.2rem;
-            }
-            .ta-btn {
-                background: linear-gradient(90deg, #f5a94e, #e88c2a);
-                border: none;
-                border-radius: 12px;
-                color: #fff;
-                font-weight: 600;
-                font-size: 1rem;
-                cursor: pointer;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                gap: 0.5rem;
-                height: 48px;
-                box-shadow: 0 4px 15px rgba(232, 140, 42, 0.4);
-                transition: transform 0.2s, box-shadow 0.2s;
-            }
-            .ta-btn:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 6px 20px rgba(232, 140, 42, 0.6);
-            }
-            .ta-options {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                font-size: 0.8rem;
-                margin-bottom: 1.5rem;
-                position: relative;
-            }
-            .ta-checkbox {
-                display: flex;
-                align-items: center;
-                gap: 0.4rem;
-                cursor: pointer;
-                color: #334155;
-                font-weight: 500;
-            }
-            .ta-options .ta-divider {
-                color: #64748b;
-                font-size: 0.75rem;
-            }
-            .ta-forgot {
-                color: #334155;
-                text-decoration: none;
-                background: none;
-                border: none;
-                cursor: pointer;
-                font-size: 0.8rem;
-                font-weight: 500;
-            }
-            .ta-forgot:hover {
-                color: #0f172a;
-                text-decoration: underline;
-            }
-            .ta-socials {
-                display: flex;
-                justify-content: center;
-                gap: 1.2rem;
-                margin-bottom: 1.5rem;
-            }
-            .ta-social-btn {
-                width: 44px;
-                height: 44px;
-                border-radius: 50%;
-                background: rgba(0, 0, 0, 0.05);
-                border: 1px solid rgba(0, 0, 0, 0.1);
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                cursor: pointer;
-                transition: background 0.2s, transform 0.2s;
-                box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            }
-            .ta-social-btn:hover {
-                background: rgba(0, 0, 0, 0.1);
-                transform: translateY(-2px);
-            }
-            .ta-social-btn img {
-                width: 20px;
-                height: 20px;
-            }
-            .ta-create {
-                text-align: center;
-                font-size: 0.85rem;
-                color: #475569;
-            }
-            .ta-create button {
-                background: none;
-                border: none;
-                color: #0f172a;
-                font-weight: 700;
-                cursor: pointer;
-                text-decoration: underline;
-                padding: 0;
-            }
-            .ta-security {
-                display: flex;
-                justify-content: space-between;
-                width: 100%;
-                margin-top: 2rem;
-                padding: 0 1rem;
-            }
-            .ta-sec-item {
-                text-align: center;
-                color: #334155;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                gap: 0.4rem;
-            }
-            .ta-sec-icon {
-                font-size: 1.6rem;
-                margin-bottom: 0.2rem;
-            }
-            .ta-sec-item strong {
-                font-size: 0.75rem;
-                display: block;
-                color: #0f172a;
-            }
-            .ta-sec-item span {
-                font-size: 0.7rem;
-                color: #64748b;
-            }
-            .ta-sec-text {
-                text-align: center;
-                font-size: 0.8rem;
-                color: #475569;
-                margin-top: 1.5rem;
-                font-weight: 500;
-            }
-            .ta-err {
-                color: #ef4444;
-                font-size: 0.75rem;
-                margin-top: 0.4rem;
-                display: none;
-                font-weight: 500;
-            }
-
-            /* Responsive Adjustments */
-            @media (max-width: 480px) {
-                .target-auth {
-                    padding-top: 30px;
-                    padding-bottom: 80px;
-                }
-                .ta-welcome {
-                    margin-top: 80px;
-                }
-                .ta-welcome h1 {
-                    font-size: 2.1rem;
-                }
-                .ta-card {
-                    padding: 1.5rem;
-                    border-radius: 20px;
-                }
-                .ta-pw-row {
-                    grid-template-columns: 1fr;
-                    gap: 1rem;
-                }
-                .ta-btn {
-                    margin-top: 0;
-                }
-                .ta-options {
-                    flex-wrap: wrap;
-                    gap: 0.5rem;
-                    justify-content: center;
-                }
-                .ta-options .ta-divider {
-                    width: 100%;
-                    text-align: center;
-                    margin: 0.5rem 0;
-                }
-                .ta-security {
-                    padding: 0;
-                }
-            }
-
-            @media (min-width: 768px) {
-                .ta-bg-image {
-                    max-width: 100vw;
-                    height: 100vh;
-                    object-fit: cover;
-                    mask-image: radial-gradient(circle at 50% 30%, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 60%);
-                    -webkit-mask-image: radial-gradient(circle at 50% 30%, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 60%);
-                }
-                .ta-container {
-                    max-width: 500px;
-                }
-            }
-
-            @media (min-width: 1200px) {
-                .ta-container {
-                    max-width: 540px;
-                }
-                .ta-welcome h1 {
-                    font-size: 3rem;
-                }
-                .ta-welcome p {
-                    font-size: 1.1rem;
-                }
-                .ta-card {
-                    padding: 2.5rem;
-                }
-            }
-        </style>
-
-        <img src="https://images.unsplash.com/photo-1620712943543-bcc4688e7485?auto=format&fit=crop&w=800&q=80" alt="Avatar Background" class="ta-bg-image">
-        <div class="ta-bottom-white"></div>
-        
-        <div class="ta-container">
-            <div class="ta-badge-top">
-                <span style="color:#e88c2a;">🛡️</span> University Secured
-            </div>
-            
-            <img src="/img/dtv-logo.jpg" alt="DTV Logo" class="ta-logo-img" onerror="this.src='https://images.unsplash.com/photo-1614729939124-03290b56c9ce?auto=format&fit=crop&w=100&q=80'; this.style.borderRadius='16px';">
-            
-            <div class="ta-welcome">
-                <h1>Welcome to<br>Your Future</h1>
-                <p>Log in to activate your Digital Twin and unlock personalized student success paths.</p>
-            </div>
-            
-            <div class="ta-card">
-                <div class="ta-card-title">Sign In</div>
-                <div class="ta-title-stroke"></div>
-                
-                <div class="ta-input-group">
-                    <label class="ta-label">EMAIL</label>
-                    <div class="ta-input-wrap">
-                        <span class="ta-icon">✉️</span>
-                        <input class="ta-input" id="li-e" type="email" placeholder="you@email.com" autocomplete="off">
+    <div id="page-auth" class="page auth-page">
+        <div class="auth-shell">
+            <div class="auth-hero rv">
+                <div>
+                    <div class="badge"><span class="bdot"></span>Secure Sign In Required</div>
+                    <h1 class="fluid-text" style="line-height: 1.2;">Welcome back to <br><span class="serif amb"
+                            style="display: inline-block; margin-top: 0.5rem; background: linear-gradient(90deg, #f5a94e, #e88c2a); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">Digital
+                            Twin Verse</span></h1>
+                    <p class="desc" style="max-width:560px;">Sign in first to unlock the student journey, continue your
+                        profile, and enter the main site. If you do not have an account yet, create one from this
+                        screen.</p>
+                </div>
+                <div class="auth-points">
+                    <div class="auth-point">
+                        <div class="logo-mark" style="flex:0 0 auto;">1</div>
+                        <div><strong>Step 1: Sign in</strong><span>Use your email and password to continue.</span></div>
                     </div>
-                    <span class="ta-err" id="li-ee">Please enter a valid email.</span>
-                </div>
-                
-                <div class="ta-pw-row">
-                    <div class="ta-input-group" style="margin-bottom:0;">
-                        <label class="ta-label">PASSWORD</label>
-                        <div class="ta-input-wrap">
-                            <span class="ta-icon">🔒</span>
-                            <input class="ta-input" id="li-pw" type="password" placeholder="••••••••">
-                            <span class="ta-eye" onclick="togEye('li-pw',this)">👁️</span>
-                        </div>
-                        <span class="ta-err" id="li-pe">Please enter your password.</span>
+                    <div class="auth-point">
+                        <div class="logo-mark" style="flex:0 0 auto;">2</div>
+                        <div><strong>Step 2: Resume access</strong><span>Your profile and dashboard open after
+                                authentication.</span></div>
                     </div>
-                    <button class="ta-btn" onclick="doLogin()">Sign In ➔</button>
-                </div>
-                
-                <div class="ta-options">
-                    <label class="ta-checkbox">
-                        <input type="checkbox" checked>
-                        Remember me.
-                    </label>
-                    <div class="ta-divider">— or continue with —</div>
-                    <button class="ta-forgot" type="button" onclick="openForgotPasswordPage()">Forgot Password?</button>
-                </div>
-                
-                <div class="ta-socials">
-                    <button class="ta-social-btn"><img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google"></button>
-                    <button class="ta-social-btn"><img src="https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg" alt="Microsoft"></button>
-                    <button class="ta-social-btn"><img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg" style="filter: invert(1);" alt="Apple"></button>
-                </div>
-                
-                <div class="ta-create">
-                    Need an account? <button type="button" onclick="openSignupPage()">Create one here</button>
+                    <div class="auth-point">
+                        <div class="logo-mark" style="flex:0 0 auto;">3</div>
+                        <div><strong>Step 3: Explore the platform</strong><span>Career simulation, AI advisor, and
+                                student tools become available.</span></div>
+                    </div>
                 </div>
             </div>
-            
-            <div class="ta-security">
-                <div class="ta-sec-item">
-                    <div class="ta-sec-icon">🛡️</div>
-                    <div><strong>AES-256</strong><span>Encrypted</span></div>
+            <div class="auth-card rv d1">
+                <div
+                    style="width: 60px; height: 60px; border-radius: 16px; background: linear-gradient(135deg, rgba(245,169,78,0.2), rgba(232,140,42,0.2)); border: 1px solid rgba(232,140,42,0.3); display: flex; align-items: center; justify-content: center; font-size: 1.8rem; margin-bottom: 1.2rem; box-shadow: 0 8px 16px rgba(232,140,42,0.15);">
+                    🔐</div>
+                <h2
+                    style="background: linear-gradient(90deg, #f5a94e, #e88c2a); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">
+                    Sign In to Continue</h2>
+                <p class="mod-sub">Enter your account details to unlock the site.</p>
+                <div class="fg"><label>Email Address</label><input class="fi" id="li-e" type="email"
+                        placeholder="you@email.com" autocomplete="off"><span class="err" id="li-ee">Please enter a valid
+                        email.</span></div>
+                <div class="fg" style="margin-bottom: 0;"><label>Password</label>
+                    <div class="pw"><input class="fi" id="li-pw" type="password" placeholder="Your password"><span
+                            class="eye" onclick="togEye('li-pw',this)">👁</span></div>
+                    <span class="err" id="li-pe">Please enter your password.</span>
                 </div>
-                <div class="ta-sec-item">
-                    <div class="ta-sec-icon">🎓</div>
-                    <div><strong>University</strong><span>Verified</span></div>
+                <div style="text-align: right; margin-bottom: 1.5rem;">
+                    <button type="button" class="auth-link btn-reset" style="font-size: 0.9rem;"
+                        onclick="openForgotPasswordPage()">Forgot Password?</button>
                 </div>
-                <div class="ta-sec-item">
-                    <div class="ta-sec-icon">🔒</div>
-                    <div><strong>GDPR</strong><span>Compliant</span></div>
+                <button class="msub" onclick="doLogin()">Sign In →</button>
+                <div class="auth-actions">
+                    <span class="mod-sub" style="margin:0;">Need an account?</span>
+                    <button type="button" class="auth-link btn-reset" onclick="openSignupPage()">Create one
+                        here</button>
                 </div>
             </div>
-            
-            <div class="ta-sec-text">Your data is protected. Access is secure.</div>
-        </div>
-        
-        <div class="ta-footer-bar">
-            <a href="#">Terms</a>
-            <span style="color:#475569;">|</span>
-            <a href="#">Privacy Policy</a>
-            <span style="color:#475569;">|</span>
-            <a href="#">Support Center</a>
         </div>
     </div>
 

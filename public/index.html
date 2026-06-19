@@ -232,6 +232,19 @@
                 /* Force dark background, prevent white flashes */
             }
 
+            /* Layout Fixes */
+            #hero {
+                padding-top: 120px !important;
+            }
+            #dashboard,
+            .dashboard-shell,
+            .career-grid,
+            #student-dashboard {
+                height: auto !important;
+                max-height: none !important;
+                overflow: visible !important;
+            }
+
             /* 1. Eliminate all expensive GPU blurs on mobile */
             .auth-card,
             .feat-card,
@@ -407,7 +420,8 @@
     <!-- NAV -->
     <nav id="nav">
         <div class="logo" onclick="goHome()">
-            <img src="/img/dtv-logo.jpg" alt="DTV" fetchpriority="high" width="36" height="36" style="width:36px; height:36px; border-radius:8px;">
+            <img src="/img/dtv-logo.jpg" alt="DTV" fetchpriority="high" width="36" height="36"
+                style="width:36px; height:36px; border-radius:8px;">
             <div>
                 <div class="logo-text">Digital<em>Twin Verse</em></div>
                 <div class="logo-sub">by Eco-Novators</div>
@@ -653,7 +667,8 @@
                 <div class="story-grid">
                     <article class="story-card rv d1">
                         <div class="story-media">
-                            <img loading="lazy" src="https://images.unsplash.com/photo-1523580846011-d3a5bc25702b?auto=format&fit=crop&w=600&fm=webp&q=80"
+                            <img loading="lazy"
+                                src="https://images.unsplash.com/photo-1523580846011-d3a5bc25702b?auto=format&fit=crop&w=600&fm=webp&q=80"
                                 alt="Students collaborating in a modern classroom" loading="lazy"
                                 onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=600&fm=webp&q=80';">
                         </div>
@@ -666,7 +681,8 @@
                     </article>
                     <article class="story-card rv d2">
                         <div class="story-media">
-                            <img loading="lazy" src="https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=600&fm=webp&q=80"
+                            <img loading="lazy"
+                                src="https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=600&fm=webp&q=80"
                                 alt="Mentor guiding students during a planning session" loading="lazy"
                                 onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=600&fm=webp&q=80';">
                         </div>
@@ -679,7 +695,8 @@
                     </article>
                     <article class="story-card rv d3">
                         <div class="story-media">
-                            <img loading="lazy" src="https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&w=600&fm=webp&q=80"
+                            <img loading="lazy"
+                                src="https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&w=600&fm=webp&q=80"
                                 alt="Students preparing together with digital tools" loading="lazy"
                                 onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=600&fm=webp&q=80';">
                         </div>
@@ -1671,7 +1688,8 @@
             <div class="footer-top wrap">
                 <div class="ft-brand">
                     <div class="logo" onclick="goHome()" style="margin-bottom:.9rem;">
-                        <img src="/img/dtv-logo.jpg" alt="DTV" loading="lazy" width="36" height="36" style="width:36px; height:36px; border-radius:8px;">
+                        <img src="/img/dtv-logo.jpg" alt="DTV" loading="lazy" width="36" height="36"
+                            style="width:36px; height:36px; border-radius:8px;">
                         <div>
                             <div class="logo-text">Digital<em>Twin Verse</em></div>
                             <div class="logo-sub">by Eco-Novators</div>
@@ -1690,7 +1708,8 @@
                     <a href="#student-dashboard">Student Dashboard</a>
                     <a href="#dashboard">Career Explorer</a>
                     <a href="#ai-section">AI Career Advisor</a>
-                    <a href="https://analyzer.niat.tech/" target="_blank" style="color: var(--wh2);">🧠 Achievement Analyzer</a>
+                    <a href="https://analyzer.niat.tech/" target="_blank" style="color: var(--wh2);">🧠 Achievement
+                        Analyzer</a>
                     <a href="#features">Features</a>
                     <a href="#road">Roadmap</a>
                 </div>

@@ -6,7 +6,7 @@
   "main": "src/server.js",
   "scripts": {
     "build": "node scripts/build-frontend.js",
-    "start": "npm run build && node src/server.js",
+    "start": "node backfill.js && npm run build && node src/server.js",
     "dev": "nodemon src/server.js",
     "db:migrate": "node scripts/migrate.js",
     "db:seed-admin": "node scripts/seed-admin.js",

@@ -76,7 +76,10 @@ app.use(helmet({
         "https://formspree.io",
         "https://www.googletagmanager.com",
         "https://www.google-analytics.com",
-        "https://api.razorpay.com"
+        "https://api.razorpay.com",
+        "https://cdnjs.cloudflare.com",
+        "https://fonts.googleapis.com",
+        "https://fonts.gstatic.com"
       ]
     }
   },

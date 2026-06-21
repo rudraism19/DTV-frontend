@@ -3497,6 +3497,8 @@
             var signup = document.getElementById('nav-account-signup');
             var logout = document.getElementById('nav-account-logout');
             var admindb = document.getElementById('nav-account-admindb');
+            var linkcode = document.getElementById('nav-account-link-code');
+            var uiLinkCode = document.getElementById('ui-link-code');
             var sep = document.getElementById('nav-account-sep');
             var mobSignin = document.getElementById('mob-signin');
             var mobSignup = document.getElementById('mob-signup');
@@ -3509,6 +3511,14 @@
             if (sep) sep.style.display = loggedIn ? 'block' : 'none';
             if (logout) logout.style.display = loggedIn ? 'flex' : 'none';
             if (admindb) admindb.style.display = isAdmin ? 'flex' : 'none';
+            if (linkcode && uiLinkCode) {
+                if (loggedIn && APP_DATA.userData.role === 'student' && APP_DATA.userData.linkCode) {
+                    uiLinkCode.textContent = APP_DATA.userData.linkCode;
+                    linkcode.style.display = 'flex';
+                } else {
+                    linkcode.style.display = 'none';
+                }
+            }
             if (mobSignin) mobSignin.style.display = loggedIn ? 'none' : 'block';
             if (mobSignup) mobSignup.style.display = loggedIn ? 'none' : 'block';
             if (mobLogout) mobLogout.style.display = loggedIn ? 'block' : 'none';
@@ -3686,6 +3696,7 @@
                         APP_DATA.userData.email = d.user.email || APP_DATA.userData.email;
                         APP_DATA.userData.role = d.user.role || APP_DATA.userData.role;
                         APP_DATA.userData.emailVerified = d.user.emailVerified;
+                        APP_DATA.userData.linkCode = d.user.linkCode || null;
                         syncData();
                         updateAuthNav();
                     }
@@ -3706,6 +3717,7 @@
                                 APP_DATA.userData.name = rd.user.name || APP_DATA.userData.name;
                                 APP_DATA.userData.email = rd.user.email || APP_DATA.userData.email;
                                 APP_DATA.userData.role = rd.user.role || APP_DATA.userData.role;
+                                APP_DATA.userData.linkCode = rd.user.linkCode || null;
                             }
                             syncData();
                             updateAuthNav();
@@ -3792,6 +3804,7 @@
                 APP_DATA.userData.email = data.user.email;
                 APP_DATA.userData.role = data.user.role;
                 APP_DATA.userData.emailVerified = data.user.emailVerified;
+                APP_DATA.userData.linkCode = data.user.linkCode || null;
                 setLoggedIn(true);
                 loginGateActive = false;
                 var signup = document.getElementById('page-signup');
@@ -3901,6 +3914,7 @@
                 APP_DATA.userData.email = data.user.email;
                 APP_DATA.userData.role = data.user.role;
                 APP_DATA.userData.emailVerified = data.user.emailVerified;
+                APP_DATA.userData.linkCode = data.user.linkCode || null;
                 setLoggedIn(true);
                 loginGateActive = false;
                 

@@ -71,6 +71,18 @@ const login = asyncHandler(async function(req, res) {
   });
 });
 
+const parentLogin = asyncHandler(async function(req, res) {
+  const user = await authService.parentLogin(req.body);
+  const tokens = await tokenService.createAuthTokens(user, getMeta(req));
+  setRefreshCookie(res, tokens.refreshToken, tokens.refreshExpiresAt);
+
+  res.json({
+    user: sanitizeUser(user),
+    accessToken: tokens.accessToken,
+    expiresIn: tokens.accessExpiresIn
+  });
+});
+
 const loginWithGoogle = asyncHandler(async function(req, res) {
   const idToken = req.body.idToken;
   if (!idToken) {
@@ -194,5 +206,6 @@ module.exports = {
   resendOTP,
   smtpDebug,
   forgotPassword,
-  resetPassword
+  resetPassword,
+  parentLogin
 };

@@ -22,6 +22,14 @@ const loginSchema = Joi.object({
   }).required()
 });
 
+const parentLoginSchema = Joi.object({
+  body: Joi.object({
+    email: Joi.string().email().required(),
+    password: Joi.string().min(8).max(72).required(),
+    studentCode: Joi.string().required()
+  }).required()
+});
+
 const googleSchema = Joi.object({
   body: Joi.object({
     idToken: Joi.string().required()
@@ -85,6 +93,33 @@ router.post('/signup', authLimiter, validate(signupSchema), authController.signu
  *         description: Authenticated
  */
 router.post('/login', authLimiter, validate(loginSchema), authController.login);
+
+/**
+ * @openapi
+ * /auth/parent-login:
+ *   post:
+ *     summary: Login for parents with auto-registration
+ *     tags:
+ *       - Auth
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [email, password, studentCode]
+ *             properties:
+ *               email:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *               studentCode:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Authenticated
+ */
+router.post('/parent-login', authLimiter, validate(parentLoginSchema), authController.parentLogin);
 
 /**
  * @openapi

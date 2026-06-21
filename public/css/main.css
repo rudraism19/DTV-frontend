@@ -1486,19 +1486,11 @@
             }
         }
 
-        @keyframes skeleton-shimmer {
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
-        }
-
         .story-media {
             position: absolute;
             inset: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, #111, #222, #111);
-            background-size: 200% 100%;
-            animation: skeleton-shimmer 1.5s infinite linear;
         }
 
         .story-media img {
@@ -3810,13 +3802,6 @@
 
         @media(max-width:900px) {
 
-            /* Guard against GSAP miscalculating on mobile and hiding elements */
-            .rv {
-                opacity: 1 !important;
-                visibility: visible !important;
-                transform: none !important;
-            }
-
             .hero-shell,
             .analyzer-grid {
                 grid-template-columns: 1fr;
@@ -5392,14 +5377,3 @@
                 grid-template-columns: 1fr;
             }
         }
-
-/* Enhanced Dashboard Modal Styles */
-.tool-badge { background: rgba(91,163,245,0.1); color: #5ba3f5; padding: 0.3rem 0.6rem; border-radius: 6px; font-size: 0.75rem; font-weight: 600; border: 1px solid rgba(91,163,245,0.2); }
-.comp-badge { background: rgba(34,197,94,0.1); color: #4ade80; padding: 0.3rem 0.6rem; border-radius: 6px; font-size: 0.75rem; font-weight: 600; border: 1px solid rgba(34,197,94,0.2); }
-.cert-item { background: rgba(232,140,42,0.1); color: #e88c2a; padding: 0.5rem 0.8rem; border-radius: 8px; font-size: 0.8rem; font-weight: 500; border: 1px solid rgba(232,140,42,0.2); }
-.traj-container { display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 1.5rem; position: relative; padding-left: 1rem; border-left: 2px dashed rgba(194,208,224,0.2); }
-.traj-step { position: relative; }
-.traj-step::before { content: ''; position: absolute; left: -1.35rem; top: 0.3rem; width: 10px; height: 10px; background: var(--amb); border-radius: 50%; border: 2px solid var(--b2); }
-.traj-lvl { font-size: 0.7rem; font-weight: 700; color: var(--amb); text-transform: uppercase; letter-spacing: 0.5px; }
-.traj-role { font-size: 0.9rem; color: var(--fg); font-weight: 600; margin-top: 0.1rem; }
-.traj-sal { font-size: 0.8rem; color: var(--mu); margin-top: 0.1rem; }

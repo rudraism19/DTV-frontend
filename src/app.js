@@ -18,7 +18,7 @@ const { notFound, errorHandler } = require('./middlewares/errorHandler');
 const routes = require('./routes');
 const aiRoutes = require('./routes/aiRoutes');
 const dashboardRoutes = require('./routes/dashboardRoutes');
-
+const parentRoutes = require('./routes/parentRoutes');
 const app = express();
 
 app.disable('x-powered-by');
@@ -119,6 +119,7 @@ app.get('/ping', function(req, res) {
 
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use('/api', aiRoutes);
+app.use('/api/v1/parent', parentRoutes);
 app.use('/api/v1', routes);
 
 // Simple admin dashboard to browse DB

@@ -12,6 +12,7 @@ function mapUser(row) {
     oauthProvider: row.oauth_provider,
     oauthSubject: row.oauth_subject,
     emailVerified: row.email_verified,
+    linkCode: row.link_code,
     otpCode: row.otp_code,
     otpExpiresAt: row.otp_expires_at,
     isActive: row.is_active,
@@ -24,8 +25,14 @@ function mapUser(row) {
 }
 
 async function create(user) {
+  let linkCode = user.linkCode || null;
+  if (user.role === 'student' && !linkCode) {
+    const crypto = require('crypto');
+    linkCode = crypto.randomBytes(3).toString('hex').toUpperCase(); // 6 chars
+  }
+
   const result = await db.query(
-    'INSERT INTO users (email, password_hash, role, name, avatar_url, oauth_provider, oauth_subject, email_verified) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *',
+    'INSERT INTO users (email, password_hash, role, name, avatar_url, oauth_provider, oauth_subject, email_verified, link_code) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *',
     [
       user.email,
       user.passwordHash,
@@ -34,7 +41,8 @@ async function create(user) {
       user.avatarUrl || null,
       user.oauthProvider || null,
       user.oauthSubject || null,
-      user.emailVerified || false
+      user.emailVerified || false,
+      linkCode
     ]
   );
   return mapUser(result.rows[0]);
@@ -47,6 +55,11 @@ async function findByEmail(email) {
 
 async function findById(id) {
   const result = await db.query('SELECT * FROM users WHERE id = $1', [id]);
+  return mapUser(result.rows[0]);
+}
+
+async function findByLinkCode(linkCode) {
+  const result = await db.query('SELECT * FROM users WHERE link_code = $1', [linkCode]);
   return mapUser(result.rows[0]);
 }
 
@@ -199,5 +212,6 @@ module.exports = {
   getLinkedStudents,
   getLinkedParents,
   getAppData,
-  saveAppData
+  saveAppData,
+  findByLinkCode
 };

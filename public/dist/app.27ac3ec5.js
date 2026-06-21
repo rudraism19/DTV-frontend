@@ -713,6 +713,26 @@
             var safeTime = escapeHTML(c.time);
             var safeStream = escapeHTML(c.stream);
             var safeBestFor = escapeHTML(c.bestFor);
+            
+            var dayInLifeHtml = c.dayInLife ? '<ul style="padding-left:1.2rem;margin-bottom:1.5rem;">' + c.dayInLife.map(function(item) {
+                return '<li style="margin-bottom:0.4rem;font-size:0.85rem;color:var(--mu);">' + escapeHTML(item) + '</li>';
+            }).join('') + '</ul>' : '';
+            
+            var toolsHtml = c.tools ? '<div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:1.5rem;">' + c.tools.map(function(item) {
+                return '<span class="tool-badge">' + escapeHTML(item) + '</span>';
+            }).join('') + '</div>' : '';
+            
+            var compsHtml = c.topCompanies ? '<div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:1.5rem;">' + c.topCompanies.map(function(item) {
+                return '<span class="comp-badge">' + escapeHTML(item) + '</span>';
+            }).join('') + '</div>' : '';
+            
+            var certsHtml = c.certifications ? '<div style="display:flex;flex-direction:column;gap:0.4rem;margin-bottom:1.5rem;">' + c.certifications.map(function(item) {
+                return '<div class="cert-item">🏆 ' + escapeHTML(item) + '</div>';
+            }).join('') + '</div>' : '';
+            
+            var trajHtml = c.trajectory ? '<div class="traj-container">' + c.trajectory.map(function(t) {
+                return '<div class="traj-step"><div class="traj-lvl">' + escapeHTML(t.level) + '</div><div class="traj-role">' + escapeHTML(t.role) + '</div><div class="traj-sal">' + escapeHTML(t.salary) + '</div></div>';
+            }).join('') + '</div>' : '';
 
             // Suggestions
             var sugs = getAISuggestions(id);
@@ -741,7 +761,11 @@
                 '<div class="cd-meta"><span class="meta-tag">' + safeSalary + '</span>' +
                 '<span class="meta-tag">' + safeDemand + ' Demand</span>' +
                 '<span class="meta-tag">Entry: ' + safeTime + '</span>' +
-                '<span class="meta-tag">' + safeStream + '</span></div></div>' +
+                '<span class="meta-tag">' + safeStream + '</span>' +
+                (c.growthRate ? '<span class="meta-tag" style="color:#4ade80; border-color:rgba(74,222,128,0.3)">' + escapeHTML(c.growthRate) + '</span>' : '') +
+                (c.remote ? '<span class="meta-tag">Remote: ' + escapeHTML(c.remote) + '</span>' : '') +
+                (c.wlb ? '<span class="meta-tag">WLB: ' + escapeHTML(c.wlb) + '</span>' : '') +
+                '</div></div>' +
                 '<div style="display:flex;flex-direction:column;gap:.6rem;align-items:flex-end;">' +
                 '<button class="cd-close" onclick="closeCareer()">✕ Close</button>' +
                 '<button class="dl-report-btn" id="dl-btn-' + id + '" onclick="downloadReport(\'' + id + '\')"><span class="dl-icon">⬇ Download Report</span><span class="spin"></span></button>' +
@@ -768,7 +792,10 @@
                 '<div class="cd-body">'
                 // Left: skills + notes
                 +
-                '<div class="cd-section"><h3>Skills to Master</h3>' + skillsHtml +
+                '<div class="cd-section">' +
+                (dayInLifeHtml ? '<h3>A Day in the Life</h3>' + dayInLifeHtml : '') +
+                (toolsHtml ? '<h3>Tools of the Trade</h3>' + toolsHtml : '') +
+                '<h3>Skills to Master</h3>' + skillsHtml +
                 '<div class="notes-area"><label>Your Notes &amp; Remarks</label>' +
                 '<textarea class="ft" id="notes-' + id + '" rows="3" placeholder="Write progress notes, targets, or plans here…"></textarea>' +
                 '<button class="save-note-btn" onclick="saveNote(\'' + id + '\')">💾 Save Notes</button></div>'
@@ -778,7 +805,11 @@
                 '</div>'
                 // Right: roadmap + best for
                 +
-                '<div class="cd-section"><h3>Career Roadmap</h3><div class="roadmap-steps">' + rmHtml + '</div>' +
+                '<div class="cd-section">' +
+                (trajHtml ? '<h3>Career & Salary Trajectory</h3>' + trajHtml : '') +
+                (compsHtml ? '<h3>Top Hiring Companies</h3>' + compsHtml : '') +
+                (certsHtml ? '<h3>Recommended Certifications</h3>' + certsHtml : '') +
+                '<h3>Career Roadmap</h3><div class="roadmap-steps">' + rmHtml + '</div>' +
                 '<div style="margin-top:1.5rem;padding:1rem;background:rgba(232,140,42,.07);border:1px solid rgba(232,140,42,.18);border-radius:10px;">' +
                 '<div style="font-size:.78rem;font-weight:700;color:var(--amb);margin-bottom:.4rem;">💡 Best Suited For</div>' +
                 '<div style="font-size:.82rem;color:var(--mu);">' + safeBestFor + '</div>' +
@@ -2736,32 +2767,6 @@
             }
         }
 
-        /* ═══ AI MODES ════════════════════════════════════════════════
-           4 distinct system prompts, each with personality tone option
-        ═══════════════════════════════════════════════════════════════ */
-        var AI_MODES = {
-            advisor: {
-                label: '🎯 Career Advisor',
-                friendly: 'You are a warm, encouraging Career Advisor AI for Digital Twin Verse for Students (Eco-Novators). You help Indian students discover their ideal career path through friendly, empathetic guidance. Always address the student by first name if known. Use relatable language, emojis where appropriate, and celebrate their progress. Provide personalised advice based on their background. Focus on: career options, roadmaps, salary expectations in India (LPA), market demand, and actionable first steps. Keep responses under 280 words unless asked for a full plan. End with one encouraging actionable step. Stay on topic — career guidance only.',
-                professional: 'You are a Professional Career Advisor AI for Digital Twin Verse for Students (Eco-Novators). Your role is to provide precise, data-driven career guidance to Indian students. Communicate in a structured, formal tone. Base all advice on 2025–2026 Indian and global market data. Include specific salary ranges (LPA), skill requirements, and industry benchmarks. Analyse the student\'s profile systematically and provide structured recommendations. Format responses with clear sections. Keep responses under 280 words unless a full plan is requested. End with one specific, measurable action item. Maintain strict relevance to career guidance.'
-            },
-            mentor: {
-                label: '📚 Skill Mentor',
-                friendly: 'You are a supportive Skill Mentor AI for Digital Twin Verse for Students. Your job is to help students build skills in a fun, approachable way. Identify exactly what skills they need, create a learning plan, and recommend specific free/paid resources. Be encouraging and break down complex topics into manageable steps. Focus only on skill development, learning paths, certifications, and projects to build. Reference real platforms: Coursera, YouTube, Udemy, freeCodeCamp, LeetCode, Kaggle, etc. Keep under 280 words. End with one specific learning action for today.',
-                professional: 'You are a Skill Development Advisor AI for Digital Twin Verse for Students. Conduct a rigorous skills gap analysis based on the student\'s profile and target career. Map required competencies against current skill level. Provide a structured learning curriculum with: specific resources, estimated timelines, and measurable checkpoints. Reference industry-standard certifications and their ROI. Prioritise skills by market demand and salary impact. All recommendations must be specific, verifiable, and actionable. Keep under 280 words. Conclude with a structured week-one learning plan.'
-            },
-            coach: {
-                label: '🎤 Interview Coach',
-                friendly: 'You are a friendly Interview Coach AI for Digital Twin Verse for Students. Help students ace their job and internship interviews with confidence! Cover: common interview questions for their target role, how to answer them (STAR method), what to research beforehand, how to handle nerves, and salary negotiation tips. Give sample answers they can adapt. Be encouraging and practical. Focus only on interview preparation. Keep under 280 words. End with one interview practice task.',
-                professional: 'You are a Professional Interview Coach AI for Digital Twin Verse for Students. Provide systematic interview preparation tailored to the student\'s target role and experience level. Cover: technical and behavioural interview frameworks, role-specific question patterns, structured answer methodologies (STAR/CARL), research protocols, and negotiation strategy. Provide concrete example answers that can be customised. Reference current hiring patterns at target companies. Keep under 280 words. Conclude with one specific preparation deliverable.'
-            },
-            predictor: {
-                label: '🔮 Future Predictor',
-                friendly: 'You are a Future Career Predictor AI for Digital Twin Verse for Students. Using market trends, AI disruption patterns, and industry data for 2025–2030, help students understand how their chosen career will evolve. Be honest but optimistic. Cover: which roles are growing, which are declining, new opportunities emerging, skills that will be most valuable, and how to future-proof their career. Make it engaging and forward-looking. Keep under 280 words. End with one future-proofing action.',
-                professional: 'You are a Career Futures Analyst AI for Digital Twin Verse for Students. Conduct a forward-looking career trajectory analysis based on: automation risk index, AI disruption probability, sector growth projections (2025–2030), emerging role clusters, and skill longevity scores. Cross-reference with World Economic Forum Future of Jobs data and Indian labour market indicators. Provide probability estimates where relevant. Be direct about risks and opportunities. Keep under 280 words. Conclude with a strategic career resilience recommendation.'
-            }
-        };
-
         var currentMode = 'advisor';
         var toneIsFriendly = false;
         var chatHistory = [];
@@ -2851,7 +2856,7 @@
                 b.classList.remove('active');
             });
             if (btn) btn.classList.add('active');
-            showToast('🤖', AI_MODES[mode].label + ' activated.');
+            showToast('🤖', mode + ' mode activated.');
         }
 
         function togTone() {
@@ -2861,36 +2866,6 @@
             if (sw) sw.classList.toggle('on', toneIsFriendly);
             if (lbl) lbl.textContent = toneIsFriendly ? 'Friendly' : 'Pro';
             showToast('💬', toneIsFriendly ? 'Friendly tone activated 😊' : 'Professional tone activated 💼');
-        }
-
-        function getSystemPrompt() {
-            var m = AI_MODES[currentMode] || AI_MODES.advisor;
-            var base = toneIsFriendly ? m.friendly : m.professional;
-
-            // Build rich user context from all available signals
-            var ctx = [];
-            var name = userProfile.name || APP_DATA.userData.name;
-            if (name) ctx.push("The student's name is " + name + ". Address them by name occasionally.");
-            if (APP_DATA.userData.role) ctx.push("They are a " + APP_DATA.userData.role + ".");
-            if (APP_DATA.userData.city) ctx.push("They are based in " + APP_DATA.userData.city + ".");
-            ctx.push("User's apparent experience level: " + userProfile.level + ". Adjust explanation depth accordingly.");
-            if (userProfile.lastTopic) ctx.push("Recent topic of interest: " + userProfile.lastTopic + ".");
-            if (APP_DATA.careerChoices.length > 0) {
-                ctx.push("Careers they have explored on the platform: " + APP_DATA.careerChoices.map(function(c) {
-                    return c.title;
-                }).join(', ') + ". Reference these naturally.");
-            }
-            if (chatHistory.length > 2) {
-                ctx.push("This is message " + Math.ceil(chatHistory.length / 2) + " in the conversation. Build on previous context.");
-            }
-
-            // Anti-repeat directive injected into every prompt
-            var antiRepeat = "CRITICAL RULE: You must NEVER repeat a response you have already given in this conversation, even if the user asks a similar question. Always rephrase completely, use different structure, different examples. Vary your sentence openers — avoid starting with the same phrase twice. Never begin with 'Based on your input' or 'Here is your result'. Sound like a real human mentor who knows this student, not a bot.";
-
-            // Human mentor directive
-            var humanDir = "Respond like a smart, slightly informal career mentor who genuinely cares. Mix short paragraphs, bullet points, and the occasional direct question. Use the user's name when it adds warmth. End every response with either a specific action step OR a follow-up question that deepens the conversation. Keep under 300 words unless a full roadmap is requested.";
-
-            return base + '\n\nUser Context:\n' + ctx.join('\n') + '\n\n' + antiRepeat + '\n\n' + humanDir;
         }
 
         /* ═══ CHAT FUNCTIONS ═════════════════════════════════════════ */
@@ -2911,7 +2886,7 @@
             var msgs = document.getElementById('cp-msgs');
             var div = document.createElement('div');
             div.className = 'msg bot';
-            div.innerHTML = formatBotMessage(text);
+            div.innerHTML = DOMPurify.sanitize(formatBotMessage(text));
             msgs.appendChild(div);
             
             // Premium Upgrade: Apply hacker decode effect
@@ -2942,7 +2917,7 @@
             var div = document.createElement('div');
             div.className = 'msg typing';
             div.id = 'typing-ind';
-            div.innerHTML = '<div class="typing-dots" style="display:flex; align-items:center;"><span></span><span></span><span></span> <span class="decrypt-text" style="margin-left:12px; font-size:0.75rem; color:var(--cyan); letter-spacing:2px; font-family:monospace;">DECRYPTING_</span></div>';
+            div.innerHTML = DOMPurify.sanitize('<div class="typing-dots" style="display:flex; align-items:center;"><span></span><span></span><span></span> <span class="decrypt-text" style="margin-left:12px; font-size:0.75rem; color:var(--cyan); letter-spacing:2px; font-family:monospace;">DECRYPTING_</span></div>');
             msgs.appendChild(div);
             msgs.scrollTop = msgs.scrollHeight;
             
@@ -3538,17 +3513,6 @@
             if (mobSignup) mobSignup.style.display = loggedIn ? 'none' : 'block';
             if (mobLogout) mobLogout.style.display = loggedIn ? 'block' : 'none';
             if (mobAdmindb) mobAdmindb.style.display = isAdmin ? 'block' : 'none';
-
-            var linkCodeUI = document.getElementById('nav-account-link-code');
-            if (linkCodeUI) {
-                if (loggedIn && APP_DATA.userData && APP_DATA.userData.role === 'student' && APP_DATA.userData.linkCode) {
-                    linkCodeUI.style.display = 'flex';
-                    var lcSpan = document.getElementById('ui-link-code');
-                    if (lcSpan) lcSpan.textContent = APP_DATA.userData.linkCode;
-                } else {
-                    linkCodeUI.style.display = 'none';
-                }
-            }
             hideAccountMenu();
         }
 
@@ -3721,7 +3685,6 @@
                         APP_DATA.userData.name = d.user.name || APP_DATA.userData.name;
                         APP_DATA.userData.email = d.user.email || APP_DATA.userData.email;
                         APP_DATA.userData.role = d.user.role || APP_DATA.userData.role;
-                        APP_DATA.userData.linkCode = d.user.linkCode || APP_DATA.userData.linkCode;
                         APP_DATA.userData.emailVerified = d.user.emailVerified;
                         syncData();
                         updateAuthNav();
@@ -3743,7 +3706,6 @@
                                 APP_DATA.userData.name = rd.user.name || APP_DATA.userData.name;
                                 APP_DATA.userData.email = rd.user.email || APP_DATA.userData.email;
                                 APP_DATA.userData.role = rd.user.role || APP_DATA.userData.role;
-                                APP_DATA.userData.linkCode = rd.user.linkCode || APP_DATA.userData.linkCode;
                             }
                             syncData();
                             updateAuthNav();

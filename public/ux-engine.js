@@ -300,4 +300,25 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
     }
+
+    // --- 10. Premium Splash Screen Logic ---
+    const splashScreen = document.getElementById('splash-screen');
+    if (splashScreen) {
+        // Ensure minimum 1.5s of splash screen for premium feel, but also wait for load
+        const minTime = new Promise(resolve => setTimeout(resolve, 1500));
+        const winLoad = new Promise(resolve => {
+            if (document.readyState === 'complete') resolve();
+            else window.addEventListener('load', resolve);
+        });
+        
+        Promise.all([minTime, winLoad]).then(() => {
+            splashScreen.classList.add('hidden');
+            setTimeout(() => {
+                splashScreen.remove();
+                // Optionally decode the main hero text after splash screen vanishes
+                const heroTitle = document.querySelector('.auth-hero h1');
+                if(heroTitle && typeof decodeText === 'function') decodeText(heroTitle);
+            }, 800); // matches CSS transition duration
+        });
+    }
 });

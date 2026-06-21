@@ -1,4 +1,4 @@
-const CACHE_NAME = 'app-cache-3156b4c37dd8d8cc'; // Updated to bust cache
+const CACHE_NAME = 'app-cache-82192e5e06997d5e'; // Updated to bust cache
 
 self.addEventListener('install', (e) => {
   self.skipWaiting();
@@ -22,6 +22,10 @@ self.addEventListener('activate', (e) => {
 self.addEventListener('fetch', (e) => {
   const url = new URL(e.request.url);
   
+  if (url.hostname === 'images.unsplash.com') {
+    return;
+  }
+
   // Cache-first for hashed assets
   if (url.pathname.includes('/dist/') || url.pathname.match(/\.[0-9a-f]{8}\.(js|css)$/)) {
     e.respondWith(

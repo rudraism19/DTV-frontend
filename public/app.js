@@ -8,7 +8,7 @@
             demoMode: false,
             formspreeId: 'mvzdpwyv',
             siteUrl: 'https://digital-twin-app.onrender.com/',
-            shareText: 'Check out Digital Twin for Students by Eco-Novators — AI career simulation platform!'
+            shareText: 'Check out Digital Twin Verse for Students by Eco-Novators — AI career simulation platform!'
         };
 
         /* ═══════════════════════════════════════════════════════════════
@@ -73,6 +73,17 @@
         function syncData() {
             try {
                 sessionStorage.setItem('dt_appdata_v3', JSON.stringify(APP_DATA));
+                if (APP_DATA.userData && APP_DATA.userData.token && APP_DATA.userData.role !== 'parent') {
+                    // Send to backend async
+                    fetch('/api/v1/data/me', {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + APP_DATA.userData.token
+                        },
+                        body: JSON.stringify({ data: APP_DATA })
+                    }).catch(function(e) { logClientError('Backend sync failed', e); });
+                }
             } catch (e) {
                 logClientError('syncData failed', e);
             }
@@ -86,10 +97,50 @@
                     Object.assign(APP_DATA, d);
                     migrateData();
                 }
+                if (APP_DATA.userData && APP_DATA.userData.token) {
+                    // Fetch from backend to override session storage
+                    var endpoint = '/api/v1/data/me';
+                    fetch(endpoint, {
+                        headers: { 'Authorization': 'Bearer ' + APP_DATA.userData.token }
+                    }).then(function(res) {
+                        if (res.ok) return res.json();
+                    }).then(function(json) {
+                        if (json && json.data && Object.keys(json.data).length > 0) {
+                            Object.assign(APP_DATA, json.data);
+                            migrateData();
+                            if (typeof window.renderAll === 'function') window.renderAll();
+                        }
+                    }).catch(function(e) { logClientError('Backend load failed', e); });
+                }
             } catch (e) {
                 logClientError('loadData failed', e);
             }
         }
+
+        function loadStudentData(studentId) {
+            if (APP_DATA.userData && APP_DATA.userData.token && APP_DATA.userData.role === 'parent') {
+                var endpoint = '/api/v1/data/students/' + studentId;
+                fetch(endpoint, {
+                    headers: { 'Authorization': 'Bearer ' + APP_DATA.userData.token }
+                }).then(function(res) {
+                    if (res.ok) return res.json();
+                }).then(function(json) {
+                    if (json && json.data && Object.keys(json.data).length > 0) {
+                        // Merge the student data, but keep our token/role
+                        var myToken = APP_DATA.userData.token;
+                        var myRole = APP_DATA.userData.role;
+                        
+                        Object.assign(APP_DATA, json.data);
+                        APP_DATA.userData.token = myToken;
+                        APP_DATA.userData.role = myRole;
+                        
+                        migrateData();
+                        if (typeof window.renderAll === 'function') window.renderAll();
+                    }
+                }).catch(function(e) { logClientError('Failed to load student data', e); });
+            }
+        }
+        window.loadStudentData = loadStudentData;
 
         function migrateData() {
             try {
@@ -410,851 +461,9 @@
         }
 
         /* ═══ CAREER DATA — 24 Careers ═══════════════════════════════ */
-        var CAREERS = [{
-                id: 'swe',
-                title: 'Software Engineer',
-                icon: '💻',
-                stream: 'Technology',
-                salary: '₹6–45 LPA',
-                demand: 'Very High',
-                dp: 95,
-                time: '3–6 months',
-                desc: 'Design, develop and maintain software applications for platforms worldwide.',
-                skills: [{
-                    n: 'Data Structures & Algorithms',
-                    l: 'Core'
-                }, {
-                    n: 'Web/App Development',
-                    l: 'Core'
-                }, {
-                    n: 'System Design',
-                    l: 'Advanced'
-                }, {
-                    n: 'Version Control (Git)',
-                    l: 'Essential'
-                }, {
-                    n: 'Database Management',
-                    l: 'Important'
-                }],
-                roadmap: ['Learn Python or Java — build 2 small projects', 'Master DSA on LeetCode (medium level)', 'Build 3 portfolio projects with GitHub', 'Apply for software internships', 'Target product companies for placement'],
-                bestFor: 'Logical problem-solvers who love building products',
-                match: {
-                    'Technology': 30,
-                    'Mathematics & Sciences': 25,
-                    'Computer Science & Tech': 40,
-                    'Business': 5
-                }
-            },
-            {
-                id: 'ds',
-                title: 'Data Scientist',
-                icon: '📊',
-                stream: 'Technology',
-                salary: '₹8–40 LPA',
-                demand: 'Very High',
-                dp: 92,
-                time: '4–8 months',
-                desc: 'Extract actionable insights from complex datasets to drive business decisions.',
-                skills: [{
-                    n: 'Python / R Programming',
-                    l: 'Core'
-                }, {
-                    n: 'Machine Learning',
-                    l: 'Core'
-                }, {
-                    n: 'Statistics & Probability',
-                    l: 'Core'
-                }, {
-                    n: 'SQL & Databases',
-                    l: 'Important'
-                }, {
-                    n: 'Data Visualisation',
-                    l: 'Important'
-                }],
-                roadmap: ['Master Python + NumPy + Pandas', 'Learn ML with Scikit-Learn', 'Practise on Kaggle competitions', 'Build 3 end-to-end projects', 'Get IBM/Google Data Science certification'],
-                bestFor: 'Analytical minds who love patterns and statistics',
-                match: {
-                    'Technology': 25,
-                    'Mathematics & Sciences': 40,
-                    'Research': 20,
-                    'Business': 15
-                }
-            },
-            {
-                id: 'aiml',
-                title: 'AI/ML Engineer',
-                icon: '🤖',
-                stream: 'Technology',
-                salary: '₹12–50 LPA',
-                demand: 'Extremely High',
-                dp: 97,
-                time: '6–12 months',
-                desc: 'Build and deploy artificial intelligence and machine learning models at scale.',
-                skills: [{
-                    n: 'Deep Learning (PyTorch/TF)',
-                    l: 'Core'
-                }, {
-                    n: 'Mathematics (Linear Algebra)',
-                    l: 'Core'
-                }, {
-                    n: 'MLOps & Deployment',
-                    l: 'Advanced'
-                }, {
-                    n: 'Large Language Models',
-                    l: 'Advanced'
-                }, {
-                    n: 'Cloud Platforms (AWS/GCP)',
-                    l: 'Important'
-                }],
-                roadmap: ['Strong Python + Math foundation', 'Master deep learning frameworks', 'Build NLP/Computer Vision projects', 'Contribute to open-source AI projects', 'Target AI-first companies'],
-                bestFor: 'Those fascinated by intelligence and automation',
-                match: {
-                    'Technology': 35,
-                    'Mathematics & Sciences': 35,
-                    'Research': 20,
-                    'Computer Science & Tech': 10
-                }
-            },
-            {
-                id: 'pm',
-                title: 'Product Manager',
-                icon: '🎯',
-                stream: 'Technology',
-                salary: '₹12–60 LPA',
-                demand: 'High',
-                dp: 85,
-                time: '2–3 years exp.',
-                desc: 'Define product strategy and lead cross-functional teams to build user-loved products.',
-                skills: [{
-                    n: 'Product Strategy',
-                    l: 'Core'
-                }, {
-                    n: 'User Research & UX',
-                    l: 'Core'
-                }, {
-                    n: 'Data Analysis',
-                    l: 'Important'
-                }, {
-                    n: 'Agile/Scrum',
-                    l: 'Essential'
-                }, {
-                    n: 'Stakeholder Communication',
-                    l: 'Core'
-                }],
-                roadmap: ['Build a technical foundation (coding basics)', 'Read PM books — Inspired, Continuous Discovery', 'Intern as Business Analyst or UX researcher', 'Get APM role at a startup', 'Build portfolio of product case studies'],
-                bestFor: 'Strategic thinkers who love user problems',
-                match: {
-                    'Business': 30,
-                    'Technology': 25,
-                    'Design': 20,
-                    'Law & Policy': 10,
-                    'Healthcare': 15
-                }
-            },
-            {
-                id: 'cyber',
-                title: 'Cybersecurity Analyst',
-                icon: '🔒',
-                stream: 'Technology',
-                salary: '₹6–30 LPA',
-                demand: 'High',
-                dp: 88,
-                time: '4–8 months',
-                desc: 'Protect organisations from digital threats, vulnerabilities, and cyberattacks.',
-                skills: [{
-                    n: 'Network Security',
-                    l: 'Core'
-                }, {
-                    n: 'Ethical Hacking',
-                    l: 'Core'
-                }, {
-                    n: 'SIEM Tools',
-                    l: 'Important'
-                }, {
-                    n: 'Python Scripting',
-                    l: 'Important'
-                }, {
-                    n: 'Compliance Frameworks',
-                    l: 'Advanced'
-                }],
-                roadmap: ['Learn networking fundamentals', 'Get CEH or CompTIA Security+', 'Practise on TryHackMe/HackTheBox', 'Build home lab for penetration testing', 'Apply for SOC Analyst roles'],
-                bestFor: 'Detail-oriented people who think like attackers',
-                match: {
-                    'Technology': 40,
-                    'Mathematics & Sciences': 20,
-                    'Law & Policy': 15,
-                    'Engineering': 25
-                }
-            },
-            {
-                id: 'cloud',
-                title: 'Cloud Architect',
-                icon: '☁',
-                stream: 'Technology',
-                salary: '₹15–70 LPA',
-                demand: 'Very High',
-                dp: 91,
-                time: '1–2 years',
-                desc: 'Design and manage scalable, secure cloud infrastructure for businesses.',
-                skills: [{
-                    n: 'AWS / Azure / GCP',
-                    l: 'Core'
-                }, {
-                    n: 'Infrastructure as Code',
-                    l: 'Core'
-                }, {
-                    n: 'Kubernetes & Docker',
-                    l: 'Advanced'
-                }, {
-                    n: 'Networking & Security',
-                    l: 'Important'
-                }, {
-                    n: 'Cost Optimisation',
-                    l: 'Advanced'
-                }],
-                roadmap: ['Get AWS Cloud Practitioner cert', 'Master EC2, S3, Lambda, RDS', 'Learn Terraform and Kubernetes', 'Get AWS Solutions Architect cert', 'Target cloud engineering roles'],
-                bestFor: 'Systems thinkers who love scalability problems',
-                match: {
-                    'Technology': 40,
-                    'Engineering': 30,
-                    'Mathematics & Sciences': 20,
-                    'Business': 10
-                }
-            },
-            {
-                id: 'uxd',
-                title: 'UI/UX Designer',
-                icon: '🎨',
-                stream: 'Creative',
-                salary: '₹5–25 LPA',
-                demand: 'High',
-                dp: 83,
-                time: '3–6 months',
-                desc: 'Design intuitive, beautiful digital experiences that users love.',
-                skills: [{
-                    n: 'Figma / Adobe XD',
-                    l: 'Core'
-                }, {
-                    n: 'User Research',
-                    l: 'Core'
-                }, {
-                    n: 'Prototyping & Wireframing',
-                    l: 'Core'
-                }, {
-                    n: 'Interaction Design',
-                    l: 'Advanced'
-                }, {
-                    n: 'Usability Testing',
-                    l: 'Important'
-                }],
-                roadmap: ['Learn Figma fundamentals', 'Study design principles (typography, colour)', 'Redesign 3 existing apps as case studies', 'Build Behance/Dribbble portfolio', 'Apply for junior UX roles'],
-                bestFor: 'Empathetic creatives who think in systems',
-                match: {
-                    'Creative': 40,
-                    'Technology': 25,
-                    'Business': 20,
-                    'Arts & Humanities': 15
-                }
-            },
-            {
-                id: 'mkt',
-                title: 'Digital Marketer',
-                icon: '📱',
-                stream: 'Business',
-                salary: '₹4–20 LPA',
-                demand: 'High',
-                dp: 80,
-                time: '2–4 months',
-                desc: 'Plan and execute digital campaigns to drive growth, leads, and brand awareness.',
-                skills: [{
-                    n: 'SEO & SEM',
-                    l: 'Core'
-                }, {
-                    n: 'Social Media Strategy',
-                    l: 'Core'
-                }, {
-                    n: 'Analytics (GA4)',
-                    l: 'Important'
-                }, {
-                    n: 'Content Marketing',
-                    l: 'Core'
-                }, {
-                    n: 'Paid Advertising',
-                    l: 'Advanced'
-                }],
-                roadmap: ['Learn Google Analytics & SEO basics', 'Run campaigns on your own project', 'Get Google/HubSpot Marketing cert', 'Build case studies showing ROI', 'Join a digital agency or startup'],
-                bestFor: 'Creative communicators who love data-driven results',
-                match: {
-                    'Business': 35,
-                    'Creative': 30,
-                    'Arts & Humanities': 20,
-                    'Technology': 15
-                }
-            },
-            {
-                id: 'fa',
-                title: 'Financial Analyst',
-                icon: '📈',
-                stream: 'Business',
-                salary: '₹6–28 LPA',
-                demand: 'High',
-                dp: 82,
-                time: '6–12 months',
-                desc: 'Analyse financial data and guide investment and business decisions.',
-                skills: [{
-                    n: 'Financial Modelling',
-                    l: 'Core'
-                }, {
-                    n: 'Excel & PowerBI',
-                    l: 'Core'
-                }, {
-                    n: 'Accounting Principles',
-                    l: 'Important'
-                }, {
-                    n: 'Valuation Techniques',
-                    l: 'Advanced'
-                }, {
-                    n: 'Python for Finance',
-                    l: 'Advanced'
-                }],
-                roadmap: ['Master financial statement analysis', 'Build Excel modelling skills', 'Get CFA Level 1 certification', 'Intern at a financial firm', 'Build portfolio of valuation projects'],
-                bestFor: 'Numbers-focused people who love business strategy',
-                match: {
-                    'Business': 40,
-                    'Mathematics & Sciences': 30,
-                    'Commerce & Economics': 25,
-                    'Law & Policy': 5
-                }
-            },
-            {
-                id: 'ca',
-                title: 'Chartered Accountant',
-                icon: '🧾',
-                stream: 'Business',
-                salary: '₹7–40 LPA',
-                demand: 'Stable',
-                dp: 75,
-                time: '3–5 years',
-                desc: 'Expert financial professional providing audit, tax, and advisory services.',
-                skills: [{
-                    n: 'Accounting Standards',
-                    l: 'Core'
-                }, {
-                    n: 'Tax Law (GST/Income Tax)',
-                    l: 'Core'
-                }, {
-                    n: 'Audit & Assurance',
-                    l: 'Core'
-                }, {
-                    n: 'Financial Reporting',
-                    l: 'Advanced'
-                }, {
-                    n: 'Corporate Law',
-                    l: 'Important'
-                }],
-                roadmap: ['Clear CA Foundation exam', 'Complete CA Intermediate', '3-year articleship at CA firm', 'Clear CA Final exam', 'Build specialisation (Tax/Audit/Advisory)'],
-                bestFor: 'Detail-oriented, disciplined individuals who value precision',
-                match: {
-                    'Business': 40,
-                    'Commerce & Economics': 35,
-                    'Law & Policy': 20,
-                    'Mathematics & Sciences': 5
-                }
-            },
-            {
-                id: 'ib',
-                title: 'Investment Banker',
-                icon: '🏦',
-                stream: 'Business',
-                salary: '₹12–80 LPA',
-                demand: 'High',
-                dp: 78,
-                time: '2–4 years',
-                desc: 'Raise capital, execute mergers, and provide financial advisory to corporations.',
-                skills: [{
-                    n: 'Financial Modelling (DCF)',
-                    l: 'Core'
-                }, {
-                    n: 'Valuation & M&A',
-                    l: 'Core'
-                }, {
-                    n: 'Pitch Deck Creation',
-                    l: 'Important'
-                }, {
-                    n: 'Market Research',
-                    l: 'Advanced'
-                }, {
-                    n: 'Networking & Communication',
-                    l: 'Core'
-                }],
-                roadmap: ['Top MBA or finance degree', 'Excel in financial modelling courses', 'Intern at a bulge-bracket bank', 'CFA Level 1 is a strong differentiator', 'Network actively on LinkedIn'],
-                bestFor: 'Ambitious, high-energy individuals who thrive under pressure',
-                match: {
-                    'Business': 40,
-                    'Commerce & Economics': 30,
-                    'Law & Policy': 20,
-                    'Mathematics & Sciences': 10
-                }
-            },
-            {
-                id: 'doc',
-                title: 'Medical Doctor',
-                icon: '🩺',
-                stream: 'Healthcare',
-                salary: '₹8–80 LPA',
-                demand: 'High',
-                dp: 88,
-                time: '5.5+ years (MBBS)',
-                desc: 'Diagnose and treat patients, improve health outcomes across communities.',
-                skills: [{
-                    n: 'Clinical Knowledge',
-                    l: 'Core'
-                }, {
-                    n: 'Patient Communication',
-                    l: 'Core'
-                }, {
-                    n: 'Diagnostic Skills',
-                    l: 'Core'
-                }, {
-                    n: 'Emergency Medicine',
-                    l: 'Advanced'
-                }, {
-                    n: 'Research & Evidence-Based Medicine',
-                    l: 'Advanced'
-                }],
-                roadmap: ['Clear NEET for MBBS admission', 'Complete 5.5-year MBBS degree', '1-year mandatory internship', 'Clear PG entrance (NEET-PG)', 'Specialise in high-demand field'],
-                bestFor: 'Empathetic, dedicated individuals with strong science base',
-                match: {
-                    'Healthcare': 40,
-                    'Biology & Medicine': 40,
-                    'Mathematics & Sciences': 15,
-                    'Research': 5
-                }
-            },
-            {
-                id: 'bio',
-                title: 'Biotech Researcher',
-                icon: '🔬',
-                stream: 'Healthcare',
-                salary: '₹5–25 LPA',
-                demand: 'Growing',
-                dp: 72,
-                time: '4–6 years',
-                desc: 'Conduct research to develop drugs, vaccines, and biological solutions.',
-                skills: [{
-                    n: 'Molecular Biology',
-                    l: 'Core'
-                }, {
-                    n: 'Biochemistry',
-                    l: 'Core'
-                }, {
-                    n: 'Lab Techniques (PCR/ELISA)',
-                    l: 'Core'
-                }, {
-                    n: 'Bioinformatics',
-                    l: 'Advanced'
-                }, {
-                    n: 'Research Methodology',
-                    l: 'Important'
-                }],
-                roadmap: ['BSc in Biotechnology/Life Sciences', 'Master specific lab skills', 'Publish research or assist in projects', 'MSc or PhD for research careers', 'Target pharma, CSIR, or biotech startups'],
-                bestFor: 'Curious minds who want to solve biological problems',
-                match: {
-                    'Healthcare': 30,
-                    'Biology & Medicine': 40,
-                    'Research': 20,
-                    'Mathematics & Sciences': 10
-                }
-            },
-            {
-                id: 'ce',
-                title: 'Civil Engineer',
-                icon: '🏗',
-                stream: 'Engineering',
-                salary: '₹4–25 LPA',
-                demand: 'Stable',
-                dp: 70,
-                time: '4 years (B.Tech)',
-                desc: 'Design and oversee construction of infrastructure — buildings, roads, bridges.',
-                skills: [{
-                    n: 'Structural Analysis',
-                    l: 'Core'
-                }, {
-                    n: 'AutoCAD / Revit',
-                    l: 'Core'
-                }, {
-                    n: 'Project Management',
-                    l: 'Important'
-                }, {
-                    n: 'Construction Materials',
-                    l: 'Core'
-                }, {
-                    n: 'Surveying',
-                    l: 'Important'
-                }],
-                roadmap: ['B.Tech Civil Engineering', 'GATE for PSU jobs (optional)', 'Internship at construction company', 'Get licensed as Junior Engineer', 'Specialise in structural/geotechnical/env.'],
-                bestFor: 'Practical builders who want visible, lasting impact',
-                match: {
-                    'Engineering': 40,
-                    'Mathematics & Sciences': 30,
-                    'Business': 15,
-                    'Law & Policy': 15
-                }
-            },
-            {
-                id: 'me',
-                title: 'Mechanical Engineer',
-                icon: '⚙',
-                stream: 'Engineering',
-                salary: '₹4–22 LPA',
-                demand: 'Stable',
-                dp: 68,
-                time: '4 years (B.Tech)',
-                desc: 'Design, analyse and manufacture mechanical systems and machinery.',
-                skills: [{
-                    n: 'CAD/CAM (SolidWorks)',
-                    l: 'Core'
-                }, {
-                    n: 'Thermodynamics',
-                    l: 'Core'
-                }, {
-                    n: 'Manufacturing Processes',
-                    l: 'Core'
-                }, {
-                    n: 'FEA Analysis (ANSYS)',
-                    l: 'Advanced'
-                }, {
-                    n: 'Industrial Automation',
-                    l: 'Growing'
-                }],
-                roadmap: ['Strong mechanics and maths foundation', 'Master SolidWorks/CATIA', 'Internship at manufacturing firm', 'GATE for PSU or M.Tech', 'Pivot to automation/robotics for growth'],
-                bestFor: 'Hands-on problem-solvers who love machines',
-                match: {
-                    'Engineering': 45,
-                    'Mathematics & Sciences': 30,
-                    'Technology': 15,
-                    'Business': 10
-                }
-            },
-            {
-                id: 'ee',
-                title: 'Electrical Engineer',
-                icon: '⚡',
-                stream: 'Engineering',
-                salary: '₹4–22 LPA',
-                demand: 'Stable',
-                dp: 72,
-                time: '4 years (B.Tech)',
-                desc: 'Design and develop electrical systems, circuits, power grids and electronics.',
-                skills: [{
-                    n: 'Circuit Design',
-                    l: 'Core'
-                }, {
-                    n: 'Power Systems',
-                    l: 'Core'
-                }, {
-                    n: 'MATLAB/Simulink',
-                    l: 'Important'
-                }, {
-                    n: 'Embedded Systems',
-                    l: 'Advanced'
-                }, {
-                    n: 'Renewable Energy',
-                    l: 'Growing'
-                }],
-                roadmap: ['Strong physics and maths base', 'Master MATLAB and circuit simulators', 'GATE exam preparation', 'Internship at power company or startup', 'Pivot to IoT/EV/Renewables for high growth'],
-                bestFor: 'Technical minds with passion for energy and electronics',
-                match: {
-                    'Engineering': 45,
-                    'Mathematics & Sciences': 35,
-                    'Technology': 15,
-                    'Business': 5
-                }
-            },
-            {
-                id: 'law',
-                title: 'Lawyer',
-                icon: '⚖',
-                stream: 'Law & Policy',
-                salary: '₹4–50 LPA',
-                demand: 'Stable',
-                dp: 74,
-                time: '5 years (LLB)',
-                desc: 'Provide legal counsel, represent clients, and navigate the justice system.',
-                skills: [{
-                    n: 'Legal Research',
-                    l: 'Core'
-                }, {
-                    n: 'Contract Law',
-                    l: 'Core'
-                }, {
-                    n: 'Courtroom Advocacy',
-                    l: 'Advanced'
-                }, {
-                    n: 'Corporate Law',
-                    l: 'High Demand'
-                }, {
-                    n: 'Communication & Writing',
-                    l: 'Core'
-                }],
-                roadmap: ['5-year BA LLB or 3-year LLB after graduation', 'Moot court and internship at law firm', 'Enroll with Bar Council', 'Specialise in Corporate/IP/Tech law (high demand)', 'Build reputation through consistent practice'],
-                bestFor: 'Analytical communicators with a passion for justice',
-                match: {
-                    'Law & Policy': 40,
-                    'Arts & Humanities': 25,
-                    'Business': 20,
-                    'Commerce & Economics': 15
-                }
-            },
-            {
-                id: 'hrm',
-                title: 'HR Manager',
-                icon: '🤝',
-                stream: 'Business',
-                salary: '₹4–20 LPA',
-                demand: 'Stable',
-                dp: 73,
-                time: '2–3 years exp.',
-                desc: 'Attract, develop and retain talent, and shape organisational culture.',
-                skills: [{
-                    n: 'Talent Acquisition',
-                    l: 'Core'
-                }, {
-                    n: 'HRIS Systems',
-                    l: 'Important'
-                }, {
-                    n: 'Employee Relations',
-                    l: 'Core'
-                }, {
-                    n: 'Performance Management',
-                    l: 'Advanced'
-                }, {
-                    n: 'Labour Law',
-                    l: 'Important'
-                }],
-                roadmap: ['MBA HR or BBA + specialisation', 'Internship in HR department', 'Get SHRM or HRCI certification', 'Build expertise in HRBP or TA', 'Move into strategic HR or Head of People'],
-                bestFor: 'People-oriented individuals who love building teams',
-                match: {
-                    'Business': 30,
-                    'Arts & Humanities': 25,
-                    'Law & Policy': 20,
-                    'Psychology': 25
-                }
-            },
-            {
-                id: 'gd',
-                title: 'Game Developer',
-                icon: '🎮',
-                stream: 'Technology',
-                salary: '₹5–30 LPA',
-                demand: 'Growing',
-                dp: 78,
-                time: '6–12 months',
-                desc: 'Create interactive games for mobile, PC, and console platforms.',
-                skills: [{
-                    n: 'Unity / Unreal Engine',
-                    l: 'Core'
-                }, {
-                    n: 'C# / C++',
-                    l: 'Core'
-                }, {
-                    n: '3D Modelling Basics',
-                    l: 'Useful'
-                }, {
-                    n: 'Physics & Collision Systems',
-                    l: 'Advanced'
-                }, {
-                    n: 'Game Design Principles',
-                    l: 'Important'
-                }],
-                roadmap: ['Learn Unity + C# fundamentals', 'Build 3 small game prototypes', 'Publish on itch.io or Play Store', 'Learn Unreal for AAA trajectory', 'Apply to indie studios or mobile game companies'],
-                bestFor: 'Creative coders who grew up playing games',
-                match: {
-                    'Technology': 35,
-                    'Creative': 35,
-                    'Arts & Humanities': 15,
-                    'Mathematics & Sciences': 15
-                }
-            },
-            {
-                id: 'da2',
-                title: 'Data Analyst',
-                icon: '🔍',
-                stream: 'Technology',
-                salary: '₹4–18 LPA',
-                demand: 'Very High',
-                dp: 87,
-                time: '2–4 months',
-                desc: 'Collect, process and interpret data to help businesses make informed decisions.',
-                skills: [{
-                    n: 'SQL',
-                    l: 'Core'
-                }, {
-                    n: 'Excel / Google Sheets',
-                    l: 'Core'
-                }, {
-                    n: 'Tableau / PowerBI',
-                    l: 'Important'
-                }, {
-                    n: 'Python (Pandas)',
-                    l: 'Important'
-                }, {
-                    n: 'Statistics Fundamentals',
-                    l: 'Core'
-                }],
-                roadmap: ['Master SQL — solve 50+ queries', 'Learn Excel and PowerBI dashboards', 'Build 3 analysis projects with real datasets', 'Google Data Analytics cert (free)', 'Apply for junior analyst roles aggressively'],
-                bestFor: 'Systematic thinkers who find answers in numbers',
-                match: {
-                    'Technology': 25,
-                    'Mathematics & Sciences': 30,
-                    'Business': 25,
-                    'Commerce & Economics': 20
-                }
-            },
-            {
-                id: 'cc',
-                title: 'Content Creator',
-                icon: '🎬',
-                stream: 'Creative',
-                salary: '₹2–20 LPA',
-                demand: 'High',
-                dp: 80,
-                time: '3–6 months',
-                desc: 'Create engaging content across platforms — YouTube, Instagram, LinkedIn, blogs.',
-                skills: [{
-                    n: 'Video Editing (Premiere/CapCut)',
-                    l: 'Core'
-                }, {
-                    n: 'Scriptwriting & Storytelling',
-                    l: 'Core'
-                }, {
-                    n: 'SEO & Platform Algorithms',
-                    l: 'Important'
-                }, {
-                    n: 'Graphic Design (Canva)',
-                    l: 'Useful'
-                }, {
-                    n: 'Audience Analytics',
-                    l: 'Advanced'
-                }],
-                roadmap: ['Pick one platform and one niche', 'Post consistently for 90 days', 'Learn video editing fundamentals', 'Monetise via brand deals + digital products', 'Build email list for owned audience'],
-                bestFor: 'Creative communicators who love sharing knowledge',
-                match: {
-                    'Creative': 40,
-                    'Arts & Humanities': 30,
-                    'Business': 20,
-                    'Technology': 10
-                }
-            },
-            {
-                id: 'devops',
-                title: 'DevOps Engineer',
-                icon: '🔧',
-                stream: 'Technology',
-                salary: '₹8–40 LPA',
-                demand: 'Very High',
-                dp: 89,
-                time: '6–10 months',
-                desc: 'Bridge development and operations — automate CI/CD pipelines and manage infrastructure.',
-                skills: [{
-                    n: 'Docker & Kubernetes',
-                    l: 'Core'
-                }, {
-                    n: 'CI/CD Pipelines',
-                    l: 'Core'
-                }, {
-                    n: 'Linux Administration',
-                    l: 'Core'
-                }, {
-                    n: 'Terraform (IaC)',
-                    l: 'Advanced'
-                }, {
-                    n: 'Monitoring (Grafana/Prometheus)',
-                    l: 'Important'
-                }],
-                roadmap: ['Learn Linux + Bash scripting', 'Master Docker and Kubernetes', 'Set up a CI/CD pipeline project', 'Get AWS + Kubernetes (CKA) certs', 'Target DevOps/SRE roles at tech companies'],
-                bestFor: 'Problem-solvers who love automation and reliability',
-                match: {
-                    'Technology': 45,
-                    'Engineering': 30,
-                    'Mathematics & Sciences': 15,
-                    'Business': 10
-                }
-            },
-            {
-                id: 'ent',
-                title: 'Entrepreneur',
-                icon: '🚀',
-                stream: 'Business',
-                salary: 'Variable (₹0 to ∞)',
-                demand: 'Always',
-                dp: 100,
-                time: 'Your own timeline',
-                desc: 'Build products and companies that solve real problems and create value.',
-                skills: [{
-                    n: 'Problem Identification',
-                    l: 'Core'
-                }, {
-                    n: 'Product Thinking',
-                    l: 'Core'
-                }, {
-                    n: 'Financial Literacy',
-                    l: 'Important'
-                }, {
-                    n: 'Sales & Marketing',
-                    l: 'Core'
-                }, {
-                    n: 'Leadership & Resilience',
-                    l: 'Essential'
-                }],
-                roadmap: ['Identify a painful problem you understand deeply', 'Validate with 10 real customer conversations', 'Build an MVP with minimum features', 'Find first 10 paying customers', 'Iterate based on feedback — repeat'],
-                bestFor: 'Self-driven risk-takers who want to create, not just execute',
-                match: {
-                    'Business': 30,
-                    'Technology': 20,
-                    'Creative': 20,
-                    'Arts & Humanities': 10,
-                    'Law & Policy': 10,
-                    'Engineering': 10
-                }
-            },
-            {
-                id: 'psy',
-                title: 'Psychologist / Counsellor',
-                icon: '🧠',
-                stream: 'Healthcare',
-                salary: '₹3–20 LPA',
-                demand: 'Growing Fast',
-                dp: 77,
-                time: '5–6 years',
-                desc: 'Support mental health and well-being through therapy, research, and counselling.',
-                skills: [{
-                    n: 'Psychological Assessment',
-                    l: 'Core'
-                }, {
-                    n: 'Counselling Techniques (CBT)',
-                    l: 'Core'
-                }, {
-                    n: 'Empathy & Active Listening',
-                    l: 'Essential'
-                }, {
-                    n: 'Research Methodology',
-                    l: 'Advanced'
-                }, {
-                    n: 'Ethics in Practice',
-                    l: 'Core'
-                }],
-                roadmap: ['BA/BSc Psychology degree', 'MA/MSc Psychology (mandatory)', 'Internship at hospital or NGO', 'RCI registration for clinical practice', 'Specialise in corporate wellness or child psychology'],
-                bestFor: 'Deeply empathetic people who want to help others heal',
-                match: {
-                    'Healthcare': 30,
-                    'Arts & Humanities': 30,
-                    'Law & Policy': 10,
-                    'Business': 15,
-                    'Research': 15
-                }
-            }
-        ];
+        
+/* CAREERS data moved to js/data/careers.js */
+
 
         /* ═══ PREDICTION SCORE ENGINE ════════════════════════════════ */
         function calcPredictionScore(careerId, interests) {
@@ -1504,6 +713,26 @@
             var safeTime = escapeHTML(c.time);
             var safeStream = escapeHTML(c.stream);
             var safeBestFor = escapeHTML(c.bestFor);
+            
+            var dayInLifeHtml = c.dayInLife ? '<ul style="padding-left:1.2rem;margin-bottom:1.5rem;">' + c.dayInLife.map(function(item) {
+                return '<li style="margin-bottom:0.4rem;font-size:0.85rem;color:var(--mu);">' + escapeHTML(item) + '</li>';
+            }).join('') + '</ul>' : '';
+            
+            var toolsHtml = c.tools ? '<div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:1.5rem;">' + c.tools.map(function(item) {
+                return '<span class="tool-badge">' + escapeHTML(item) + '</span>';
+            }).join('') + '</div>' : '';
+            
+            var compsHtml = c.topCompanies ? '<div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:1.5rem;">' + c.topCompanies.map(function(item) {
+                return '<span class="comp-badge">' + escapeHTML(item) + '</span>';
+            }).join('') + '</div>' : '';
+            
+            var certsHtml = c.certifications ? '<div style="display:flex;flex-direction:column;gap:0.4rem;margin-bottom:1.5rem;">' + c.certifications.map(function(item) {
+                return '<div class="cert-item">🏆 ' + escapeHTML(item) + '</div>';
+            }).join('') + '</div>' : '';
+            
+            var trajHtml = c.trajectory ? '<div class="traj-container">' + c.trajectory.map(function(t) {
+                return '<div class="traj-step"><div class="traj-lvl">' + escapeHTML(t.level) + '</div><div class="traj-role">' + escapeHTML(t.role) + '</div><div class="traj-sal">' + escapeHTML(t.salary) + '</div></div>';
+            }).join('') + '</div>' : '';
 
             // Suggestions
             var sugs = getAISuggestions(id);
@@ -1532,7 +761,11 @@
                 '<div class="cd-meta"><span class="meta-tag">' + safeSalary + '</span>' +
                 '<span class="meta-tag">' + safeDemand + ' Demand</span>' +
                 '<span class="meta-tag">Entry: ' + safeTime + '</span>' +
-                '<span class="meta-tag">' + safeStream + '</span></div></div>' +
+                '<span class="meta-tag">' + safeStream + '</span>' +
+                (c.growthRate ? '<span class="meta-tag" style="color:#4ade80; border-color:rgba(74,222,128,0.3)">' + escapeHTML(c.growthRate) + '</span>' : '') +
+                (c.remote ? '<span class="meta-tag">Remote: ' + escapeHTML(c.remote) + '</span>' : '') +
+                (c.wlb ? '<span class="meta-tag">WLB: ' + escapeHTML(c.wlb) + '</span>' : '') +
+                '</div></div>' +
                 '<div style="display:flex;flex-direction:column;gap:.6rem;align-items:flex-end;">' +
                 '<button class="cd-close" onclick="closeCareer()">✕ Close</button>' +
                 '<button class="dl-report-btn" id="dl-btn-' + id + '" onclick="downloadReport(\'' + id + '\')"><span class="dl-icon">⬇ Download Report</span><span class="spin"></span></button>' +
@@ -1559,7 +792,10 @@
                 '<div class="cd-body">'
                 // Left: skills + notes
                 +
-                '<div class="cd-section"><h3>Skills to Master</h3>' + skillsHtml +
+                '<div class="cd-section">' +
+                (dayInLifeHtml ? '<h3>A Day in the Life</h3>' + dayInLifeHtml : '') +
+                (toolsHtml ? '<h3>Tools of the Trade</h3>' + toolsHtml : '') +
+                '<h3>Skills to Master</h3>' + skillsHtml +
                 '<div class="notes-area"><label>Your Notes &amp; Remarks</label>' +
                 '<textarea class="ft" id="notes-' + id + '" rows="3" placeholder="Write progress notes, targets, or plans here…"></textarea>' +
                 '<button class="save-note-btn" onclick="saveNote(\'' + id + '\')">💾 Save Notes</button></div>'
@@ -1569,7 +805,11 @@
                 '</div>'
                 // Right: roadmap + best for
                 +
-                '<div class="cd-section"><h3>Career Roadmap</h3><div class="roadmap-steps">' + rmHtml + '</div>' +
+                '<div class="cd-section">' +
+                (trajHtml ? '<h3>Career & Salary Trajectory</h3>' + trajHtml : '') +
+                (compsHtml ? '<h3>Top Hiring Companies</h3>' + compsHtml : '') +
+                (certsHtml ? '<h3>Recommended Certifications</h3>' + certsHtml : '') +
+                '<h3>Career Roadmap</h3><div class="roadmap-steps">' + rmHtml + '</div>' +
                 '<div style="margin-top:1.5rem;padding:1rem;background:rgba(232,140,42,.07);border:1px solid rgba(232,140,42,.18);border-radius:10px;">' +
                 '<div style="font-size:.78rem;font-weight:700;color:var(--amb);margin-bottom:.4rem;">💡 Best Suited For</div>' +
                 '<div style="font-size:.82rem;color:var(--mu);">' + safeBestFor + '</div>' +
@@ -1739,7 +979,7 @@
                     doc.setTextColor(232, 140, 42);
                     doc.setFontSize(17);
                     doc.setFont('helvetica', 'bold');
-                    doc.text('Digital Twin for Students', ml, y);
+                    doc.text('Digital Twin Verse for Students', ml, y);
                     doc.setFontSize(9);
                     doc.setTextColor(194, 208, 224);
                     doc.text('Career Report  |  Eco-Novators  |  digital-twin-app.onrender.com', ml, y + 7);
@@ -1896,11 +1136,11 @@
                     doc.setFontSize(7);
                     doc.setFont('helvetica', 'normal');
                     doc.setTextColor(122, 143, 168);
-                    doc.text('© 2026 Eco-Novators · Digital Twin for Students · kar98kbi@gmail.com · digital-twin-app.onrender.com', pw / 2, 289, {
+                    doc.text('© 2026 Eco-Novators · Digital Twin Verse for Students · kar98kbi@gmail.com · digital-twin-app.onrender.com', pw / 2, 289, {
                         align: 'center'
                     });
 
-                    doc.save('DigitalTwin_Report_' + c.title.replace(/[^a-zA-Z0-9]/g, '_') + '.pdf');
+                    doc.save('DigitalTwinVerse_Report_' + c.title.replace(/[^a-zA-Z0-9]/g, '_') + '.pdf');
                     showToast('✅', 'PDF report downloaded!');
                 } else {
                     throw new Error('jsPDF not loaded');
@@ -1908,7 +1148,7 @@
             } catch (err) {
                 // Fallback: plain text download
                 var lines = [
-                    'DIGITAL TWIN FOR STUDENTS — CAREER REPORT',
+                    'DIGITAL TWIN VERSE FOR STUDENTS — CAREER REPORT',
                     'Eco-Novators | digital-twin-app.onrender.com',
                     'Generated: ' + dateStr,
                     '═══════════════════════════════════════════',
@@ -1961,7 +1201,7 @@
                 });
                 var a = document.createElement('a');
                 a.href = URL.createObjectURL(blob);
-                a.download = 'DigitalTwin_Report_' + c.id + '.txt';
+                a.download = 'DigitalTwinVerse_Report_' + c.id + '.txt';
                 a.click();
                 showToast('✅', 'Report downloaded as text file!');
             }
@@ -3023,7 +2263,7 @@
                     doc.setFontSize(8.5);
                     doc.setFont('helvetica', 'normal');
                     doc.setTextColor(194, 208, 224);
-                    doc.text('Digital Twin for Students', margin, 24);
+                    doc.text('Digital Twin Verse for Students', margin, 24);
                     doc.text('Generated: ' + dateStr, pw - margin, 18, {
                         align: 'right'
                     });
@@ -3329,7 +2569,7 @@
             }
 
             var lines = [
-                'STUDENT PLAN - DIGITAL TWIN',
+                'STUDENT PLAN - DIGITAL TWIN VERSE',
                 'Generated: ' + dateStr,
                 '',
                 'PROFILE: ' + profile,
@@ -3527,32 +2767,6 @@
             }
         }
 
-        /* ═══ AI MODES ════════════════════════════════════════════════
-           4 distinct system prompts, each with personality tone option
-        ═══════════════════════════════════════════════════════════════ */
-        var AI_MODES = {
-            advisor: {
-                label: '🎯 Career Advisor',
-                friendly: 'You are a warm, encouraging Career Advisor AI for Digital Twin for Students (Eco-Novators). You help Indian students discover their ideal career path through friendly, empathetic guidance. Always address the student by first name if known. Use relatable language, emojis where appropriate, and celebrate their progress. Provide personalised advice based on their background. Focus on: career options, roadmaps, salary expectations in India (LPA), market demand, and actionable first steps. Keep responses under 280 words unless asked for a full plan. End with one encouraging actionable step. Stay on topic — career guidance only.',
-                professional: 'You are a Professional Career Advisor AI for Digital Twin for Students (Eco-Novators). Your role is to provide precise, data-driven career guidance to Indian students. Communicate in a structured, formal tone. Base all advice on 2025–2026 Indian and global market data. Include specific salary ranges (LPA), skill requirements, and industry benchmarks. Analyse the student\'s profile systematically and provide structured recommendations. Format responses with clear sections. Keep responses under 280 words unless a full plan is requested. End with one specific, measurable action item. Maintain strict relevance to career guidance.'
-            },
-            mentor: {
-                label: '📚 Skill Mentor',
-                friendly: 'You are a supportive Skill Mentor AI for Digital Twin for Students. Your job is to help students build skills in a fun, approachable way. Identify exactly what skills they need, create a learning plan, and recommend specific free/paid resources. Be encouraging and break down complex topics into manageable steps. Focus only on skill development, learning paths, certifications, and projects to build. Reference real platforms: Coursera, YouTube, Udemy, freeCodeCamp, LeetCode, Kaggle, etc. Keep under 280 words. End with one specific learning action for today.',
-                professional: 'You are a Skill Development Advisor AI for Digital Twin for Students. Conduct a rigorous skills gap analysis based on the student\'s profile and target career. Map required competencies against current skill level. Provide a structured learning curriculum with: specific resources, estimated timelines, and measurable checkpoints. Reference industry-standard certifications and their ROI. Prioritise skills by market demand and salary impact. All recommendations must be specific, verifiable, and actionable. Keep under 280 words. Conclude with a structured week-one learning plan.'
-            },
-            coach: {
-                label: '🎤 Interview Coach',
-                friendly: 'You are a friendly Interview Coach AI for Digital Twin for Students. Help students ace their job and internship interviews with confidence! Cover: common interview questions for their target role, how to answer them (STAR method), what to research beforehand, how to handle nerves, and salary negotiation tips. Give sample answers they can adapt. Be encouraging and practical. Focus only on interview preparation. Keep under 280 words. End with one interview practice task.',
-                professional: 'You are a Professional Interview Coach AI for Digital Twin for Students. Provide systematic interview preparation tailored to the student\'s target role and experience level. Cover: technical and behavioural interview frameworks, role-specific question patterns, structured answer methodologies (STAR/CARL), research protocols, and negotiation strategy. Provide concrete example answers that can be customised. Reference current hiring patterns at target companies. Keep under 280 words. Conclude with one specific preparation deliverable.'
-            },
-            predictor: {
-                label: '🔮 Future Predictor',
-                friendly: 'You are a Future Career Predictor AI for Digital Twin for Students. Using market trends, AI disruption patterns, and industry data for 2025–2030, help students understand how their chosen career will evolve. Be honest but optimistic. Cover: which roles are growing, which are declining, new opportunities emerging, skills that will be most valuable, and how to future-proof their career. Make it engaging and forward-looking. Keep under 280 words. End with one future-proofing action.',
-                professional: 'You are a Career Futures Analyst AI for Digital Twin for Students. Conduct a forward-looking career trajectory analysis based on: automation risk index, AI disruption probability, sector growth projections (2025–2030), emerging role clusters, and skill longevity scores. Cross-reference with World Economic Forum Future of Jobs data and Indian labour market indicators. Provide probability estimates where relevant. Be direct about risks and opportunities. Keep under 280 words. Conclude with a strategic career resilience recommendation.'
-            }
-        };
-
         var currentMode = 'advisor';
         var toneIsFriendly = false;
         var chatHistory = [];
@@ -3642,7 +2856,7 @@
                 b.classList.remove('active');
             });
             if (btn) btn.classList.add('active');
-            showToast('🤖', AI_MODES[mode].label + ' activated.');
+            showToast('🤖', mode + ' mode activated.');
         }
 
         function togTone() {
@@ -3654,36 +2868,6 @@
             showToast('💬', toneIsFriendly ? 'Friendly tone activated 😊' : 'Professional tone activated 💼');
         }
 
-        function getSystemPrompt() {
-            var m = AI_MODES[currentMode] || AI_MODES.advisor;
-            var base = toneIsFriendly ? m.friendly : m.professional;
-
-            // Build rich user context from all available signals
-            var ctx = [];
-            var name = userProfile.name || APP_DATA.userData.name;
-            if (name) ctx.push("The student's name is " + name + ". Address them by name occasionally.");
-            if (APP_DATA.userData.role) ctx.push("They are a " + APP_DATA.userData.role + ".");
-            if (APP_DATA.userData.city) ctx.push("They are based in " + APP_DATA.userData.city + ".");
-            ctx.push("User's apparent experience level: " + userProfile.level + ". Adjust explanation depth accordingly.");
-            if (userProfile.lastTopic) ctx.push("Recent topic of interest: " + userProfile.lastTopic + ".");
-            if (APP_DATA.careerChoices.length > 0) {
-                ctx.push("Careers they have explored on the platform: " + APP_DATA.careerChoices.map(function(c) {
-                    return c.title;
-                }).join(', ') + ". Reference these naturally.");
-            }
-            if (chatHistory.length > 2) {
-                ctx.push("This is message " + Math.ceil(chatHistory.length / 2) + " in the conversation. Build on previous context.");
-            }
-
-            // Anti-repeat directive injected into every prompt
-            var antiRepeat = "CRITICAL RULE: You must NEVER repeat a response you have already given in this conversation, even if the user asks a similar question. Always rephrase completely, use different structure, different examples. Vary your sentence openers — avoid starting with the same phrase twice. Never begin with 'Based on your input' or 'Here is your result'. Sound like a real human mentor who knows this student, not a bot.";
-
-            // Human mentor directive
-            var humanDir = "Respond like a smart, slightly informal career mentor who genuinely cares. Mix short paragraphs, bullet points, and the occasional direct question. Use the user's name when it adds warmth. End every response with either a specific action step OR a follow-up question that deepens the conversation. Keep under 300 words unless a full roadmap is requested.";
-
-            return base + '\n\nUser Context:\n' + ctx.join('\n') + '\n\n' + antiRepeat + '\n\n' + humanDir;
-        }
-
         /* ═══ CHAT FUNCTIONS ═════════════════════════════════════════ */
         function togChat() {
             chatOpen = !chatOpen;
@@ -3691,8 +2875,8 @@
             panel.classList.toggle('open', chatOpen);
             if (chatOpen && chatHistory.length === 0) {
                 var greeting = toneIsFriendly ?
-                    '👋 Hey! I\'m your Digital Twin Career AI. I can help you with career guidance, skill planning, interview prep, or future trends!\n\nTell me about yourself — your education and what you\'re interested in — and I\'ll get started. 🎯' :
-                    '👋 Welcome. I\'m the Digital Twin Career Advisor. I operate in 4 modes: Career Advisor, Skill Mentor, Interview Coach, and Future Predictor.\n\nPlease share your education background, current skills, and career objectives for a personalised analysis.';
+                    '👋 Hey! I\'m your Digital Twin Verse Career AI. I can help you with career guidance, skill planning, interview prep, or future trends!\n\nTell me about yourself — your education and what you\'re interested in — and I\'ll get started. 🎯' :
+                    '👋 Welcome. I\'m the Digital Twin Verse Career Advisor. I operate in 4 modes: Career Advisor, Skill Mentor, Interview Coach, and Future Predictor.\n\nPlease share your education background, current skills, and career objectives for a personalised analysis.';
                 addBotMsg(greeting);
                 document.getElementById('cp-inp').focus();
             }
@@ -3702,8 +2886,19 @@
             var msgs = document.getElementById('cp-msgs');
             var div = document.createElement('div');
             div.className = 'msg bot';
-            div.innerHTML = formatBotMessage(text);
+            div.innerHTML = DOMPurify.sanitize(formatBotMessage(text));
             msgs.appendChild(div);
+            
+            // Premium Upgrade: Apply hacker decode effect
+            if (typeof decodeText === 'function') {
+                var pElements = div.querySelectorAll('p, li, h3, h4');
+                pElements.forEach(function(p) {
+                    if (!p.closest('pre') && !p.closest('code')) {
+                        decodeText(p);
+                    }
+                });
+            }
+            
             msgs.scrollTop = msgs.scrollHeight;
             if (ttsOn) speak(String(text).replace(/\*\*(.*?)\*\*/g, '$1'));
         }
@@ -3722,9 +2917,14 @@
             var div = document.createElement('div');
             div.className = 'msg typing';
             div.id = 'typing-ind';
-            div.innerHTML = '<div class="typing-dots"><span></span><span></span><span></span></div>';
+            div.innerHTML = DOMPurify.sanitize('<div class="typing-dots" style="display:flex; align-items:center;"><span></span><span></span><span></span> <span class="decrypt-text" style="margin-left:12px; font-size:0.75rem; color:var(--cyan); letter-spacing:2px; font-family:monospace;">DECRYPTING_</span></div>');
             msgs.appendChild(div);
             msgs.scrollTop = msgs.scrollHeight;
+            
+            var decryptText = div.querySelector('.decrypt-text');
+            if (decryptText && typeof decodeText === 'function') {
+                decodeText(decryptText);
+            }
         }
 
         function removeTyping() {
@@ -5082,7 +4282,7 @@
         }
 
         function shareLI() {
-            window.open('https://www.linkedin.com/shareArticle?mini=true&url=' + encodeURIComponent(CFG.siteUrl) + '&title=' + encodeURIComponent('Digital Twin for Students'), '_blank');
+            window.open('https://www.linkedin.com/shareArticle?mini=true&url=' + encodeURIComponent(CFG.siteUrl) + '&title=' + encodeURIComponent('Digital Twin Verse for Students'), '_blank');
         }
 
         function shareTW() {

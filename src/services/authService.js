@@ -32,7 +32,7 @@ async function signup(payload) {
     email: email,
     passwordHash: passwordHash,
     name: payload.name || null,
-    role: 'user'
+    role: 'student'
   });
 
   // Generate 6-digit OTP

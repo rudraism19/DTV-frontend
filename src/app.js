@@ -129,6 +129,7 @@ app.use('/api/v1', routes);
 app.use('/dashboard', dashboardRoutes);
 
 const publicDir = path.join(__dirname, '..', 'public');
+const parentUiDir = path.join(__dirname, '..', 'parent-ui', 'dist');
 
 app.get('/api/version', (req, res) => {
   try {
@@ -158,6 +159,9 @@ app.use(express.static(publicDir, {
   }
 }));
 
+// Serve parent portal static files
+app.use('/parent', express.static(parentUiDir));
+
 app.use(function(req, res, next) {
   if (req.path.startsWith('/api')) {
     return next();
@@ -165,6 +169,17 @@ app.use(function(req, res, next) {
   res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
   res.set('Pragma', 'no-cache');
   res.set('Expires', '0');
+
+  if (req.path.startsWith('/parent')) {
+    console.log('Serving SPA fallback for Parent Portal.');
+    return res.sendFile('index.html', { root: parentUiDir }, (err) => {
+      if (err) {
+        console.error('sendFile error for Parent SPA:', err);
+        next(err);
+      }
+    });
+  }
+
   console.log('Serving SPA fallback for root.');
   res.sendFile('index.html', { root: publicDir }, (err) => {
     if (err) {

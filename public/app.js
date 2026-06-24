@@ -621,20 +621,50 @@
         }
 
         /* ═══ DASHBOARD RENDER ═══════════════════════════════════════ */
+        var currentCategory = 'all';
+        var currentSearchQuery = '';
+
         function renderCareers(filter) {
+            if (filter !== undefined) {
+                currentCategory = filter;
+            }
             var grid = document.getElementById('career-grid');
             if (!grid) return;
-            var list = filter === 'all' ? CAREERS : CAREERS.filter(function(c) {
-                return c.stream === filter;
+            var list = CAREERS.filter(function(c) {
+                var matchCategory = (currentCategory === 'all' || c.stream === currentCategory);
+                if (!matchCategory) {
+                    if (currentCategory === 'Professional' && (c.stream === 'Engineering' || c.stream === 'Healthcare' || c.stream === 'Law & Policy' || c.stream === 'Professional')) matchCategory = true;
+                    if (currentCategory === 'Business & Other' && (c.stream === 'Business' || c.stream === 'Business & Other')) matchCategory = true;
+                }
+                var matchSearch = true;
+                if (currentSearchQuery.trim() !== '') {
+                    var q = currentSearchQuery.toLowerCase();
+                    matchSearch = c.title.toLowerCase().includes(q) || 
+                                  c.desc.toLowerCase().includes(q) || 
+                                  c.stream.toLowerCase().includes(q) ||
+                                  c.id.toLowerCase().includes(q);
+                }
+                return matchCategory && matchSearch;
             });
+
+            if (list.length === 0) {
+                grid.innerHTML = '<div class="no-results">No careers found matching your criteria. Try adjusting your search or category filter.</div>';
+                updateOverallProgress();
+                return;
+            }
+
             grid.innerHTML = list.map(function(c) {
-                return '<div class="ccard" id="cc-' + c.id + '" onclick="openCareer(\'' + c.id + '\')">' +
-                    '<div class="ccard-ic">' + c.icon + '</div>' +
-                    '<div class="ccard-title">' + c.title + '</div>' +
-                    '<div class="ccard-stream">' + c.stream + '</div>' +
+                return '<div class="ccard" id="cc-' + c.id + '" onclick="openCareer(\'' + c.id + '\')" role="button" tabindex="0" aria-label="Explore ' + c.title + '">' +
+                    '<div class="ccard-top-row">' +
+                        '<div class="ccard-ic" aria-hidden="true">' + c.icon + '</div>' +
+                        '<div class="ccard-stream">' + c.stream + '</div>' +
+                    '</div>' +
+                    '<h3 class="ccard-title">' + c.title + '</h3>' +
+                    '<p class="ccard-desc">' + c.desc + '</p>' +
                     '<div class="ccard-salary">' + c.salary + '</div>' +
                     '<div class="demand-bar"><div class="demand-fill" style="width:' + c.dp + '%"></div></div>' +
                     '<div class="demand-lbl">Demand: ' + c.demand + '</div>' +
+                    '<div class="ccard-act"><button class="btn-explore" tabindex="-1">Explore →</button></div>' +
                     '</div>';
             }).join('');
             updateOverallProgress();
@@ -644,10 +674,31 @@
             document.querySelectorAll('.df').forEach(function(d) {
                 d.classList.remove('on');
             });
-            el.classList.add('on');
+            if (el) el.classList.add('on');
             renderCareers(stream);
-            document.getElementById('career-detail').classList.remove('open');
-            document.getElementById('career-detail').innerHTML = '';
+            var cd = document.getElementById('career-detail');
+            if (cd) {
+                cd.classList.remove('open');
+                cd.innerHTML = '';
+            }
+        }
+
+        function handleSearchCareer(val) {
+            currentSearchQuery = val;
+            var clearBtn = document.getElementById('search-clear');
+            if (clearBtn) {
+                clearBtn.style.display = val.trim() !== '' ? 'inline-flex' : 'none';
+            }
+            renderCareers();
+        }
+
+        function clearSearchCareer() {
+            var input = document.getElementById('career-search');
+            if (input) input.value = '';
+            currentSearchQuery = '';
+            var clearBtn = document.getElementById('search-clear');
+            if (clearBtn) clearBtn.style.display = 'none';
+            renderCareers();
         }
 
         /* ═══ OVERALL PROGRESS ═══════════════════════════════════════ */

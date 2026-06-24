@@ -2430,10 +2430,87 @@
             color: var(--bg);
         }
 
+        .dash-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            width: 100%;
+        }
+
+        .search-box {
+            position: relative;
+            display: flex;
+            align-items: center;
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1.2rem;
+            font-size: 1.2rem;
+            color: var(--mu);
+            pointer-events: none;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 1rem 3rem 1rem 3.5rem;
+            background: rgba(20, 24, 32, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 30px;
+            color: var(--wh);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+        }
+
+        .search-input:focus {
+            border-color: var(--amb);
+            outline: none;
+            box-shadow: 0 4px 20px rgba(232, 140, 42, 0.25);
+            background: rgba(20, 24, 32, 0.95);
+        }
+
+        .search-clear {
+            position: absolute;
+            right: 1.2rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: var(--wh);
+            border-radius: 50%;
+            width: 26px;
+            height: 26px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: background 0.2s;
+        }
+
+        .search-clear:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        .no-results {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--mu);
+            font-size: 1.1rem;
+            background: rgba(24, 28, 36, 0.4);
+            border-radius: 16px;
+            border: 1px dashed rgba(255, 255, 255, 0.1);
+        }
+
         .career-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 1rem;
+            gap: 1.5rem;
         }
 
         .ccard {
@@ -2447,6 +2524,8 @@
             position: relative;
             overflow: hidden;
             box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
         }
 
         .ccard::before {
@@ -2483,9 +2562,15 @@
             100% { background-position: 0% 50%; }
         }
 
-        .ccard-ic {
-            font-size: 2rem;
+        .ccard-top-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
             margin-bottom: 0.8rem;
+        }
+
+        .ccard-ic {
+            font-size: 2.2rem;
             transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             display: inline-block;
             filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
@@ -2497,46 +2582,88 @@
 
         .ccard-title {
             font-weight: 800;
-            font-size: 0.95rem;
-            margin-bottom: 0.3rem;
+            font-size: 1.1rem;
+            margin-bottom: 0.4rem;
             color: var(--wh);
             letter-spacing: -0.01em;
+        }
+
+        .ccard-desc {
+            font-size: 0.85rem;
+            color: var(--mu);
+            margin-bottom: 1.2rem;
+            line-height: 1.4;
+            flex-grow: 1;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
         }
 
         .ccard-stream {
             font-size: 0.7rem;
             color: var(--amb);
-            margin-bottom: 0.8rem;
+            background: rgba(232, 140, 42, 0.1);
+            border: 1px solid rgba(232, 140, 42, 0.25);
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
             text-transform: uppercase;
             letter-spacing: 0.08em;
             font-weight: 700;
         }
 
         .ccard-salary {
-            font-size: .78rem;
+            font-size: .85rem;
             color: var(--amb);
-            font-weight: 600;
-            margin-bottom: .3rem;
+            font-weight: 700;
+            margin-bottom: .4rem;
         }
 
         .demand-bar {
-            height: 3px;
+            height: 4px;
             background: rgba(255, 255, 255, .07);
-            border-radius: 3px;
+            border-radius: 4px;
             overflow: hidden;
+            margin-bottom: 0.3rem;
         }
 
         .demand-fill {
             height: 100%;
-            border-radius: 3px;
+            border-radius: 4px;
             background: linear-gradient(90deg, var(--amb), var(--green));
             transition: width 1s ease;
         }
 
         .demand-lbl {
-            font-size: .67rem;
+            font-size: .7rem;
             color: var(--mu);
-            margin-top: .3rem;
+            margin-bottom: 1.2rem;
+        }
+
+        .ccard-act {
+            margin-top: auto;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding-top: 1rem;
+            text-align: center;
+        }
+
+        .btn-explore {
+            background: transparent;
+            border: none;
+            color: var(--amb);
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            padding: 0;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .ccard:hover .btn-explore {
+            color: var(--wh);
+            transform: translateX(4px);
         }
 
         /* Career Detail Panel */
@@ -3986,7 +4113,7 @@
             }
 
             .career-grid {
-                grid-template-columns: repeat(2, 1fr);
+                grid-template-columns: 1fr;
             }
 
             #urlist {

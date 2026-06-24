@@ -72,28 +72,31 @@ const enrichments = {
 // Generic generator
 function getGeneric(stream, title) {
     const isTech = stream === 'Technology';
-    const isBiz = stream === 'Business';
-    const isArt = stream === 'Creative';
-    const isEng = stream === 'Engineering';
+    const isBiz = stream === 'Business' || stream === 'Business & Other';
+    const isArt = stream === 'Creative' || stream === 'Design & Institutes';
+    const isEng = stream === 'Engineering' || stream === 'Professional';
     const isHealth = stream === 'Healthcare';
+    const isGov = stream === 'Govt Exams';
 
     return {
-        growthRate: isTech ? '🚀 20% YoY Growth' : (isHealth ? '🚀 14% YoY Growth' : '🚀 10% YoY Growth'),
-        wlb: isBiz || isHealth ? 'Demanding' : 'Moderate / Good',
+        growthRate: isTech ? '🚀 25% YoY Growth' : (isGov ? '📈 High Security & Perks' : (isArt ? '✨ High Demand & Freelance' : '🚀 15% YoY Growth')),
+        wlb: isBiz || isHealth || isGov ? 'Demanding / Structured' : 'Moderate / Good',
         remote: isTech || isArt ? 'High' : (isBiz ? 'Medium' : 'Low'),
-        companies: isTech ? ['TCS', 'Infosys', 'Tech Startups', 'Wipro'] :
-                   isBiz ? ['Deloitte', 'KPMG', 'Reliance', 'HDFC'] :
-                   isEng ? ['L&T', 'Tata Motors', 'Mahindra', 'Siemens'] :
+        companies: isTech ? ['Google', 'Microsoft', 'TCS', 'Infosys', 'Startups'] :
+                   isBiz ? ['Deloitte', 'KPMG', 'Reliance', 'HDFC', 'Startups'] :
+                   isGov ? ['Central Government', 'State Departments', 'Public Sector Units', 'Ministries'] :
+                   isArt ? ['Design Agencies', 'Freelance / Remote', 'Top Studios', 'Publishing Houses'] :
                    ['Top Industry Leaders', 'MNCs', 'Private Firms', 'Government'],
         tools: isTech ? ['VS Code', 'Git', 'Slack', 'Jira'] :
                isArt ? ['Adobe CC', 'Canva', 'Figma', 'Notion'] :
                isBiz ? ['Excel', 'PowerPoint', 'Salesforce', 'Trello'] :
+               isGov ? ['Government Portals', 'Official Records', 'Analytical Reports', 'Filing Systems'] :
                ['Industry Standard Software', 'MS Office', 'Communication Tools'],
-        certs: [title + ' Professional Cert', 'Industry Standard Diploma', 'Advanced Workshop Badge'],
+        certs: [title + ' Mastery Cert', 'Industry Standard Diploma', 'Advanced Professional Badge'],
         dayInLife: [
-            'Plan and execute daily operations related to ' + title,
-            'Collaborate with team members to solve complex problems',
-            'Ensure quality and compliance with industry standards'
+            'Plan and execute key functions related to ' + title,
+            'Review strategic operations and solve complex domain challenges',
+            'Communicate with team and stakeholders to ensure highest quality output'
         ]
     };
 }

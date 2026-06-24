@@ -15,7 +15,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="/dist/main.d6a3bd34.css">
+    <link rel="stylesheet" href="/dist/main.479f1121.css">
 
     <!-- Razorpay checkout.js temporarily removed — will be re-added with payment integration -->
     <style>
@@ -1353,9 +1353,9 @@
                 <div class="rv career-explorer-head">
                     <div>
                         <p class="lbl">Career Explorer</p>
-                        <h2 class="ttl">Explore 40+ Career Paths<br><span class="serif">with Your Personal
+                        <h2 class="ttl">Explore 50+ Career Paths<br><span class="serif">with Your Personal
                                 Dashboard</span></h2>
-                        <p class="desc">Browse, select and track any career. Save your skill progress, write notes, and
+                        <p class="desc">Browse, filter, search, and track any career. Save your skill progress, write notes, and
                             build your personalised roadmap — all saved locally on your device.</p>
                     </div>
                     <button class="career-toggle" id="career-toggle" onclick="toggleCareerExplorer()"
@@ -1395,17 +1395,27 @@
                             </div>
                         </div>
                     </div>
-                    <div class="dash-filters rv">
-                        <span class="df on" onclick="filterCareer(this,'all')">All Careers</span>
-                        <span class="df" onclick="filterCareer(this,'Technology')">Technology</span>
-                        <span class="df" onclick="filterCareer(this,'Business')">Business &amp; Finance</span>
-                        <span class="df" onclick="filterCareer(this,'Healthcare')">Healthcare</span>
-                        <span class="df" onclick="filterCareer(this,'Engineering')">Engineering</span>
-                        <span class="df" onclick="filterCareer(this,'Creative')">Creative</span>
-                        <span class="df" onclick="filterCareer(this,'Law &amp; Policy')">Law &amp; Policy</span>
+
+                    <!-- Dynamic Search & Category Filters -->
+                    <div class="dash-controls rv">
+                        <div class="search-box">
+                            <span class="search-icon" aria-hidden="true">🔍</span>
+                            <input type="text" id="career-search" class="fi search-input" placeholder="Search careers (e.g. UPSC, Software Developer, MBA, CA...)" oninput="handleSearchCareer(this.value)" aria-label="Search Careers">
+                            <button class="search-clear" id="search-clear" onclick="clearSearchCareer()" aria-label="Clear Search" style="display:none;">✕</button>
+                        </div>
+                        <div class="dash-filters">
+                            <button class="df on" onclick="filterCareer(this,'all')">All Careers</button>
+                            <button class="df" onclick="filterCareer(this,'Govt Exams')">Govt Exams</button>
+                            <button class="df" onclick="filterCareer(this,'Professional')">Professional</button>
+                            <button class="df" onclick="filterCareer(this,'Technology')">Technology</button>
+                            <button class="df" onclick="filterCareer(this,'Creative')">Creative</button>
+                            <button class="df" onclick="filterCareer(this,'Design & Institutes')">Design &amp; Institutes</button>
+                            <button class="df" onclick="filterCareer(this,'Business & Other')">Business &amp; Other</button>
+                        </div>
                     </div>
-                    <div class="career-grid rv" id="career-grid"></div>
-                    <div class="career-detail" id="career-detail"></div>
+
+                    <div class="career-grid rv" id="career-grid" role="region" aria-label="Career Opportunities"></div>
+                    <div class="career-detail" id="career-detail" role="region" aria-live="polite"></div>
                 </div>
             </div>
         </section>
@@ -2068,8 +2078,8 @@
 
 
 
-    <script defer src="/dist/careers.d4803867.js"></script>
-    <script defer src="/dist/app.56defd5b.js"></script>
+    <script defer src="/dist/careers.adb3fa9f.js"></script>
+    <script defer src="/dist/app.3b8c53c2.js"></script>
     <script defer src="/dist/ux-engine.072100c5.js"></script>
 </body>
 

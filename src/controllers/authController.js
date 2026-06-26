@@ -16,6 +16,8 @@ function sanitizeUser(user) {
     createdAt: user.createdAt,
     lastLoginAt: user.lastLoginAt,
     linkCode: user.linkCode,
+    trialExpiresAt: user.trialExpiresAt,
+    subscriptionExpiresAt: user.subscriptionExpiresAt,
     isPremium: (user.subscriptionExpiresAt && new Date(user.subscriptionExpiresAt) > new Date()) || 
                (user.trialExpiresAt && new Date(user.trialExpiresAt) > new Date()) || false
   };

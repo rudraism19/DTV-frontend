@@ -3575,6 +3575,7 @@
             if (mobLogout) mobLogout.style.display = loggedIn ? 'block' : 'none';
             if (mobAdmindb) mobAdmindb.style.display = isAdmin ? 'block' : 'none';
             hideAccountMenu();
+            if (typeof updateSubscriptionTracker === 'function') updateSubscriptionTracker();
         }
 
         async function openAdminDashboard() {
@@ -3634,6 +3635,67 @@
             }
         }
         // ── PAYMENT / PREMIUM ──
+        function updateSubscriptionTracker() {
+            var card = document.getElementById('tracker-card');
+            if (!card) return;
+            var statusDesc = document.getElementById('tracker-status-desc');
+            var planType = document.getElementById('tracker-plan-type');
+            var timeLeft = document.getElementById('tracker-time-left');
+            var progressBar = document.getElementById('tracker-progress-bar');
+            
+            var loggedIn = isLoggedIn();
+            if (!loggedIn) {
+                if (statusDesc) statusDesc.textContent = 'Please sign in to view your access status.';
+                if (planType) planType.textContent = 'Guest / Unverified';
+                if (timeLeft) timeLeft.textContent = 'Sign in required';
+                if (progressBar) { progressBar.style.width = '0%'; progressBar.style.background = '#64748b'; }
+                return;
+            }
+
+            var user = APP_DATA.userData || {};
+            var trialExp = user.trialExpiresAt ? new Date(user.trialExpiresAt) : null;
+            var subExp = user.subscriptionExpiresAt ? new Date(user.subscriptionExpiresAt) : null;
+            var now = new Date();
+            
+            if (user.role === 'admin') {
+                if (statusDesc) statusDesc.textContent = 'Administrator account with full unrestricted access.';
+                if (planType) planType.textContent = 'Lifetime Admin';
+                if (timeLeft) timeLeft.textContent = 'Unlimited';
+                if (progressBar) { progressBar.style.width = '100%'; progressBar.style.background = '#22c55e'; }
+            } else if (subExp && subExp > now) {
+                var diffMs = subExp - now;
+                var diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+                if (statusDesc) statusDesc.textContent = 'You have unlocked premium features and full simulation access.';
+                if (planType) planType.textContent = 'Premium Member';
+                if (timeLeft) timeLeft.textContent = diffDays + ' day' + (diffDays > 1 ? 's' : '') + ' remaining';
+                if (progressBar) { progressBar.style.width = '100%'; progressBar.style.background = '#22c55e'; }
+            } else if (trialExp) {
+                var diffMs = trialExp - now;
+                if (diffMs > 0) {
+                    var diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+                    if (statusDesc) statusDesc.textContent = 'You are currently enjoying the free demo evaluation.';
+                    if (planType) planType.textContent = 'Free Demo';
+                    if (timeLeft) timeLeft.textContent = diffDays + ' day' + (diffDays > 1 ? 's' : '') + ' remaining';
+                    var totalDemoDays = 14;
+                    var pct = Math.min(100, Math.max(5, Math.round((diffDays / totalDemoDays) * 100)));
+                    if (progressBar) { 
+                        progressBar.style.width = pct + '%'; 
+                        progressBar.style.background = pct > 30 ? '#f5a94e' : '#ef4444';
+                    }
+                } else {
+                    if (statusDesc) statusDesc.textContent = 'Your free demo has expired. Please renew or upgrade your plan.';
+                    if (planType) planType.textContent = 'Expired Demo';
+                    if (timeLeft) timeLeft.textContent = 'Expired';
+                    if (progressBar) { progressBar.style.width = '100%'; progressBar.style.background = '#ef4444'; }
+                }
+            } else {
+                if (statusDesc) statusDesc.textContent = 'You are currently enjoying the free demo evaluation.';
+                if (planType) planType.textContent = 'Free Demo';
+                if (timeLeft) timeLeft.textContent = '14 days remaining';
+                if (progressBar) { progressBar.style.width = '100%'; progressBar.style.background = '#f5a94e'; }
+            }
+        }
+
         function checkPremiumAccess(featureName) {
             // Premium features are temporarily free
             return true;
@@ -3966,6 +4028,8 @@
                 APP_DATA.userData.role = data.user.role;
                 APP_DATA.userData.emailVerified = data.user.emailVerified;
                 APP_DATA.userData.linkCode = data.user.linkCode || null;
+                APP_DATA.userData.trialExpiresAt = data.user.trialExpiresAt || null;
+                APP_DATA.userData.subscriptionExpiresAt = data.user.subscriptionExpiresAt || null;
                 setLoggedIn(true);
                 loginGateActive = false;
                 

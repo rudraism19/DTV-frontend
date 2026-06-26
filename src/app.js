@@ -43,64 +43,24 @@ app.use(cookieParser());
 app.use(helmet({
   contentSecurityPolicy: {
     directives: {
-      defaultSrc: ["'self'"],
-      scriptSrc: [
-        "'self'",
-        "'unsafe-inline'",
-        "https://cdnjs.cloudflare.com",
-        "https://cdn.jsdelivr.net",
-        "https://www.googletagmanager.com"
-      ],
+      defaultSrc: ["'self'", "*", "'unsafe-inline'", "'unsafe-eval'"],
+      scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "*"],
       scriptSrcAttr: ["'unsafe-inline'"],
-      styleSrc: [
-        "'self'",
-        "'unsafe-inline'",
-        "https://fonts.googleapis.com"
-      ],
-      fontSrc: [
-        "'self'",
-        "data:",
-        "https://fonts.gstatic.com",
-        "https://fonts.googleapis.com"
-      ],
-      imgSrc: [
-        "'self'",
-        "data:",
-        "https://images.unsplash.com",
-        "https://digital-twin-app.onrender.com",
-        "https://www.googletagmanager.com"
-      ],
-      connectSrc: [
-        "'self'",
-        "https://digital-twin-app.onrender.com",
-        "https://formspree.io",
-        "https://www.googletagmanager.com",
-        "https://www.google-analytics.com",
-        "https://api.razorpay.com",
-        "https://cdnjs.cloudflare.com",
-        "https://fonts.googleapis.com",
-        "https://fonts.gstatic.com"
-      ]
+      styleSrc: ["'self'", "'unsafe-inline'", "*"],
+      fontSrc: ["'self'", "data:", "*"],
+      imgSrc: ["'self'", "data:", "blob:", "*"],
+      connectSrc: ["'self'", "*"],
+      frameSrc: ["'self'", "*"],
+      mediaSrc: ["'self'", "data:", "blob:", "*"]
     }
   },
   crossOriginEmbedderPolicy: false,
   crossOriginOpenerPolicy: false,
   crossOriginResourcePolicy: false,
-  hsts: {
-    maxAge: 31536000,
-    includeSubDomains: true,
-    preload: true
-  }
+  hsts: false
 }));
-const corsOrigins = env.CORS_ORIGINS ? env.CORS_ORIGINS.split(',').map(function(origin) {
-  return origin.trim();
-}).filter(Boolean) : [];
-const corsOrigin = corsOrigins.length === 0
-  ? false // STRICT SECURITY: Do not fallback to true (allow all) if missing
-  : (corsOrigins.indexOf('*') !== -1 ? '*' : corsOrigins);
-
 app.use(cors({
-  origin: corsOrigin,
+  origin: true,
   credentials: true
 }));
 app.use(compression());

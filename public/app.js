@@ -3676,11 +3676,11 @@
                     if (statusDesc) statusDesc.textContent = 'You are currently enjoying the free demo evaluation.';
                     if (planType) planType.textContent = 'Free Demo';
                     if (timeLeft) timeLeft.textContent = diffDays + ' day' + (diffDays > 1 ? 's' : '') + ' remaining';
-                    var totalDemoDays = 14;
+                    var totalDemoDays = 5;
                     var pct = Math.min(100, Math.max(5, Math.round((diffDays / totalDemoDays) * 100)));
                     if (progressBar) { 
                         progressBar.style.width = pct + '%'; 
-                        progressBar.style.background = pct > 30 ? '#f5a94e' : '#ef4444';
+                        progressBar.style.background = pct > 50 ? '#22c55e' : (pct > 20 ? '#f5a94e' : '#ef4444');
                     }
                 } else {
                     if (statusDesc) statusDesc.textContent = 'Your free demo has expired. Please renew or upgrade your plan.';
@@ -3691,8 +3691,8 @@
             } else {
                 if (statusDesc) statusDesc.textContent = 'You are currently enjoying the free demo evaluation.';
                 if (planType) planType.textContent = 'Free Demo';
-                if (timeLeft) timeLeft.textContent = '14 days remaining';
-                if (progressBar) { progressBar.style.width = '100%'; progressBar.style.background = '#f5a94e'; }
+                if (timeLeft) timeLeft.textContent = '5 days remaining';
+                if (progressBar) { progressBar.style.width = '100%'; progressBar.style.background = '#22c55e'; }
             }
         }
 

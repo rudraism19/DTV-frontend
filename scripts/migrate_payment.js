@@ -3,7 +3,9 @@ const db = require('../src/db');
 async function run() {
     try {
         console.log('Altering users...');
-        await db.query("ALTER TABLE users ADD COLUMN IF NOT EXISTS trial_expires_at TIMESTAMP WITH TIME ZONE DEFAULT (CURRENT_TIMESTAMP + interval '48 hours')");
+        await db.query("ALTER TABLE users ADD COLUMN IF NOT EXISTS trial_expires_at TIMESTAMP WITH TIME ZONE DEFAULT (CURRENT_TIMESTAMP + interval '5 days')");
+        await db.query("ALTER TABLE users ALTER COLUMN trial_expires_at SET DEFAULT (CURRENT_TIMESTAMP + interval '5 days')");
+        await db.query("UPDATE users SET trial_expires_at = (created_at + interval '5 days') WHERE trial_expires_at IS NOT NULL AND trial_expires_at <= (created_at + interval '48 hours')");
         await db.query("ALTER TABLE users ADD COLUMN IF NOT EXISTS subscription_expires_at TIMESTAMP WITH TIME ZONE");
         
         console.log('Creating orders table...');

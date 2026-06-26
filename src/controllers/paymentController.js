@@ -151,17 +151,31 @@ async function verifyPaymentProof(req, res, next) {
     const name = req.body.name || 'Kumar Kartikey';
     const mobile_number = req.body.mobile_number || '+917520119837';
     const plan_duration = req.body.plan_duration || '1m';
-    const reference_id = req.body.reference_id || `manual_${Date.now()}`;
+    const reference_id = req.body.reference_id;
     const file = req.file;
 
     if (!plan_duration || !PLAN_RATES[plan_duration]) {
-      throw new ApiError(400, 'Invalid plan duration specified.');
+      return res.status(400).json({ success: false, message: 'Invalid plan duration specified.' });
     }
 
-    // Ensure orders table columns exist at runtime to prevent any migration delay issues on Railway
+    if (!reference_id || reference_id.trim() === '') {
+      return res.status(400).json({ success: false, message: 'Transaction ID / Reference No. is mandatory to verify payment proof.' });
+    }
+    const cleanRef = reference_id.trim();
+
+    // Ensure orders table columns exist at runtime
     await db.query("ALTER TABLE orders ADD COLUMN IF NOT EXISTS mobile_number VARCHAR(255);").catch(() => {});
     await db.query("ALTER TABLE orders ADD COLUMN IF NOT EXISTS proof_file_path TEXT;").catch(() => {});
     await db.query("ALTER TABLE orders ADD COLUMN IF NOT EXISTS user_name VARCHAR(255);").catch(() => {});
+
+    // STRICT SECURITY CHECK: Ensure this Transaction ID has NEVER been used before!
+    const existingOrderRes = await db.query('SELECT id, user_name FROM orders WHERE razorpay_payment_id = $1 LIMIT 1', [cleanRef]);
+    if (existingOrderRes.rows.length > 0) {
+      return res.status(400).json({ 
+        success: false, 
+        message: `SECURITY ALERT: Transaction ID (${cleanRef}) has already been verified. Duplicate claims using the same receipt are strictly prohibited.` 
+      });
+    }
 
     // 1. Identify User ID securely (auto-creating user if DB is empty)
     let userId = req.user ? req.user.id : null;
@@ -208,19 +222,14 @@ async function verifyPaymentProof(req, res, next) {
 
     const amount = PLAN_RATES[plan_duration] / 100;
     const orderId = `proof_order_${userId || 'anon'}_${Date.now()}`;
-    const paymentId = reference_id || `manual_${Date.now()}`;
 
-    // Save order in DB with new columns safely
-    try {
-      if (userId) {
-        await db.query(
-          `INSERT INTO orders (user_id, razorpay_order_id, razorpay_payment_id, razorpay_signature, plan_duration, amount, status, mobile_number, proof_file_path, user_name) 
-           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
-          [userId, orderId, paymentId, 'verified_proof', plan_duration, amount * 100, 'paid', mobile_number || '', proofFilePath, name || '']
-        );
-      }
-    } catch (orderErr) {
-      console.error('Order insert error:', orderErr);
+    // STRICT ATOMIC INSERTION: If this fails, abort immediately so subscription is never updated twice!
+    if (userId) {
+      await db.query(
+        `INSERT INTO orders (user_id, razorpay_order_id, razorpay_payment_id, razorpay_signature, plan_duration, amount, status, mobile_number, proof_file_path, user_name) 
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
+        [userId, orderId, cleanRef, 'verified_proof', plan_duration, amount * 100, 'paid', mobile_number || '', proofFilePath, name || '']
+      );
     }
 
     // Add time to subscription
@@ -270,7 +279,7 @@ async function verifyPaymentProof(req, res, next) {
     });
   } catch (err) {
     console.error('verifyPaymentProof fatal error:', err);
-    res.status(500).json({ success: false, message: 'Verification experienced an error but premium status is being processed. Please refresh.' });
+    res.status(500).json({ success: false, message: 'Database transaction error during verification. Please try again.' });
   }
 }
 

@@ -304,11 +304,15 @@ document.addEventListener("DOMContentLoaded", () => {
     // --- 10. Premium Splash Screen Logic ---
     const splashScreen = document.getElementById('splash-screen');
     if (splashScreen) {
-        // Ensure minimum 1.5s of splash screen for premium feel, but also wait for load
+        // Ensure minimum 1.5s of splash screen for premium feel, but set a maximum safety timeout (2.5s) so it never hangs due to ad-blockers or slow external assets
         const minTime = new Promise(resolve => setTimeout(resolve, 1500));
         const winLoad = new Promise(resolve => {
             if (document.readyState === 'complete') resolve();
-            else window.addEventListener('load', resolve);
+            else {
+                window.addEventListener('load', resolve);
+                // Fallback safety timeout in case external third-party scripts (GTM, Analytics, Unsplash) hang or get blocked
+                setTimeout(resolve, 2500);
+            }
         });
         
         Promise.all([minTime, winLoad]).then(() => {

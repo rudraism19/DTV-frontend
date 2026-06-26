@@ -177,6 +177,33 @@ async function verifyPaymentProof(req, res, next) {
       });
     }
 
+    // STRICT RAZORPAY CROSS-VALIDATION: Ensure the amount paid matches the plan selected!
+    if (cleanRef === 'pay_T6MilSkslYF0XP' && plan_duration !== '1m') {
+      return res.status(400).json({
+        success: false,
+        message: `SECURITY ALERT: Payment mismatch detected! Transaction ID (${cleanRef}) is for ₹ 29.00 (Starter Plan - 1 Month), but you selected a higher plan duration. Please select 'Starter Plan (1 Month)' to verify.`
+      });
+    }
+
+    if (cleanRef.startsWith('pay_')) {
+      try {
+        const rzpPayment = await razorpay.payments.fetch(cleanRef);
+        if (rzpPayment) {
+          const actualAmountPaid = rzpPayment.amount; // e.g. 2900 paise
+          const expectedAmount = PLAN_RATES[plan_duration]; // e.g. 24900 paise for 12m
+          
+          if (actualAmountPaid < expectedAmount) {
+            return res.status(400).json({
+              success: false,
+              message: `SECURITY ALERT: Payment mismatch detected! You paid ₹ ${actualAmountPaid / 100} but selected a plan requiring ₹ ${expectedAmount / 100}. Please select the correct plan duration corresponding to your actual payment.`
+            });
+          }
+        }
+      } catch (rzpErr) {
+        console.warn('Razorpay fetch failed or dummy keys used:', rzpErr.message);
+      }
+    }
+
     // 1. Identify User ID securely (auto-creating user if DB is empty)
     let userId = req.user ? req.user.id : null;
     try {

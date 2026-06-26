@@ -89,8 +89,11 @@ async function verifyPayment(req, res, next) {
       .update(body.toString())
       .digest('hex');
 
-    if (expectedSignature === razorpay_signature || razorpay_signature === 'mock_signature' || razorpay_order_id.startsWith('client_order_')) {
-      // Signature is valid or fallback client checkout. Update order status and user subscription
+    const isProduction = env.NODE_ENV === 'production' && env.ALLOW_MOCK_PAYMENTS !== 'true';
+    const isValidMock = !isProduction && (razorpay_signature === 'mock_signature' || razorpay_order_id.startsWith('client_order_'));
+
+    if (expectedSignature === razorpay_signature || isValidMock) {
+      // Signature is valid or valid development mock checkout. Update order status and user subscription
       await db.query(
         "UPDATE orders SET status = 'paid', razorpay_payment_id = $1, razorpay_signature = $2, updated_at = CURRENT_TIMESTAMP WHERE razorpay_order_id = $3",
         [razorpay_payment_id, razorpay_signature, razorpay_order_id]

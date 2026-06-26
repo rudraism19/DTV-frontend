@@ -23,6 +23,10 @@ async function run() {
                 updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
             )
         `);
+        console.log('Adding new columns for payment proof verification...');
+        await db.query("ALTER TABLE orders ADD COLUMN IF NOT EXISTS mobile_number VARCHAR(255);");
+        await db.query("ALTER TABLE orders ADD COLUMN IF NOT EXISTS proof_file_path TEXT;");
+        await db.query("ALTER TABLE orders ADD COLUMN IF NOT EXISTS user_name VARCHAR(255);");
         console.log('Migration OK');
     } catch(e) {
         console.error(e);

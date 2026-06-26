@@ -3809,6 +3809,87 @@
             }, 800);
         }
 
+        function openPaymentProofModal() {
+            var rzpModal = document.getElementById('rzp-payment-modal');
+            if (rzpModal) rzpModal.style.display = 'none';
+
+            if (!isLoggedIn()) {
+                showToast('🔒', 'Please sign in to your account first so we can link the payment proof to your student ID.');
+                openLoginPage();
+                return;
+            }
+
+            var proofModal = document.getElementById('payment-proof-modal');
+            if (proofModal) proofModal.style.display = 'flex';
+
+            // Auto-fill user name if available
+            var proofName = document.getElementById('proof-name');
+            if (proofName && APP_DATA && APP_DATA.userData && APP_DATA.userData.name) {
+                proofName.value = APP_DATA.userData.name;
+            }
+        }
+
+        function submitPaymentProof(event) {
+            event.preventDefault();
+            var errElem = document.getElementById('proof-err');
+            if (errElem) errElem.style.display = 'none';
+
+            var btn = document.getElementById('proof-submit-btn');
+            if (btn) { btn.disabled = true; btn.textContent = 'Verifying...'; }
+
+            var name = document.getElementById('proof-name') ? document.getElementById('proof-name').value : '';
+            var mobile = document.getElementById('proof-mobile') ? document.getElementById('proof-mobile').value : '';
+            var plan = document.getElementById('proof-plan') ? document.getElementById('proof-plan').value : '1m';
+            var ref = document.getElementById('proof-ref') ? document.getElementById('proof-ref').value : '';
+            var fileInput = document.getElementById('proof-file');
+            var file = (fileInput && fileInput.files && fileInput.files[0]) ? fileInput.files[0] : null;
+
+            if (!file) {
+                if (errElem) { errElem.textContent = 'Please select a valid payment screenshot or PDF file.'; errElem.style.display = 'block'; }
+                if (btn) { btn.disabled = false; btn.textContent = 'Submit Verification →'; }
+                return;
+            }
+
+            var formData = new FormData();
+            formData.append('name', name);
+            formData.append('mobile_number', mobile);
+            formData.append('plan_duration', plan);
+            formData.append('reference_id', ref);
+            formData.append('proof_file', file);
+
+            var headers = {};
+            if (APP_DATA && APP_DATA.userData && APP_DATA.userData.token) {
+                headers['Authorization'] = 'Bearer ' + APP_DATA.userData.token;
+            }
+
+            fetch('/api/v1/payment/verify-proof', {
+                method: 'POST',
+                headers: headers,
+                body: formData
+            }).then(function(res) {
+                return res.json();
+            }).then(function(data) {
+                if (btn) { btn.disabled = false; btn.textContent = 'Submit Verification →'; }
+                if (data.success) {
+                    showToast('✅', data.message || 'Payment verified! Premium unlocked.');
+                    if (APP_DATA && APP_DATA.userData) {
+                        APP_DATA.userData.subscriptionExpiresAt = data.subscriptionExpiresAt;
+                        try {
+                            localStorage.setItem('dt_user', JSON.stringify(APP_DATA.userData));
+                        } catch(e) {}
+                    }
+                    updateSubscriptionTracker();
+                    var modal = document.getElementById('payment-proof-modal');
+                    if (modal) modal.style.display = 'none';
+                } else {
+                    if (errElem) { errElem.textContent = data.message || 'Error verifying payment proof.'; errElem.style.display = 'block'; }
+                }
+            }).catch(function(err) {
+                if (btn) { btn.disabled = false; btn.textContent = 'Submit Verification →'; }
+                if (errElem) { errElem.textContent = 'Network error during verification. Please try again.'; errElem.style.display = 'block'; }
+            });
+        }
+
         function openSignupPage() {
             var auth = document.getElementById('page-auth');
             if (auth) auth.classList.remove('active');

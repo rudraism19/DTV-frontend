@@ -12,9 +12,9 @@ const razorpay = new Razorpay({
 
 const PLAN_RATES = {
   '1w': 2900,
-  '1m': 8900,
-  '6m': 49900,
-  '12m': 99900
+  '1m': 2900,
+  '6m': 11900,
+  '12m': 24900
 };
 
 async function createOrder(req, res, next) {
@@ -83,13 +83,18 @@ async function verifyPayment(req, res, next) {
       if (plan_duration === '12m') interval = '1 year';
 
       // If subscription_expires_at is already in future, add to it. Otherwise, add to NOW.
-      await db.query(`
+      const updateRes = await db.query(`
         UPDATE users 
         SET subscription_expires_at = GREATEST(COALESCE(subscription_expires_at, CURRENT_TIMESTAMP), CURRENT_TIMESTAMP) + interval '${interval}'
         WHERE id = $1
+        RETURNING subscription_expires_at
       `, [user_id]);
 
-      res.json({ success: true, message: 'Payment verified successfully. Premium unlocked.' });
+      res.json({ 
+        success: true, 
+        message: 'Payment verified successfully. Premium unlocked.',
+        subscriptionExpiresAt: updateRes.rows[0].subscription_expires_at 
+      });
     } else {
       await db.query(
         "UPDATE orders SET status = 'failed', updated_at = CURRENT_TIMESTAMP WHERE razorpay_order_id = $1",

@@ -3697,20 +3697,106 @@
         }
 
         function checkPremiumAccess(featureName) {
-            // Premium features are temporarily free
-            return true;
+            // Check if user has active premium or trial
+            if (!APP_DATA.userData || !APP_DATA.userData.id) {
+                showToast('🔒', 'Please sign in to access ' + (featureName || 'this feature') + '.');
+                openLoginPage();
+                return false;
+            }
+            var now = new Date();
+            var subExp = APP_DATA.userData.subscriptionExpiresAt ? new Date(APP_DATA.userData.subscriptionExpiresAt) : null;
+            if (subExp && subExp > now) {
+                return true;
+            }
+            var trialExp = APP_DATA.userData.trialExpiresAt ? new Date(APP_DATA.userData.trialExpiresAt) : null;
+            if (trialExp && trialExp > now) {
+                return true;
+            }
+            showToast('💎', 'Your trial has expired. Please upgrade to Premium to unlock ' + (featureName || 'full access') + '.');
+            openPricingPage();
+            return false;
         }
 
         function openPricingPage() {
-            showToast('💎', 'Premium plans coming soon! All features are currently free.');
+            var modal = document.getElementById('pricing-modal');
+            if (modal) {
+                modal.style.display = 'flex';
+            }
         }
 
         function closePricingPage() {
-            // Pricing page removed for now
+            var modal = document.getElementById('pricing-modal');
+            if (modal) {
+                modal.style.display = 'none';
+            }
         }
 
         function initiatePayment(planId) {
-            showToast('🚧', 'Payment integration coming soon. Stay tuned!');
+            if (!APP_DATA.userData || !APP_DATA.userData.id) {
+                closePricingPage();
+                showToast('🔒', 'Please sign in first to subscribe to a premium plan.');
+                openLoginPage();
+                return;
+            }
+
+            showToast('🔄', 'Initializing secure payment gateway...');
+            
+            apiCall('/api/v1/payment/create', 'POST', { plan: planId })
+                .then(function(res) {
+                    if (!res.success) {
+                        showToast('❌', res.message || 'Failed to create payment order. Please try again.');
+                        return;
+                    }
+
+                    var options = {
+                        key: res.key_id,
+                        amount: res.amount,
+                        currency: res.currency,
+                        name: "DigitalTwin Verse",
+                        description: "Upgrade to Premium (" + planId + ")",
+                        image: "/img/dtv-logo.jpg",
+                        order_id: res.order_id,
+                        handler: function (response) {
+                            showToast('🔄', 'Verifying payment securely...');
+                            apiCall('/api/v1/payment/verify', 'POST', {
+                                razorpay_order_id: response.razorpay_order_id,
+                                razorpay_payment_id: response.razorpay_payment_id,
+                                razorpay_signature: response.razorpay_signature
+                            }).then(function(verifyRes) {
+                                if (verifyRes.success) {
+                                    closePricingPage();
+                                    showToast('🎉', 'Payment verified successfully! Welcome to Premium.');
+                                    if (verifyRes.subscriptionExpiresAt) {
+                                        APP_DATA.userData.subscriptionExpiresAt = verifyRes.subscriptionExpiresAt;
+                                    }
+                                    if (typeof updateSubscriptionTracker === 'function') {
+                                        updateSubscriptionTracker();
+                                    }
+                                } else {
+                                    showToast('❌', verifyRes.message || 'Payment verification failed.');
+                                }
+                            }).catch(function(err) {
+                                showToast('❌', 'Error verifying payment. Please contact support.');
+                            });
+                        },
+                        prefill: {
+                            name: APP_DATA.userData.name || '',
+                            email: APP_DATA.userData.email || ''
+                        },
+                        theme: {
+                            color: "#e88c2a"
+                        }
+                    };
+
+                    var rzp = new Razorpay(options);
+                    rzp.on('payment.failed', function (response){
+                        showToast('❌', 'Payment failed: ' + response.error.description);
+                    });
+                    rzp.open();
+                })
+                .catch(function(err) {
+                    showToast('❌', 'Failed to initialize payment gateway. Please check your connection.');
+                });
         }
 
         function openSignupPage() {

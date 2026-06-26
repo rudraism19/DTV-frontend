@@ -416,9 +416,26 @@
             <div class="splash-text">Digital<em>Twin Verse</em></div>
         </div>
         <div class="splash-loader">
-            <div class="splash-loader-bar"></div>
+            <div class="splash-loader-bar" id="splash-loader-bar" style="width: 0%; background: #37d7ff; box-shadow: 0 0 15px #37d7ff;"></div>
         </div>
     </div>
+    <script>
+        // Bulletproof JavaScript loader animation for laptops and desktops
+        (function() {
+            const bar = document.getElementById('splash-loader-bar');
+            if (bar) {
+                let width = 0;
+                const interval = setInterval(() => {
+                    if (width >= 100) {
+                        clearInterval(interval);
+                    } else {
+                        width += 2;
+                        bar.style.width = width + '%';
+                    }
+                }, 30);
+            }
+        })();
+    </script>
 
     <div class="noise-overlay"></div>
     <!-- NAV -->

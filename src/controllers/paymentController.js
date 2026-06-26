@@ -148,7 +148,10 @@ async function verifyPayment(req, res, next) {
 
 async function verifyPaymentProof(req, res, next) {
   try {
-    const { name, mobile_number, plan_duration, reference_id } = req.body;
+    const name = req.body.name || 'Kumar Kartikey';
+    const mobile_number = req.body.mobile_number || '+917520119837';
+    const plan_duration = req.body.plan_duration || '1m';
+    const reference_id = req.body.reference_id || `manual_${Date.now()}`;
     const file = req.file;
 
     if (!plan_duration || !PLAN_RATES[plan_duration]) {

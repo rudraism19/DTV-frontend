@@ -15,6 +15,7 @@ router.use('/users', userRoutes);
 router.use('/files', fileRoutes);
 router.use('/health', healthRoutes);
 router.use('/payments', require('./paymentRoutes'));
+router.use('/payment', require('./paymentRoutes'));
 router.use('/data', dataRoutes);
 router.use('/', aiRoutes);
 

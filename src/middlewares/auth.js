@@ -23,6 +23,29 @@ async function authenticate(req, _res, next) {
   }
 }
 
+async function authenticateOptional(req, _res, next) {
+  const header = req.headers.authorization || '';
+  if (!header.startsWith('Bearer ')) {
+    req.user = null;
+    return next();
+  }
+
+  const token = header.slice(7);
+  try {
+    const payload = jwt.verify(token, env.JWT_ACCESS_SECRET);
+    const user = await userModel.findById(payload.sub);
+    if (user && user.isActive) {
+      req.user = user;
+    } else {
+      req.user = null;
+    }
+    return next();
+  } catch (err) {
+    req.user = null;
+    return next();
+  }
+}
+
 function authorize() {
   const roles = Array.prototype.slice.call(arguments);
   return function(req, _res, next) {
@@ -71,6 +94,7 @@ async function authorizeParentOfStudent(req, res, next) {
 
 module.exports = {
   authenticate,
+  authenticateOptional,
   authorize,
   requireVerified,
   authorizeParentOfStudent

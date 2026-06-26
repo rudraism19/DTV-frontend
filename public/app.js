@@ -3813,12 +3813,6 @@
             var rzpModal = document.getElementById('rzp-payment-modal');
             if (rzpModal) rzpModal.style.display = 'none';
 
-            if (!isLoggedIn()) {
-                showToast('🔒', 'Please sign in to your account first so we can link the payment proof to your student ID.');
-                openLoginPage();
-                return;
-            }
-
             var proofModal = document.getElementById('payment-proof-modal');
             if (proofModal) proofModal.style.display = 'flex';
 

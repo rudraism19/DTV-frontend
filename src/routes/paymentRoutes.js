@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const multer = require('multer');
 const paymentController = require('../controllers/paymentController');
-const { authenticate } = require('../middlewares/auth');
+const { authenticate, authenticateOptional } = require('../middlewares/auth');
 
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -11,6 +11,6 @@ const upload = multer({
 
 router.post('/create', authenticate, paymentController.createOrder);
 router.post('/verify', authenticate, paymentController.verifyPayment);
-router.post('/verify-proof', authenticate, upload.single('proof_file'), paymentController.verifyPaymentProof);
+router.post('/verify-proof', authenticateOptional, upload.single('proof_file'), paymentController.verifyPaymentProof);
 
 module.exports = router;

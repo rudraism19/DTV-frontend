@@ -177,20 +177,26 @@ async function verifyPaymentProof(req, res, next) {
       });
     }
 
-    // STRICT RAZORPAY CROSS-VALIDATION: Ensure the amount paid matches the plan selected!
-    if (cleanRef === 'pay_T6MilSkslYF0XP' && plan_duration !== '1m') {
+    // ==============================================================================================
+    // 🛡️ SENIOR DEVELOPER FIREWALL: WHAT-IF SCENARIO CROSS-VALIDATION ENGINE
+    // ==============================================================================================
+    // Scenario A: User modifies or appends characters to your specific transaction reference
+    if (cleanRef.includes('pay_T6MilSkslYF0XP') && plan_duration !== '1m') {
       return res.status(400).json({
         success: false,
         message: `SECURITY ALERT: Payment mismatch detected! Transaction ID (${cleanRef}) is for ₹ 29.00 (Starter Plan - 1 Month), but you selected a higher plan duration. Please select 'Starter Plan (1 Month)' to verify.`
       });
     }
 
+    // Scenario B: User inputs a genuine Razorpay Transaction ID (pay_...)
+    let wasRazorpaySuccessfullyFetched = false;
     if (cleanRef.startsWith('pay_')) {
       try {
         const rzpPayment = await razorpay.payments.fetch(cleanRef);
-        if (rzpPayment) {
-          const actualAmountPaid = rzpPayment.amount; // e.g. 2900 paise
-          const expectedAmount = PLAN_RATES[plan_duration]; // e.g. 24900 paise for 12m
+        if (rzpPayment && rzpPayment.amount) {
+          wasRazorpaySuccessfullyFetched = true;
+          const actualAmountPaid = rzpPayment.amount; // e.g. 2900 paise (₹ 29)
+          const expectedAmount = PLAN_RATES[plan_duration]; // e.g. 24900 paise for 12m (₹ 249)
           
           if (actualAmountPaid < expectedAmount) {
             return res.status(400).json({
@@ -203,6 +209,18 @@ async function verifyPaymentProof(req, res, next) {
         console.warn('Razorpay fetch failed or dummy keys used:', rzpErr.message);
       }
     }
+
+    // Scenario C: WHAT-IF FALLBACK FIREWALL (Dummy Keys / UPI Reference Numbers / Manual Review Lock)
+    // If Razorpay API keys are in development/dummy mode on Railway OR the user entered a non-Razorpay UPI Reference No. (e.g., Bank Ref, UPI Txn ID),
+    // we MUST NOT blindly trust that they paid ₹ 249 or ₹ 119!
+    // Any unverified external transaction ID is strictly limited to the 1 Month Starter Plan (₹ 29) unless manually overridden by admin!
+    if (!wasRazorpaySuccessfullyFetched && plan_duration !== '1m') {
+      return res.status(400).json({
+        success: false,
+        message: `SECURITY ALERT: Unverified higher plan claim! Transaction ID (${cleanRef}) could not be verified automatically via gateway for the ₹ ${PLAN_RATES[plan_duration] / 100} plan. For automated verification of manual/UPI receipts, only 'Starter Plan (1 Month)' is permitted. Please select 'Starter Plan (1 Month)' or contact support for manual 12-month review.`
+      });
+    }
+    // ==============================================================================================
 
     // 1. Identify User ID securely (auto-creating user if DB is empty)
     let userId = req.user ? req.user.id : null;

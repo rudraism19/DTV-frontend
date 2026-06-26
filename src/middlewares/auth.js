@@ -77,13 +77,13 @@ async function authorizeParentOfStudent(req, res, next) {
     return next(new ApiError(400, 'Student ID is required to verify parent access.'));
   }
 
-  if (req.user.role === 'student' && req.user.id === studentId) {
+  if (req.user.role === 'student' && req.user.id.toString() === studentId.toString()) {
     return next(); // Student can access their own data
   }
 
   if (req.user.role === 'parent') {
     const linkedStudents = await userModel.getLinkedStudents(req.user.id);
-    const isLinked = linkedStudents.some(s => s.id === studentId);
+    const isLinked = linkedStudents.some(s => s.id.toString() === studentId.toString());
     if (isLinked) {
       return next(); // Linked parent can access student data
     }

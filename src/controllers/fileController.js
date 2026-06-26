@@ -20,7 +20,7 @@ const getById = asyncHandler(async function(req, res) {
     throw new ApiError(404, 'File not found.');
   }
 
-  if (record.user_id && record.user_id !== req.user.id && req.user.role !== 'admin') {
+  if (record.user_id && record.user_id.toString() !== req.user.id.toString() && req.user.role !== 'admin') {
     throw new ApiError(403, 'Access denied for this file.');
   }
 

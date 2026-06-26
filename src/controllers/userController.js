@@ -45,7 +45,7 @@ const updateStatus = asyncHandler(async function(req, res) {
   const userId = req.params.id;
   const isActive = req.body.isActive;
 
-  if (userId === req.user.id) {
+  if (userId.toString() === req.user.id.toString()) {
     throw new ApiError(403, 'You cannot block yourself.');
   }
 

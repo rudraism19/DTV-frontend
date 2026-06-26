@@ -7,7 +7,11 @@ const { getS3Client, isS3Enabled } = require('../config/storage');
 const fileModel = require('../models/fileModel');
 
 function buildObjectKey(userId, filename) {
-  const ext = path.extname(filename || '').toLowerCase();
+  let ext = path.extname(filename || '').toLowerCase();
+  const allowedExts = ['.jpg', '.jpeg', '.png', '.gif', '.pdf', '.doc', '.docx', '.txt', '.webp'];
+  if (!allowedExts.includes(ext)) {
+    ext = '.bin'; // Neutralize arbitrary executable extensions to prevent Remote Code Execution
+  }
   return 'users/' + userId + '/' + crypto.randomUUID() + ext;
 }
 

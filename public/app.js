@@ -3644,7 +3644,7 @@
             var progressBar = document.getElementById('tracker-progress-bar');
             
             var loggedIn = isLoggedIn();
-            if (!loggedIn) {
+            if (!loggedIn && (!APP_DATA.userData || !APP_DATA.userData.subscriptionExpiresAt)) {
                 if (statusDesc) statusDesc.textContent = 'Please sign in to view your access status.';
                 if (planType) planType.textContent = 'Guest / Unverified';
                 if (timeLeft) timeLeft.textContent = 'Sign in required';
@@ -3867,10 +3867,14 @@
                 if (data.success) {
                     showToast('✅', data.message || 'Payment verified! Premium unlocked.');
                     if (APP_DATA && APP_DATA.userData) {
+                        APP_DATA.userData.loggedIn = true;
+                        APP_DATA.userData.name = name || APP_DATA.userData.name || 'Student';
+                        APP_DATA.userData.phone = mobile || APP_DATA.userData.phone || '';
                         APP_DATA.userData.subscriptionExpiresAt = data.subscriptionExpiresAt;
                         try {
                             localStorage.setItem('dt_user', JSON.stringify(APP_DATA.userData));
                         } catch(e) {}
+                        if (typeof syncData === 'function') syncData();
                     }
                     updateSubscriptionTracker();
                     var modal = document.getElementById('payment-proof-modal');

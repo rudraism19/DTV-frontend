@@ -97,6 +97,15 @@
                     Object.assign(APP_DATA, d);
                     migrateData();
                 }
+                var dtUser = localStorage.getItem('dt_user');
+                if (dtUser) {
+                    try {
+                        var u = JSON.parse(dtUser);
+                        if (u && Object.keys(u).length > 0) {
+                            APP_DATA.userData = Object.assign(APP_DATA.userData || {}, u);
+                        }
+                    } catch(ue) {}
+                }
                 if (APP_DATA.userData && APP_DATA.userData.token) {
                     // Fetch from backend to override session storage
                     var endpoint = '/api/v1/data/me';
@@ -109,9 +118,11 @@
                             Object.assign(APP_DATA, json.data);
                             migrateData();
                             if (typeof window.renderAll === 'function') window.renderAll();
+                            if (typeof updateSubscriptionTracker === 'function') updateSubscriptionTracker();
                         }
                     }).catch(function(e) { logClientError('Backend load failed', e); });
                 }
+                if (typeof updateSubscriptionTracker === 'function') updateSubscriptionTracker();
             } catch (e) {
                 logClientError('loadData failed', e);
             }
@@ -3643,6 +3654,17 @@
             var timeLeft = document.getElementById('tracker-time-left');
             var progressBar = document.getElementById('tracker-progress-bar');
             
+            // Backup check from localStorage
+            try {
+                var dtUser = localStorage.getItem('dt_user');
+                if (dtUser) {
+                    var u = JSON.parse(dtUser);
+                    if (u && u.subscriptionExpiresAt) {
+                        APP_DATA.userData = Object.assign(APP_DATA.userData || {}, u);
+                    }
+                }
+            } catch(e) {}
+
             var loggedIn = isLoggedIn();
             if (!loggedIn && (!APP_DATA.userData || !APP_DATA.userData.subscriptionExpiresAt)) {
                 if (statusDesc) statusDesc.textContent = 'Please sign in to view your access status.';

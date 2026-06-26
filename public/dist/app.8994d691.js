@@ -3698,7 +3698,7 @@
 
         function checkPremiumAccess(featureName) {
             // Check if user has active premium or trial
-            if (!APP_DATA.userData || !APP_DATA.userData.id) {
+            if (!isLoggedIn()) {
                 showToast('🔒', 'Please sign in to access ' + (featureName || 'this feature') + '.');
                 openLoginPage();
                 return false;
@@ -3731,72 +3731,82 @@
             }
         }
 
+        function apiCall(url, method, bodyData) {
+            var headers = {
+                'Content-Type': 'application/json'
+            };
+            if (APP_DATA && APP_DATA.userData && APP_DATA.userData.token) {
+                headers['Authorization'] = 'Bearer ' + APP_DATA.userData.token;
+            }
+            return fetch(url, {
+                method: method || 'GET',
+                headers: headers,
+                body: bodyData ? JSON.stringify(bodyData) : undefined
+            }).then(function(res) {
+                return res.json();
+            });
+        }
+
         function initiatePayment(planId) {
-            if (!APP_DATA.userData || !APP_DATA.userData.id) {
-                closePricingPage();
-                showToast('🔒', 'Please sign in first to subscribe to a premium plan.');
-                openLoginPage();
-                return;
+            closePricingPage();
+            showToast('🔄', 'Opening Razorpay Secure Gateway...');
+            
+            var rzpModal = document.getElementById('rzp-payment-modal');
+            if (rzpModal) {
+                rzpModal.style.display = 'flex';
             }
 
-            showToast('🔄', 'Initializing secure payment gateway...');
-            
-            apiCall('/api/v1/payment/create', 'POST', { plan: planId })
-                .then(function(res) {
-                    if (!res.success) {
-                        showToast('❌', res.message || 'Failed to create payment order. Please try again.');
-                        return;
-                    }
+            var c1m = document.getElementById('rzp-container-1m');
+            var c6m = document.getElementById('rzp-container-6m');
+            var c12m = document.getElementById('rzp-container-12m');
+            var pTitle = document.getElementById('rzp-plan-title');
+            var pDesc = document.getElementById('rzp-plan-desc');
 
-                    var options = {
-                        key: res.key_id,
-                        amount: res.amount,
-                        currency: res.currency,
-                        name: "DigitalTwin Verse",
-                        description: "Upgrade to Premium (" + planId + ")",
-                        image: "/img/dtv-logo.jpg",
-                        order_id: res.order_id,
-                        handler: function (response) {
-                            showToast('🔄', 'Verifying payment securely...');
-                            apiCall('/api/v1/payment/verify', 'POST', {
-                                razorpay_order_id: response.razorpay_order_id,
-                                razorpay_payment_id: response.razorpay_payment_id,
-                                razorpay_signature: response.razorpay_signature
-                            }).then(function(verifyRes) {
-                                if (verifyRes.success) {
-                                    closePricingPage();
-                                    showToast('🎉', 'Payment verified successfully! Welcome to Premium.');
-                                    if (verifyRes.subscriptionExpiresAt) {
-                                        APP_DATA.userData.subscriptionExpiresAt = verifyRes.subscriptionExpiresAt;
-                                    }
-                                    if (typeof updateSubscriptionTracker === 'function') {
-                                        updateSubscriptionTracker();
-                                    }
-                                } else {
-                                    showToast('❌', verifyRes.message || 'Payment verification failed.');
-                                }
-                            }).catch(function(err) {
-                                showToast('❌', 'Error verifying payment. Please contact support.');
-                            });
-                        },
-                        prefill: {
-                            name: APP_DATA.userData.name || '',
-                            email: APP_DATA.userData.email || ''
-                        },
-                        theme: {
-                            color: "#e88c2a"
-                        }
-                    };
+            if (c1m) c1m.style.display = 'none';
+            if (c6m) c6m.style.display = 'none';
+            if (c12m) c12m.style.display = 'none';
 
-                    var rzp = new Razorpay(options);
-                    rzp.on('payment.failed', function (response){
-                        showToast('❌', 'Payment failed: ' + response.error.description);
-                    });
-                    rzp.open();
-                })
-                .catch(function(err) {
-                    showToast('❌', 'Failed to initialize payment gateway. Please check your connection.');
-                });
+            var targetFormId = 'rzp-custom-form-1m';
+            var targetBtnId = 'pl_T6LP8q96flBl9y';
+
+            if (planId === '6m') {
+                if (c6m) c6m.style.display = 'block';
+                if (pTitle) pTitle.textContent = 'Most Popular Plan (6 Months)';
+                if (pDesc) pDesc.textContent = 'Click the secure Razorpay button below to subscribe to the 6 Months Plan via UPI, QR Scanner, or Card.';
+                targetFormId = 'rzp-custom-form-6m';
+                targetBtnId = 'pl_T6LZeof4ekVcKT';
+            } else if (planId === '12m') {
+                if (c12m) c12m.style.display = 'block';
+                if (pTitle) pTitle.textContent = 'Best Value Plan (12 Months)';
+                if (pDesc) pDesc.textContent = 'Click the secure Razorpay button below to subscribe to the 12 Months Plan via UPI, QR Scanner, or Card.';
+                targetFormId = 'rzp-custom-form-12m';
+                targetBtnId = 'pl_T6LeKMf0WTDmV3';
+            } else {
+                if (c1m) c1m.style.display = 'block';
+                if (pTitle) pTitle.textContent = 'Starter Plan (1 Month)';
+                if (pDesc) pDesc.textContent = 'Click the secure Razorpay button below to subscribe to the 1 Month Plan via UPI, QR Scanner, or Card.';
+                targetFormId = 'rzp-custom-form-1m';
+                targetBtnId = 'pl_T6LP8q96flBl9y';
+            }
+
+            // Check if Razorpay button rendered. If not, dynamically inject the script tag to force render!
+            var formElem = document.getElementById(targetFormId);
+            if (formElem && !formElem.querySelector('.razorpay-payment-button')) {
+                formElem.innerHTML = ''; // clear any failed/pending script tags
+                var scriptElem = document.createElement('script');
+                scriptElem.src = 'https://checkout.razorpay.com/v1/payment-button.js';
+                scriptElem.setAttribute('data-payment_button_id', targetBtnId);
+                scriptElem.async = true;
+                formElem.appendChild(scriptElem);
+            }
+
+            // Also try to automatically click the Razorpay button inside the form if it has rendered!
+            setTimeout(function() {
+                var rzpBtn = document.querySelector('#' + targetFormId + ' input[type="submit"], #' + targetFormId + ' button, #' + targetFormId + ' .razorpay-payment-button');
+                if (rzpBtn && typeof rzpBtn.click === 'function') {
+                    rzpBtn.click();
+                }
+            }, 800);
         }
 
         function openSignupPage() {
@@ -3891,11 +3901,14 @@
                 if (r.ok) {
                     var d = await r.json();
                     if (d && d.user) {
+                        APP_DATA.userData.id = d.user.id || APP_DATA.userData.id;
                         APP_DATA.userData.name = d.user.name || APP_DATA.userData.name;
                         APP_DATA.userData.email = d.user.email || APP_DATA.userData.email;
                         APP_DATA.userData.role = d.user.role || APP_DATA.userData.role;
                         APP_DATA.userData.emailVerified = d.user.emailVerified;
                         APP_DATA.userData.linkCode = d.user.linkCode || null;
+                        APP_DATA.userData.trialExpiresAt = d.user.trialExpiresAt || APP_DATA.userData.trialExpiresAt;
+                        APP_DATA.userData.subscriptionExpiresAt = d.user.subscriptionExpiresAt || APP_DATA.userData.subscriptionExpiresAt;
                         syncData();
                         updateAuthNav();
                     }
@@ -3913,10 +3926,13 @@
                         if (rd && rd.accessToken) {
                             APP_DATA.userData.token = rd.accessToken;
                             if (rd.user) {
+                                APP_DATA.userData.id = rd.user.id || APP_DATA.userData.id;
                                 APP_DATA.userData.name = rd.user.name || APP_DATA.userData.name;
                                 APP_DATA.userData.email = rd.user.email || APP_DATA.userData.email;
                                 APP_DATA.userData.role = rd.user.role || APP_DATA.userData.role;
                                 APP_DATA.userData.linkCode = rd.user.linkCode || null;
+                                APP_DATA.userData.trialExpiresAt = rd.user.trialExpiresAt || APP_DATA.userData.trialExpiresAt;
+                                APP_DATA.userData.subscriptionExpiresAt = rd.user.subscriptionExpiresAt || APP_DATA.userData.subscriptionExpiresAt;
                             }
                             syncData();
                             updateAuthNav();
@@ -3998,12 +4014,15 @@
                     })
                 }).catch(function(){});
                 
+                APP_DATA.userData.id = data.user.id;
                 APP_DATA.userData.token = data.accessToken;
                 APP_DATA.userData.name = data.user.name;
                 APP_DATA.userData.email = data.user.email;
                 APP_DATA.userData.role = data.user.role;
                 APP_DATA.userData.emailVerified = data.user.emailVerified;
                 APP_DATA.userData.linkCode = data.user.linkCode || null;
+                APP_DATA.userData.trialExpiresAt = data.user.trialExpiresAt || null;
+                APP_DATA.userData.subscriptionExpiresAt = data.user.subscriptionExpiresAt || null;
                 setLoggedIn(true);
                 loginGateActive = false;
                 var signup = document.getElementById('page-signup');
@@ -4015,6 +4034,11 @@
                     closeMod();
                     unlockSite();
                     showToast('✅', 'Account created and signed in successfully.');
+                    var pendingPlan = sessionStorage.getItem('pending_payment_plan');
+                    if (pendingPlan) {
+                        sessionStorage.removeItem('pending_payment_plan');
+                        setTimeout(function() { initiatePayment(pendingPlan); }, 800);
+                    }
                 }
             } catch (err) {
                 showToast('❌', err.message);
@@ -4108,6 +4132,7 @@
                 var data = await res.json();
                 if (!res.ok) throw new Error(data.error || data.message || 'Login failed');
                 
+                APP_DATA.userData.id = data.user.id;
                 APP_DATA.userData.token = data.accessToken;
                 APP_DATA.userData.name = data.user.name;
                 APP_DATA.userData.email = data.user.email;
@@ -4125,6 +4150,11 @@
                     closeMod();
                     unlockSite();
                     showToast('✅', 'Signed in successfully.');
+                    var pendingPlan = sessionStorage.getItem('pending_payment_plan');
+                    if (pendingPlan) {
+                        sessionStorage.removeItem('pending_payment_plan');
+                        setTimeout(function() { initiatePayment(pendingPlan); }, 800);
+                    }
                 }
             } catch (err) {
                 showToast('❌', err.message);
@@ -4171,6 +4201,11 @@
                 
                 unlockSite();
                 showToast('✅', 'Email verified successfully!');
+                var pendingPlan = sessionStorage.getItem('pending_payment_plan');
+                if (pendingPlan) {
+                    sessionStorage.removeItem('pending_payment_plan');
+                    setTimeout(function() { initiatePayment(pendingPlan); }, 800);
+                }
             } catch (err) {
                 showToast('❌', err.message);
                 var errEl = document.getElementById('otp-err');

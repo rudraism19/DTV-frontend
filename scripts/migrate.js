@@ -5,7 +5,12 @@ const env = require('../src/config/env');
 const logger = require('../src/config/logger');
 
 async function run() {
-  const client = new Client({ connectionString: env.DATABASE_URL });
+  const isLocal = !env.DATABASE_URL || env.DATABASE_URL.includes('localhost') || env.DATABASE_URL.includes('127.0.0.1');
+  const clientConfig = { connectionString: env.DATABASE_URL };
+  if (!isLocal && env.DB_SSL_OFF !== 'true') {
+    clientConfig.ssl = { rejectUnauthorized: false };
+  }
+  const client = new Client(clientConfig);
   await client.connect();
 
   const migrationsDir = path.join(__dirname, '..', 'migrations');

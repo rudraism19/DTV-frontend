@@ -43,7 +43,7 @@ function resolveProvider() {
     return { provider: 'openai', key: openaiKey };
   }
 
-  return { error: 'No valid AI key found. Add ANTHROPIC_API_KEY or OPENAI_API_KEY in .env.' };
+  return { provider: 'mock', key: 'mock' };
 }
 
 function toOpenAIMessages(system, messages) {
@@ -85,13 +85,74 @@ async function sendMessages(payload) {
       return { error: 'Request must include at least one non-empty message.', status: 400 };
     }
 
+    const provider = providerConfig.provider;
+    const apiKey = providerConfig.key;
+
+    if (provider === 'mock') {
+      const lastMsg = messages[messages.length - 1] ? messages[messages.length - 1].content : '';
+      const isStudyPlan = lastMsg.toLowerCase().includes('study plan') || lastMsg.toLowerCase().includes('weekly') || lastMsg.toLowerCase().includes('routine');
+      const mockReply = isStudyPlan ? 
+`# 🌟 Your AI-Generated Weekly Study Plan & Career Journey
+
+Welcome to your tailored academic roadmap! Based on your student profile and active career aspirations, here is a highly optimized, premium weekly study routine designed for maximum focus accuracy and retention.
+
+---
+
+## 📅 Weekly Routine & Micro-Goals
+
+### **Monday - Core Foundation & Deep Work**
+- **08:00 AM - 10:00 AM**: Primary Subject deep dive (Focus on conceptual fundamentals).
+- **02:00 PM - 04:00 PM**: Problem-solving & assignment review.
+- **07:00 PM - 08:00 PM**: 15-minute active recall summary.
+
+### **Tuesday - Practical Application & Projects**
+- **09:00 AM - 11:30 AM**: Applied lab work / technical practice.
+- **03:00 PM - 05:00 PM**: Secondary Subject exploration.
+- **08:00 PM - 09:00 PM**: Review notes & update goal tracker.
+
+### **Wednesday - High-Yield Review & Synthesis**
+- **08:30 AM - 11:30 AM**: Practice exam papers & mock test simulations.
+- **04:00 PM - 06:00 PM**: Group discussion or peer teaching session.
+- **08:30 PM - 09:30 PM**: Error logging & weak area identification.
+
+### **Thursday - Specialized Electives & Advanced Topics**
+- **09:00 AM - 12:00 PM**: Advanced coursework reading & research.
+- **03:00 PM - 05:30 PM**: Career skills & portfolio building.
+- **08:00 PM - 09:00 PM**: Reflective journaling on weekly progress.
+
+### **Friday - Full Synthesis & Checkpoint Verification**
+- **08:00 AM - 11:00 AM**: Comprehensive weekly syllabus wrap-up.
+- **02:00 PM - 05:00 PM**: Capstone project iteration / milestone verification.
+- **07:00 PM - 08:30 PM**: Light review and weekend planning.
+
+### **Weekend - Spaced Repetition & Strategic Rest**
+- **Saturday Morning**: 2-hour intensive revision slot (Flashcards & summaries).
+- **Sunday**: Full recharge & review of upcoming week's checkpoints.
+
+---
+
+## 🎯 Key Checkpoints & Revision Slots
+- **Checkpoint 1 (Wed 11:30 AM)**: 80% accuracy in mid-week practice questions.
+- **Checkpoint 2 (Fri 05:00 PM)**: Completion of all weekly task deliverables.
+- **Revision Strategy**: Utilize 25-minute Pomodoro cycles with 5-minute strategic micro-breaks.
+
+*Note: This premium study plan was generated via Digital Twin Verse AI Advisor mock engine. To connect live Anthropic/OpenAI models, add your API keys in the .env file!*`
+        : `👋 Hello! I am your Digital Twin Verse AI Advisor. I'm here to help you simulate your career journey, optimize your study routines, and answer your academic queries. (To enable live OpenAI/Anthropic responses, configure your API keys in the .env file!)`;
+
+      return {
+        status: 200,
+        data: {
+          content: [{ type: 'text', text: mockReply }],
+          model: 'digital-twin-ai-advisor-mock'
+        }
+      };
+    }
+
     const controller = new AbortController();
     const timeout = setTimeout(function() {
       controller.abort();
     }, AI_TIMEOUT_MS);
 
-    const provider = providerConfig.provider;
-    const apiKey = providerConfig.key;
     let upstream = null;
 
     if (provider === 'anthropic') {

@@ -2,6 +2,7 @@ const ApiError = require('../utils/apiError');
 const asyncHandler = require('../utils/asyncHandler');
 const authService = require('../services/authService');
 const tokenService = require('../services/tokenService');
+const emailService = require('../services/emailService');
 const env = require('../config/env');
 
 function sanitizeUser(user) {
@@ -52,6 +53,7 @@ function getMeta(req) {
 
 const signup = asyncHandler(async function(req, res) {
   const user = await authService.signup(req.body);
+  emailService.sendWelcomeEmail(user.email, user.name).catch(() => {});
   const tokens = await tokenService.createAuthTokens(user, getMeta(req));
   setRefreshCookie(res, tokens.refreshToken, tokens.refreshExpiresAt);
 

@@ -3566,6 +3566,8 @@
             var mobSignup = document.getElementById('mob-signup');
             var mobLogout = document.getElementById('mob-logout');
             var mobAdmindb = document.getElementById('mob-admindb');
+            var mobLinkcode = document.getElementById('mob-account-link-code');
+            var mobUiLinkCode = document.getElementById('mob-ui-link-code');
             if (label) label.textContent = loggedIn ? 'Account' : 'Sign In';
             if (avatar) avatar.textContent = getUserInitial();
             if (signin) signin.style.display = loggedIn ? 'none' : 'flex';
@@ -3579,6 +3581,14 @@
                     linkcode.style.display = 'flex';
                 } else {
                     linkcode.style.display = 'none';
+                }
+            }
+            if (mobLinkcode && mobUiLinkCode) {
+                if (loggedIn && APP_DATA.userData.role === 'student' && APP_DATA.userData.linkCode) {
+                    mobUiLinkCode.textContent = APP_DATA.userData.linkCode;
+                    mobLinkcode.style.display = 'block';
+                } else {
+                    mobLinkcode.style.display = 'none';
                 }
             }
             if (mobSignin) mobSignin.style.display = loggedIn ? 'none' : 'block';
@@ -3821,14 +3831,6 @@
                 scriptElem.async = true;
                 formElem.appendChild(scriptElem);
             }
-
-            // Also try to automatically click the Razorpay button inside the form if it has rendered!
-            setTimeout(function() {
-                var rzpBtn = document.querySelector('#' + targetFormId + ' input[type="submit"], #' + targetFormId + ' button, #' + targetFormId + ' .razorpay-payment-button');
-                if (rzpBtn && typeof rzpBtn.click === 'function') {
-                    rzpBtn.click();
-                }
-            }, 800);
         }
 
         function openPaymentProofModal() {

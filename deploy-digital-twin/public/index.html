@@ -15,9 +15,9 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="/dist/main.9d3a1cf8.css">
+    <link rel="stylesheet" href="/dist/main.479f1121.css">
 
-    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <!-- Razorpay checkout.js temporarily removed — will be re-added with payment integration -->
     <style>
         /* ═══ PREMIUM UI OVERRIDES ════════════════════ */
         :root {
@@ -328,7 +328,7 @@
         .splash-logo {
             font-size: 2.5rem;
             font-weight: 800;
-            color: var(--wh, #ffffff);
+            color: var(--wh);
             letter-spacing: -0.02em;
             margin-bottom: 2rem;
             display: flex;
@@ -340,18 +340,18 @@
             width: 54px;
             height: 54px;
             border-radius: 14px;
-            background: linear-gradient(135deg, var(--amb, #ffb900), var(--amb2, #ff8800));
+            background: linear-gradient(135deg, var(--amb), var(--amb2));
             display: flex;
             align-items: center;
             justify-content: center;
-            color: var(--bg, #0b1322);
+            color: var(--bg);
             font-size: 1.6rem;
             box-shadow: 0 0 30px rgba(232, 140, 42, 0.4);
             animation: pulseMark 1.5s infinite alternate;
         }
 
         .splash-text em {
-            color: var(--amb, #ffb900);
+            color: var(--amb);
             font-style: normal;
         }
 
@@ -369,9 +369,9 @@
             top: 0;
             left: 0;
             height: 100%;
-            background: var(--cyan, #37d7ff);
+            background: var(--cyan);
             width: 0%;
-            box-shadow: 0 0 15px var(--cyan, #37d7ff);
+            box-shadow: 0 0 15px var(--cyan);
             animation: loadBar 2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
         }
 
@@ -416,26 +416,9 @@
             <div class="splash-text">Digital<em>Twin Verse</em></div>
         </div>
         <div class="splash-loader">
-            <div class="splash-loader-bar" id="splash-loader-bar" style="width: 0%; background: #37d7ff; box-shadow: 0 0 15px #37d7ff;"></div>
+            <div class="splash-loader-bar"></div>
         </div>
     </div>
-    <script>
-        // Bulletproof JavaScript loader animation for laptops and desktops
-        (function() {
-            const bar = document.getElementById('splash-loader-bar');
-            if (bar) {
-                let width = 0;
-                const interval = setInterval(() => {
-                    if (width >= 100) {
-                        clearInterval(interval);
-                    } else {
-                        width += 2;
-                        bar.style.width = width + '%';
-                    }
-                }, 30);
-            }
-        })();
-    </script>
 
     <div class="noise-overlay"></div>
     <!-- NAV -->
@@ -510,7 +493,7 @@
                 <div>
                     <div class="badge"><span class="bdot"></span>Secure Sign In Required</div>
                     <h1 class="fluid-text" style="line-height: 1.2;">Welcome back to <br><span class="serif amb"
-                            style="display: inline-block; margin-top: 0.5rem; background: linear-gradient(90deg, #ffd700, #ffb900); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">Digital
+                            style="display: inline-block; margin-top: 0.5rem; background: linear-gradient(90deg, #f5a94e, #e88c2a); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">Digital
                             Twin Verse</span></h1>
                     <p class="desc" style="max-width:560px;">Sign in first to unlock the student journey, continue your
                         profile, and enter the main site. If you do not have an account yet, create one from this
@@ -560,94 +543,6 @@
                         here</button>
                 </div>
             </div>
-        </div>
-    </div>
-
-    <!-- RAZORPAY SECURE PAYMENT PORTAL MODAL -->
-    <div id="rzp-payment-modal" class="wa-redirect-ov" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; overflow-y: auto; padding: 3rem 1rem; justify-content: center; align-items: center; z-index: 9999999; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); background: rgba(5, 7, 12, 0.85);">
-        <div class="mod-wrap" style="max-width: 450px; width: 100%; text-align: center; padding: 2.5rem; background: rgba(15, 23, 42, 0.95); border: 1px solid rgba(232, 140, 42, 0.4); box-shadow: 0 20px 50px rgba(0,0,0,0.8); border-radius: 24px; backdrop-filter: blur(20px);">
-            <div style="width: 70px; height: 70px; border-radius: 20px; background: linear-gradient(135deg, #f5a94e, #e88c2a); display: flex; align-items: center; justify-content: center; font-size: 2.2rem; margin: 0 auto 1.5rem; box-shadow: 0 10px 25px rgba(232, 140, 42, 0.4);">
-                💎
-            </div>
-            <h2 style="color: #fff; font-size: 1.8rem; font-weight: 800; margin-bottom: 0.5rem;" id="rzp-plan-title">Secure Payment Gateway</h2>
-            <p style="color: #94a3b8; font-size: 1rem; margin-bottom: 2rem;" id="rzp-plan-desc">Click the secure Razorpay button below to complete your payment via UPI, QR Code Scanner, or Card.</p>
-            
-            <div style="background: rgba(255,255,255,0.05); padding: 1.5rem; border-radius: 16px; border: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: center; align-items: center; min-height: 80px; margin-bottom: 1.5rem;">
-                <!-- 1 MONTH PLAN BUTTON -->
-                <div id="rzp-container-1m" style="display: none; width: 100%;">
-                    <form id="rzp-custom-form-1m">
-                        <script src="https://checkout.razorpay.com/v1/payment-button.js" data-payment_button_id="pl_T6LP8q96flBl9y" async></script>
-                    </form>
-                </div>
-                <!-- 6 MONTHS PLAN BUTTON -->
-                <div id="rzp-container-6m" style="display: none; width: 100%;">
-                    <form id="rzp-custom-form-6m">
-                        <script src="https://checkout.razorpay.com/v1/payment-button.js" data-payment_button_id="pl_T6LZeof4ekVcKT" async></script>
-                    </form>
-                </div>
-                <!-- 12 MONTHS PLAN BUTTON -->
-                <div id="rzp-container-12m" style="display: none; width: 100%;">
-                    <form id="rzp-custom-form-12m">
-                        <script src="https://checkout.razorpay.com/v1/payment-button.js" data-payment_button_id="pl_T6LeKMf0WTDmV3" async></script>
-                    </form>
-                </div>
-            </div>
-
-            <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.1);">
-                <p style="color: #cbd5e1; font-size: 0.95rem; margin-bottom: 1rem;">Already completed your payment? Upload your receipt to instantly update your plan tracker & access expiry.</p>
-                <button type="button" class="tool-btn" style="background: linear-gradient(135deg, #10b981, #059669); border: none; color: #fff; width: 100%; padding: 1rem; border-radius: 14px; font-weight: 700; cursor: pointer; box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3); margin-bottom: 1rem; font-size: 1rem;" onclick="openPaymentProofModal();">✅ I've Paid! Upload Payment Proof</button>
-            </div>
-
-            <button type="button" class="tool-btn" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 0.8rem 2rem; border-radius: 12px; font-weight: 600; cursor: pointer; transition: all 0.3s ease;" onclick="document.getElementById('rzp-payment-modal').style.display='none';">Cancel</button>
-        </div>
-    </div>
-
-    <!-- PAYMENT PROOF UPLOAD MODAL -->
-    <div id="payment-proof-modal" class="wa-redirect-ov" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; overflow-y: auto; padding: 3rem 1rem; justify-content: center; align-items: center; z-index: 9999999; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); background: rgba(5, 7, 12, 0.85);">
-        <div class="mod-wrap" style="max-width: 500px; width: 100%; text-align: left; padding: 2.5rem; background: rgba(15, 23, 42, 0.95); border: 1px solid rgba(16, 185, 129, 0.4); box-shadow: 0 20px 50px rgba(0,0,0,0.8); border-radius: 24px; backdrop-filter: blur(20px);">
-            <div style="width: 70px; height: 70px; border-radius: 20px; background: linear-gradient(135deg, #10b981, #059669); display: flex; align-items: center; justify-content: center; font-size: 2.2rem; margin: 0 auto 1.5rem; box-shadow: 0 10px 25px rgba(16, 185, 129, 0.4); text-align: center;">
-                🛡️
-            </div>
-            <h2 style="color: #fff; font-size: 1.8rem; font-weight: 800; margin-bottom: 0.5rem; text-align: center;">Verify Payment Proof</h2>
-            <p style="color: #94a3b8; font-size: 0.95rem; margin-bottom: 2rem; text-align: center;">Securely upload your payment screenshot/PDF along with your details. Our backend will instantly verify and update your plan expiry tracker.</p>
-            
-            <form id="proof-upload-form" onsubmit="submitPaymentProof(event)">
-                <div style="margin-bottom: 1.5rem;">
-                    <label style="display: block; color: #e2e8f0; font-size: 0.9rem; font-weight: 600; margin-bottom: 0.5rem;">Full Name *</label>
-                    <input type="text" id="proof-name" required placeholder="Enter your full name" style="width: 100%; padding: 0.9rem 1.2rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; color: #fff; font-size: 1rem; outline: none;">
-                </div>
-
-                <div style="margin-bottom: 1.5rem;">
-                    <label style="display: block; color: #e2e8f0; font-size: 0.9rem; font-weight: 600; margin-bottom: 0.5rem;">Mobile Number *</label>
-                    <input type="tel" id="proof-mobile" required placeholder="Enter your mobile number" style="width: 100%; padding: 0.9rem 1.2rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; color: #fff; font-size: 1rem; outline: none;">
-                </div>
-
-                <div style="margin-bottom: 1.5rem;">
-                    <label style="display: block; color: #e2e8f0; font-size: 0.9rem; font-weight: 600; margin-bottom: 0.5rem;">Select Plan Duration *</label>
-                    <select id="proof-plan" required style="width: 100%; padding: 0.9rem 1.2rem; background: rgba(15, 23, 42, 1); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; color: #fff; font-size: 1rem; outline: none;">
-                        <option value="1m">Starter Plan (1 Month)</option>
-                        <option value="6m">Most Popular Plan (6 Months)</option>
-                        <option value="12m">Best Value Plan (12 Months)</option>
-                    </select>
-                </div>
-
-                <div style="margin-bottom: 1.5rem;">
-                    <label style="display: block; color: #e2e8f0; font-size: 0.9rem; font-weight: 600; margin-bottom: 0.5rem;">Transaction ID / Reference No. *</label>
-                    <input type="text" id="proof-ref" required placeholder="UPI Ref / Transaction ID" style="width: 100%; padding: 0.9rem 1.2rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; color: #fff; font-size: 1rem; outline: none;">
-                </div>
-
-                <div style="margin-bottom: 2rem;">
-                    <label style="display: block; color: #e2e8f0; font-size: 0.9rem; font-weight: 600; margin-bottom: 0.5rem;">Payment Proof (Screenshot or PDF) *</label>
-                    <input type="file" id="proof-file" required accept="image/*,.pdf" style="width: 100%; padding: 0.8rem; background: rgba(255,255,255,0.05); border: 1px dashed rgba(16, 185, 129, 0.4); border-radius: 12px; color: #fff; font-size: 0.95rem; outline: none; cursor: pointer;">
-                </div>
-
-                <div id="proof-err" style="display: none; color: #ef4444; margin-bottom: 1.5rem; font-size: 0.9rem; text-align: center; background: rgba(239,68,68,0.1); padding: 0.8rem; border-radius: 12px;"></div>
-
-                <div style="display: flex; gap: 1rem; justify-content: flex-end;">
-                    <button type="button" class="tool-btn" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 0.8rem 2rem; border-radius: 12px; font-weight: 600; cursor: pointer; transition: all 0.3s ease;" onclick="document.getElementById('payment-proof-modal').style.display='none';">Cancel</button>
-                    <button type="submit" id="proof-submit-btn" class="tool-btn" style="background: linear-gradient(135deg, #10b981, #059669); border: none; color: #fff; padding: 0.8rem 2.5rem; border-radius: 12px; font-weight: 700; cursor: pointer; box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3); transition: all 0.3s ease;">Submit Verification →</button>
-                </div>
-            </form>
         </div>
     </div>
 
@@ -994,23 +889,6 @@
                         <div class="tool-grid rv">
                             <div class="tool-section-title"><span>Quick Actions</span><small>Set goals and track
                                     progress</small></div>
-                            <article class="tool-card" id="tracker-card" style="border: 1px solid rgba(232,140,42,0.4) !important; background: linear-gradient(135deg, rgba(232,140,42,0.15), rgba(20,20,25,0.95)) !important;">
-                                <div class="tool-head">
-                                    <div>
-                                        <h3 style="color: #f5a94e;">💎 Subscription & Demo Access</h3>
-                                        <p class="tool-desc" id="tracker-status-desc">Fetching access status...</p>
-                                    </div>
-                                    <span class="tool-tag" style="background: #e88c2a; color: #fff;">Status</span>
-                                </div>
-                                <div class="summary-grid" style="margin: 1rem 0;">
-                                    <div class="summary-row"><span>Plan Type</span><strong id="tracker-plan-type">Free Demo</strong></div>
-                                    <div class="summary-row"><span>Time Remaining</span><strong id="tracker-time-left">Calculating...</strong></div>
-                                </div>
-                                <div class="mini-bar"><span id="tracker-progress-bar" style="width: 100%; background: #f5a94e;"></span></div>
-                                <div style="margin-top: 1rem; display: flex; gap: 0.5rem;">
-                                    <button class="tool-btn" style="background: linear-gradient(90deg, #f5a94e, #e88c2a); color: #000; font-weight: 700; width: 100%;" onclick="openPricingPage()">Renew / Upgrade Plan</button>
-                                </div>
-                            </article>
                             <article class="tool-card">
                                 <div class="tool-head">
                                     <div>
@@ -1213,7 +1091,7 @@
 
                             <div class="tool-section-title"><span>Support &amp; Export</span><small>Get help and save
                                     plans</small></div>
-                            <article class="tool-card wide">
+                            <article class="tool-card">
                                 <div class="tool-head">
                                     <div>
                                         <h3>Ask AI for Study Plan</h3>
@@ -2122,77 +2000,6 @@
         </div>
     </div>
 
-    <!-- PREMIUM PRICING MODAL -->
-    <div id="pricing-modal" class="wa-redirect-ov" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; overflow-y: auto; padding: 3rem 1rem; justify-content: center; align-items: flex-start; z-index: 9999999; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); background: rgba(5, 7, 12, 0.85);">
-        <div class="wa-redirect-box" style="margin: auto; max-width: 1050px; width: 100%; background: linear-gradient(135deg, rgba(22, 24, 32, 0.98), rgba(11, 12, 17, 0.99)); border: 1px solid rgba(255, 255, 255, 0.15); border-top: 2px solid #e88c2a; box-shadow: 0 30px 70px rgba(0,0,0,0.95), 0 0 40px rgba(232, 140, 42, 0.25); padding: 3.5rem 2.5rem; text-align: center; border-radius: 28px; position: relative;">
-            <button onclick="closePricingPage()" style="position: absolute; top: 20px; right: 20px; background: rgba(255,255,255,0.1); border: none; color: #fff; width: 44px; height: 44px; border-radius: 50%; font-size: 1.5rem; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center;" onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">&times;</button>
-            <div style="font-size: 3rem; margin-bottom: 1rem; animation: pulseMark 2s infinite alternate;">💎</div>
-            <h2 style="font-size: 2.5rem; font-weight: 800; color: #fff; margin-bottom: 0.5rem; font-family: 'Plus Jakarta Sans', sans-serif;">Unlock DigitalTwin Verse <span style="background: linear-gradient(90deg, #f5a94e, #e88c2a); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Premium</span></h2>
-            <p style="color: #94a3b8; font-size: 1.1rem; max-width: 650px; margin: 0 auto 3rem auto;">Experience full AI Advisory capabilities, unlimited Career Exploration, advanced Parent Portal insights, and exclusive real-time guidance sessions.</p>
-            
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2.5rem; text-align: left;">
-                <!-- Plan 1: 1 Month -->
-                <div class="pricing-card" style="background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.01)); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 24px; padding: 2.5rem 2rem; position: relative; transition: all 0.4s ease; display: flex; flex-direction: column; justify-content: space-between;">
-                    <div>
-                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
-                            <div style="color: #94a3b8; font-weight: 700; text-transform: uppercase; font-size: 0.95rem; letter-spacing: 1px;">1 Month Plan</div>
-                            <div style="background: rgba(148, 163, 184, 0.15); color: #94a3b8; font-weight: 700; font-size: 0.75rem; padding: 4px 12px; border-radius: 12px; text-transform: uppercase; letter-spacing: 1px;">Starter</div>
-                        </div>
-                        <div style="font-size: 3rem; font-weight: 800; color: #fff; margin-bottom: 1.5rem;">₹29 <span style="font-size: 1rem; font-weight: 500; color: #64748b;">/ mo</span></div>
-                        <ul style="list-style: none; padding: 0; margin: 0 0 2.5rem 0; color: #cbd5e1; font-size: 0.95rem; line-height: 1.8;">
-                            <li style="margin-bottom: 0.75rem;">✓ <strong>Full Access</strong> to AI Advisor</li>
-                            <li style="margin-bottom: 0.75rem;">✓ Unlimited Career Simulations</li>
-                            <li style="margin-bottom: 0.75rem;">✓ Standard Progress Analytics</li>
-                            <li style="margin-bottom: 0.75rem;">✓ <strong>Active Parent Portal Link</strong></li>
-                            <li style="margin-bottom: 0.75rem;">✓ Daily Career Guidance Tips</li>
-                        </ul>
-                    </div>
-                    <button class="tool-btn" style="background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #fff; font-weight: 700; width: 100%; padding: 1rem; border-radius: 14px; cursor: pointer; transition: all 0.3s ease; font-size: 1rem;" onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'" onclick="initiatePayment('1m')">Subscribe Now</button>
-                </div>
-
-                <!-- Plan 2: 6 Months -->
-                <div class="pricing-card" style="background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.01)); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 24px; padding: 2.5rem 2rem; position: relative; transition: all 0.4s ease; display: flex; flex-direction: column; justify-content: space-between;">
-                    <div>
-                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
-                            <div style="color: #a78bfa; font-weight: 700; text-transform: uppercase; font-size: 0.95rem; letter-spacing: 1px;">6 Months Plan</div>
-                            <div style="background: #a78bfa; color: #000; font-weight: 800; font-size: 0.75rem; padding: 4px 12px; border-radius: 12px; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 4px 12px rgba(167, 139, 250, 0.4);">⭐ Most Popular</div>
-                        </div>
-                        <div style="font-size: 3rem; font-weight: 800; color: #fff; margin-bottom: 1.5rem;">₹119 <span style="font-size: 1rem; font-weight: 500; color: #64748b;">/ 6 mos</span></div>
-                        <ul style="list-style: none; padding: 0; margin: 0 0 2.5rem 0; color: #cbd5e1; font-size: 0.95rem; line-height: 1.8;">
-                            <li style="margin-bottom: 0.75rem;">✓ <strong>Everything in 1 Month</strong></li>
-                            <li style="margin-bottom: 0.75rem;">✓ <strong>Active Parent Portal Link</strong></li>
-                            <li style="margin-bottom: 0.75rem;">✓ Advanced Skill Mapping</li>
-                            <li style="margin-bottom: 0.75rem;">✓ Comprehensive Reports</li>
-                            <li style="margin-bottom: 0.75rem;">✓ Priority Mentor QA Access</li>
-                        </ul>
-                    </div>
-                    <button class="tool-btn" style="background: rgba(167, 139, 250, 0.2); border: 1px solid #a78bfa; color: #a78bfa; font-weight: 700; width: 100%; padding: 1rem; border-radius: 14px; cursor: pointer; transition: all 0.3s ease; font-size: 1rem;" onmouseover="this.style.background='rgba(167, 139, 250, 0.3)'" onmouseout="this.style.background='rgba(167, 139, 250, 0.2)'" onclick="initiatePayment('6m')">Subscribe Now</button>
-                </div>
-
-                <!-- Plan 3: 12 Months -->
-                <div class="pricing-card" style="background: linear-gradient(135deg, rgba(232, 140, 42, 0.15), rgba(232, 140, 42, 0.03)); border: 2px solid #e88c2a; border-radius: 24px; padding: 2.5rem 2rem; position: relative; transition: all 0.4s ease; box-shadow: 0 15px 35px rgba(232, 140, 42, 0.25); display: flex; flex-direction: column; justify-content: space-between;">
-                    <div>
-                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
-                            <div style="color: #f5a94e; font-weight: 700; text-transform: uppercase; font-size: 0.95rem; letter-spacing: 1px;">12 Months Plan</div>
-                            <div style="background: linear-gradient(90deg, #f5a94e, #e88c2a); color: #000; font-weight: 800; font-size: 0.75rem; padding: 4px 12px; border-radius: 12px; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 4px 12px rgba(232, 140, 42, 0.4);">🚀 Best Value</div>
-                        </div>
-                        <div style="font-size: 3rem; font-weight: 800; color: #fff; margin-bottom: 1.5rem;">₹249 <span style="font-size: 1rem; font-weight: 500; color: #64748b;">/ yr</span></div>
-                        <ul style="list-style: none; padding: 0; margin: 0 0 2.5rem 0; color: #cbd5e1; font-size: 0.95rem; line-height: 1.8;">
-                            <li style="margin-bottom: 0.75rem;">✓ <strong>All Premium Features</strong></li>
-                            <li style="margin-bottom: 0.75rem;">✓ <strong>Active Parent Portal Link</strong></li>
-                            <li style="margin-bottom: 0.75rem;">✓ Dedicated AI Career Advisor</li>
-                            <li style="margin-bottom: 0.75rem;">✓ Real-time Guidance Sessions</li>
-                            <li style="margin-bottom: 0.75rem;">✓ VIP 24/7 Priority Support</li>
-                        </ul>
-                    </div>
-                    <button class="tool-btn" style="background: linear-gradient(90deg, #f5a94e, #e88c2a); border: none; color: #000; font-weight: 800; width: 100%; padding: 1rem; border-radius: 14px; cursor: pointer; box-shadow: 0 6px 20px rgba(232, 140, 42, 0.4); transition: all 0.3s ease; font-size: 1rem;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'" onclick="initiatePayment('12m')">Subscribe Now</button>
-                </div>
-            </div>
-            
-            <p style="color: #64748b; font-size: 0.9rem; margin-top: 3.5rem; font-weight: 500;">🔒 Instant Activation &bull; Secured by Razorpay &bull; Cancel Anytime</p>
-        </div>
-    </div>
-
     <!-- Hide internal URL previews at bottom left -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -2272,8 +2079,6 @@
         });
     </script>
     <!-- Ultimate Engagement Scripts -->
-
-
 
 
     <script defer src="/dist/careers.e6b91a3b.js"></script>

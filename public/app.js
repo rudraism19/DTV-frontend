@@ -634,10 +634,15 @@
         /* ═══ DASHBOARD RENDER ═══════════════════════════════════════ */
         var currentCategory = 'all';
         var currentSearchQuery = '';
+        var currentCareerLimit = 32;
 
-        function renderCareers(filter) {
-            if (filter !== undefined) {
+        function renderCareers(filter, loadMore) {
+            if (filter !== undefined && filter !== null) {
                 currentCategory = filter;
+                currentCareerLimit = 32;
+            }
+            if (!loadMore) {
+                currentCareerLimit = 32;
             }
             var grid = document.getElementById('career-grid');
             if (!grid) return;
@@ -667,11 +672,15 @@
 
             if (list.length === 0) {
                 grid.innerHTML = '<div class="no-results">No careers found matching your criteria. Try adjusting your search or category filter.</div>';
+                var existingBtn = document.getElementById('load-more-container');
+                if (existingBtn) existingBtn.remove();
                 updateOverallProgress();
                 return;
             }
 
-            grid.innerHTML = list.map(function(c) {
+            var itemsToRender = list.slice(0, currentCareerLimit);
+
+            grid.innerHTML = itemsToRender.map(function(c) {
                 var dispDp = c.dp || c.aiRecScore || 85;
                 var dispDemand = c.futureDemand || c.demand || 'High';
                 var dispSalary = c.salary || 'Competitive';
@@ -689,6 +698,27 @@
                     '<div class="ccard-act"><button class="btn-explore" tabindex="-1">Explore →</button></div>' +
                     '</div>';
             }).join('');
+
+            // Handle Load More button
+            var existingBtn = document.getElementById('load-more-container');
+            if (existingBtn) {
+                existingBtn.remove();
+            }
+
+            if (list.length > currentCareerLimit) {
+                var loadContainer = document.createElement('div');
+                loadContainer.id = 'load-more-container';
+                loadContainer.style.textAlign = 'center';
+                loadContainer.style.marginTop = '2.5rem';
+                loadContainer.style.width = '100%';
+                loadContainer.innerHTML = '<button id="btn-load-more" class="btn btn-amb" style="padding: 0.8rem 2.5rem; font-size: 1rem; font-weight: 700; box-shadow: 0 8px 25px rgba(232,140,42,0.4);">🚀 Show More Careers (' + currentCareerLimit + ' of ' + list.length + ' shown)</button>';
+                loadContainer.querySelector('#btn-load-more').onclick = function() {
+                    currentCareerLimit += 32;
+                    renderCareers(null, true);
+                };
+                grid.insertAdjacentElement('afterend', loadContainer);
+            }
+
             updateOverallProgress();
         }
 

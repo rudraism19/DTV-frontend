@@ -466,9 +466,19 @@
         }
 
         function formatBotMessage(text) {
-            return escapeHTML(text)
-                .replace(/\n/g, '<br>')
-                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            var escaped = escapeHTML(text);
+            // Format headings
+            escaped = escaped.replace(/^### (.*?)$/gm, '<h4>$1</h4>');
+            escaped = escaped.replace(/^## (.*?)$/gm, '<h3>$1</h3>');
+            escaped = escaped.replace(/^# (.*?)$/gm, '<h3>$1</h3>');
+            // Format bold
+            escaped = escaped.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            // Format bullet points
+            escaped = escaped.replace(/^- (.*?)$/gm, '<li>$1</li>');
+            escaped = escaped.replace(/^\* (.*?)$/gm, '<li>$1</li>');
+            // Format line breaks
+            escaped = escaped.replace(/\n/g, '<br>');
+            return escaped;
         }
 
         /* ═══ CAREER DATA — 24 Careers ═══════════════════════════════ */
@@ -3067,7 +3077,7 @@
             var div = document.createElement('div');
             div.className = 'msg typing';
             div.id = 'typing-ind';
-            div.innerHTML = DOMPurify.sanitize('<div class="typing-dots" style="display:flex; align-items:center;"><span></span><span></span><span></span> <span class="decrypt-text" style="margin-left:12px; font-size:0.75rem; color:var(--cyan); letter-spacing:2px; font-family:monospace;">DECRYPTING_</span></div>');
+            div.innerHTML = DOMPurify.sanitize('<div class="typing-dots" style="display:flex; align-items:center;"><span class="dot"></span><span class="dot"></span><span class="dot"></span> <span class="decrypt-text" style="margin-left:12px; font-size:0.75rem; color:var(--cyan); letter-spacing:2px; font-family:monospace; white-space:nowrap;">DECRYPTING_</span></div>', { ADD_ATTR: ['style'] });
             msgs.appendChild(div);
             msgs.scrollTop = msgs.scrollHeight;
             

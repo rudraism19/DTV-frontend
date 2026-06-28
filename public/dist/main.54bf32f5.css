@@ -2222,24 +2222,40 @@
 
         .typing-dots {
             display: flex;
+            align-items: center;
             gap: 4px;
             padding: .2rem 0;
         }
 
-        .typing-dots span {
+        .typing-dots span.dot {
             width: 6px;
             height: 6px;
             background: var(--blue2);
             border-radius: 50%;
             animation: td .9s infinite;
+            display: inline-block;
         }
 
-        .typing-dots span:nth-child(2) {
+        .typing-dots span.dot:nth-child(2) {
             animation-delay: .15s;
         }
 
-        .typing-dots span:nth-child(3) {
+        .typing-dots span.dot:nth-child(3) {
             animation-delay: .3s;
+        }
+
+        .typing-dots span.decrypt-text {
+            width: auto;
+            height: auto;
+            background: transparent;
+            border-radius: 0;
+            animation: none;
+            font-size: 0.75rem;
+            color: var(--cyan);
+            letter-spacing: 2px;
+            font-family: monospace;
+            margin-left: 12px;
+            white-space: nowrap;
         }
 
         @keyframes td {

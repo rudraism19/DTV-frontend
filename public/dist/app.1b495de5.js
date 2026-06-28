@@ -7,8 +7,8 @@
             aiApiEndpoint: '/api/messages',
             demoMode: false,
             formspreeId: 'mvzdpwyv',
-            siteUrl: 'https://digital-twin-app.onrender.com/',
-            shareText: 'Check out Digital Twin Verse for Students by Eco-Novators — AI career simulation platform!'
+            siteUrl: 'https://digitaltwinvrs.com/',
+            shareText: 'Check out Digital Twin Verse by Eco-Novators — AI career simulation platform!'
         };
 
         /* ═══════════════════════════════════════════════════════════════
@@ -1129,10 +1129,10 @@
                     doc.setTextColor(232, 140, 42);
                     doc.setFontSize(17);
                     doc.setFont('helvetica', 'bold');
-                    doc.text('Digital Twin Verse for Students', ml, y);
+                    doc.text('Digital Twin Verse', ml, y);
                     doc.setFontSize(9);
                     doc.setTextColor(194, 208, 224);
-                    doc.text('Career Report  |  Eco-Novators  |  digital-twin-app.onrender.com', ml, y + 7);
+                    doc.text('Career Report  |  Eco-Novators  |  https://digitaltwinvrs.com/', ml, y + 7);
                     doc.setFontSize(8);
                     doc.setTextColor(122, 143, 168);
                     doc.text('Generated: ' + dateStr, pw - mr, y + 7, {
@@ -1286,7 +1286,7 @@
                     doc.setFontSize(7);
                     doc.setFont('helvetica', 'normal');
                     doc.setTextColor(122, 143, 168);
-                    doc.text('© 2026 Eco-Novators · Digital Twin Verse for Students · kar98kbi@gmail.com · digital-twin-app.onrender.com', pw / 2, 289, {
+                    doc.text('© 2026 Eco-Novators · Digital Twin Verse · digitaltwinverse@gmail.com · +91 75201 19837 · https://digitaltwinvrs.com/', pw / 2, 289, {
                         align: 'center'
                     });
 
@@ -1298,8 +1298,8 @@
             } catch (err) {
                 // Fallback: plain text download
                 var lines = [
-                    'DIGITAL TWIN VERSE FOR STUDENTS — CAREER REPORT',
-                    'Eco-Novators | digital-twin-app.onrender.com',
+                    'DIGITAL TWIN VERSE — CAREER REPORT',
+                    'Eco-Novators | https://digitaltwinvrs.com/',
                     'Generated: ' + dateStr,
                     '═══════════════════════════════════════════',
                     '',
@@ -1344,7 +1344,7 @@
                 }
                 lines.push('');
                 lines.push('───────────────────────────────────────────');
-                lines.push('© 2026 Eco-Novators | kar98kbi@gmail.com | +91 75201 19837');
+                lines.push('© 2026 Eco-Novators | Digital Twin Verse | digitaltwinverse@gmail.com | +91 75201 19837 | https://digitaltwinvrs.com/');
 
                 var blob = new Blob([lines.join('\n')], {
                     type: 'text/plain'
@@ -2413,7 +2413,7 @@
                     doc.setFontSize(8.5);
                     doc.setFont('helvetica', 'normal');
                     doc.setTextColor(194, 208, 224);
-                    doc.text('Digital Twin Verse for Students', margin, 24);
+                    doc.text('Digital Twin Verse', margin, 24);
                     doc.text('Generated: ' + dateStr, pw - margin, 18, {
                         align: 'right'
                     });

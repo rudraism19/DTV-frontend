@@ -653,7 +653,14 @@
                     matchSearch = c.title.toLowerCase().includes(q) || 
                                   c.desc.toLowerCase().includes(q) || 
                                   c.stream.toLowerCase().includes(q) ||
-                                  c.id.toLowerCase().includes(q);
+                                  c.id.toLowerCase().includes(q) ||
+                                  (c.salary && c.salary.toLowerCase().includes(q)) ||
+                                  (c.salaryGlobal && c.salaryGlobal.toLowerCase().includes(q)) ||
+                                  (c.futureDemand && c.futureDemand.toLowerCase().includes(q)) ||
+                                  (c.eligibility && c.eligibility.toLowerCase().includes(q)) ||
+                                  (c.techSkills && c.techSkills.join(' ').toLowerCase().includes(q)) ||
+                                  (c.softSkills && c.softSkills.join(' ').toLowerCase().includes(q)) ||
+                                  (c.topCompanies && c.topCompanies.join(' ').toLowerCase().includes(q));
                 }
                 return matchCategory && matchSearch;
             });
@@ -665,6 +672,10 @@
             }
 
             grid.innerHTML = list.map(function(c) {
+                var dispDp = c.dp || c.aiRecScore || 85;
+                var dispDemand = c.futureDemand || c.demand || 'High';
+                var dispSalary = c.salary || 'Competitive';
+                var dispGrowth = c.growthRate || '+25% Growth';
                 return '<div class="ccard" id="cc-' + c.id + '" onclick="openCareer(\'' + c.id + '\')" role="button" tabindex="0" aria-label="Explore ' + c.title + '">' +
                     '<div class="ccard-top-row">' +
                         '<div class="ccard-ic" aria-hidden="true">' + c.icon + '</div>' +
@@ -672,9 +683,9 @@
                     '</div>' +
                     '<h3 class="ccard-title">' + c.title + '</h3>' +
                     '<p class="ccard-desc">' + c.desc + '</p>' +
-                    '<div class="ccard-salary">' + c.salary + '</div>' +
-                    '<div class="demand-bar"><div class="demand-fill" style="width:' + c.dp + '%"></div></div>' +
-                    '<div class="demand-lbl">Demand: ' + c.demand + '</div>' +
+                    '<div class="ccard-salary">' + dispSalary + ' <span style="font-size:0.75rem;color:#4ade80;background:rgba(74,222,128,0.15);padding:2px 6px;border-radius:4px;margin-left:6px;">' + dispGrowth + '</span></div>' +
+                    '<div class="demand-bar"><div class="demand-fill" style="width:' + dispDp + '%"></div></div>' +
+                    '<div class="demand-lbl">Demand: ' + dispDemand + '</div>' +
                     '<div class="ccard-act"><button class="btn-explore" tabindex="-1">Explore →</button></div>' +
                     '</div>';
             }).join('');
@@ -739,6 +750,18 @@
             if (ovP) ovP.textContent = pct + '%';
         }
 
+        function openCareerByTitle(title) {
+            var cleanTitle = title.trim().toLowerCase();
+            var matched = CAREERS.find(function(c) {
+                return c.title.toLowerCase() === cleanTitle || c.title.toLowerCase().includes(cleanTitle) || cleanTitle.includes(c.title.toLowerCase());
+            });
+            if (matched) {
+                openCareer(matched.id);
+            } else {
+                alert("Career '" + title + "' is currently being researched by our AI experts!");
+            }
+        }
+
         /* ═══ CAREER DETAIL WITH PREDICTION + SUGGESTIONS ═══════════ */
         function openCareer(id) {
             var c = CAREERS.find(function(x) {
@@ -762,38 +785,75 @@
 
             // Prediction score
             var pred = calcPredictionScore(id, APP_DATA.userData.interests || []);
+            var recScore = c.aiRecScore || pred.score || 88;
             var predBadgesHtml = pred.badges.map(function(b) {
                 return '<span class="pred-badge ' + b.cls + '">' + escapeHTML(b.label) + '</span>';
             }).join('');
             var circ = 2 * Math.PI * 28;
-            var offset = circ - (pred.score / 100 * circ);
+            var offset = circ - (recScore / 100 * circ);
 
             var safeTitle = escapeHTML(c.title);
             var safeDesc = escapeHTML(c.desc);
-            var safeSalary = escapeHTML(c.salary);
-            var safeDemand = escapeHTML(c.demand);
-            var safeTime = escapeHTML(c.time);
+            var safeSalary = escapeHTML(c.salary || 'Competitive');
+            var safeSalaryGlobal = escapeHTML(c.salaryGlobal || 'Global Equivalent');
+            var safeDemand = escapeHTML(c.futureDemand || c.demand || 'High');
+            var safeTime = escapeHTML(c.timeRequired || c.time || '3-4 Years');
+            var safeDiff = escapeHTML(c.difficulty || 'Moderate');
             var safeStream = escapeHTML(c.stream);
-            var safeBestFor = escapeHTML(c.bestFor);
-            
+            var safeBestFor = escapeHTML(c.bestFor || 'Students passionate about innovation, complex problem-solving, and future technologies.');
+            var safeAiImpact = escapeHTML(c.aiImpact || 'High synergy with AI tools');
+            var safeAutoRisk = escapeHTML(c.automationRisk || 'Low Risk');
+            var safeOutlook = escapeHTML(c.outlook2035 || 'Exponential growth expected through 2035.');
+            var safeLearn = escapeHTML(c.learn || 'Advanced domain expertise and real-world application.');
+            var safeElig = escapeHTML(c.eligibility || 'Class 12th / Bachelors');
+            var safeStreamReq = escapeHTML(c.streamRequired || 'Any Stream / Relevant Background');
+            var safeProj = escapeHTML(c.projects || 'Practical real-world capstone projects.');
+            var safeIntern = escapeHTML(c.internships || 'Top industry internships and research fellowships.');
+            var safePort = escapeHTML(c.portfolio || 'Github/Live Web portfolio showcasing end-to-end implementations.');
+            var safeGov = escapeHTML(c.govOpps || 'Public sector modernization and digital governance roles.');
+            var safeFree = escapeHTML(c.freelanceOpps || 'High potential for global remote consulting.');
+            var safeStart = escapeHTML(c.startupOpps || 'Strong venture capital backing and high startup demand.');
+            var safeRes = escapeHTML(c.resources || 'Leading industry documentation and online platforms.');
+            var safeBooks = escapeHTML(c.books || 'Domain-specific seminal publications and textbooks.');
+            var safeYT = escapeHTML(c.youtube || 'High-quality educational channels and conference recordings.');
+            var safeWeb = escapeHTML(c.websites || 'Global community portals and research repositories.');
+
             var dayInLifeHtml = c.dayInLife ? '<ul style="padding-left:1.2rem;margin-bottom:1.5rem;">' + c.dayInLife.map(function(item) {
                 return '<li style="margin-bottom:0.4rem;font-size:0.85rem;color:var(--mu);">' + escapeHTML(item) + '</li>';
             }).join('') + '</ul>' : '';
             
-            var toolsHtml = c.tools ? '<div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:1.5rem;">' + c.tools.map(function(item) {
+            var toolsHtml = c.techSkills ? '<div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:1.5rem;">' + c.techSkills.map(function(item) {
                 return '<span class="tool-badge">' + escapeHTML(item) + '</span>';
-            }).join('') + '</div>' : '';
+            }).join('') + '</div>' : (c.tools ? '<div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:1.5rem;">' + c.tools.map(function(item) {
+                return '<span class="tool-badge">' + escapeHTML(item) + '</span>';
+            }).join('') + '</div>' : '');
             
+            var softHtml = c.softSkills ? '<div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:1.5rem;">' + c.softSkills.map(function(item) {
+                return '<span class="pred-badge on">' + escapeHTML(item) + '</span>';
+            }).join('') + '</div>' : '';
+
             var compsHtml = c.topCompanies ? '<div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:1.5rem;">' + c.topCompanies.map(function(item) {
                 return '<span class="comp-badge">' + escapeHTML(item) + '</span>';
             }).join('') + '</div>' : '';
             
-            var certsHtml = c.certifications ? '<div style="display:flex;flex-direction:column;gap:0.4rem;margin-bottom:1.5rem;">' + c.certifications.map(function(item) {
+            var examsHtml = c.exams ? '<div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.8rem;"><strong>Exams:</strong> ' + c.exams.map(function(item) {
+                return '<span class="comp-badge">' + escapeHTML(item) + '</span>';
+            }).join('') + '</div>' : '';
+
+            var degsHtml = c.degrees ? '<div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.8rem;"><strong>Degrees:</strong> ' + c.degrees.map(function(item) {
+                return '<span class="comp-badge" style="background:rgba(59,130,246,0.15);color:#60a5fa;">' + escapeHTML(item) + '</span>';
+            }).join('') + '</div>' : '';
+
+            var certsHtml = c.certifications ? '<div style="display:flex;flex-direction:column;gap:0.4rem;margin-bottom:1.5rem;"><strong>Top Certifications:</strong> ' + c.certifications.map(function(item) {
                 return '<div class="cert-item">🏆 ' + escapeHTML(item) + '</div>';
             }).join('') + '</div>' : '';
             
             var trajHtml = c.trajectory ? '<div class="traj-container">' + c.trajectory.map(function(t) {
                 return '<div class="traj-step"><div class="traj-lvl">' + escapeHTML(t.level) + '</div><div class="traj-role">' + escapeHTML(t.role) + '</div><div class="traj-sal">' + escapeHTML(t.salary) + '</div></div>';
+            }).join('') + '</div>' : '';
+
+            var relHtml = c.relatedCareers ? '<div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:1.5rem;">' + c.relatedCareers.map(function(rc) {
+                return '<span class="tool-badge" style="cursor:pointer;border-color:var(--amb);" onclick="openCareerByTitle(\'' + escapeHTML(rc) + '\')">' + escapeHTML(rc) + ' ↗</span>';
             }).join('') + '</div>' : '';
 
             // Suggestions
@@ -811,20 +871,19 @@
                     '</div>';
             }).join('');
 
-            var rmHtml = c.roadmap.map(function(r, i) {
+            var rmHtml = c.roadmap ? c.roadmap.map(function(r, i) {
                 return '<div class="rm-step"><div class="rm-num">' + (i + 1) + '</div><div class="rm-txt">' + escapeHTML(r) + '</div></div>';
-            }).join('');
+            }).join('') : '';
 
             var detail = document.getElementById('career-detail');
             detail.innerHTML =
                 // — Top bar —
                 '<div class="cd-top">' +
                 '<div class="cd-info"><h2>' + c.icon + ' ' + safeTitle + '</h2><p>' + safeDesc + '</p>' +
-                '<div class="cd-meta"><span class="meta-tag">' + safeSalary + '</span>' +
-                '<span class="meta-tag">' + safeDemand + ' Demand</span>' +
-                '<span class="meta-tag">Entry: ' + safeTime + '</span>' +
-                '<span class="meta-tag">' + safeStream + '</span>' +
-                (c.growthRate ? '<span class="meta-tag" style="color:#4ade80; border-color:rgba(74,222,128,0.3)">' + escapeHTML(c.growthRate) + '</span>' : '') +
+                '<div class="cd-meta"><span class="meta-tag">💰 India: ' + safeSalary + ' | Global: ' + safeSalaryGlobal + '</span>' +
+                '<span class="meta-tag" style="color:#4ade80; border-color:rgba(74,222,128,0.3)">📈 Demand: ' + safeDemand + (c.growthRate ? ' (' + escapeHTML(c.growthRate) + ')' : '') + '</span>' +
+                '<span class="meta-tag">⏱ Entry: ' + safeTime + ' | Diff: ' + safeDiff + '</span>' +
+                '<span class="meta-tag">🏷 ' + safeStream + '</span>' +
                 (c.remote ? '<span class="meta-tag">Remote: ' + escapeHTML(c.remote) + '</span>' : '') +
                 (c.wlb ? '<span class="meta-tag">WLB: ' + escapeHTML(c.wlb) + '</span>' : '') +
                 '</div></div>' +
@@ -838,10 +897,12 @@
                 '<div class="pred-ring">' +
                 '<svg width="72" height="72" viewBox="0 0 72 72"><circle class="bg-c" cx="36" cy="36" r="28" stroke-dasharray="' + circ + '" stroke-dashoffset="0"/>' +
                 '<circle class="fg-c" cx="36" cy="36" r="28" stroke-dasharray="' + circ + '" stroke-dashoffset="' + circ + '" id="pred-arc-' + id + '"/></svg>' +
-                '<div class="pred-pct" id="pred-pct-' + id + '">' + pred.score + '%</div>' +
+                '<div class="pred-pct" id="pred-pct-' + id + '">' + recScore + '%</div>' +
                 '</div>' +
-                '<div class="pred-info"><h4>AI Career Prediction Score</h4>' +
-                '<p>' + pred.match + ' based on market demand, your skill progress, and profile alignment.</p>' +
+                '<div class="pred-info"><h4>AI Career Prediction &amp; Future Outlook</h4>' +
+                '<p style="margin-bottom:0.4rem;">' + pred.match + ' based on market demand, your skill progress, and profile alignment.</p>' +
+                '<p style="font-size:0.85rem; color:var(--mu); margin-bottom:0.4rem;"><strong>⚡ AI Impact:</strong> ' + safeAiImpact + ' | <strong>🛡 Automation Risk:</strong> ' + safeAutoRisk + '</p>' +
+                '<p style="font-size:0.85rem; color:var(--mu); margin-bottom:0.6rem;"><strong>🚀 2035 Outlook:</strong> ' + safeOutlook + '</p>' +
                 '<div class="pred-badges">' + predBadgesHtml + '</div></div></div>'
                 // — Progress bar —
                 +
@@ -852,12 +913,18 @@
                 // — Body —
                 +
                 '<div class="cd-body">'
-                // Left: skills + notes
+                // Left: skills + notes + resources + projects
                 +
                 '<div class="cd-section">' +
-                (dayInLifeHtml ? '<h3>A Day in the Life</h3>' + dayInLifeHtml : '') +
-                (toolsHtml ? '<h3>Tools of the Trade</h3>' + toolsHtml : '') +
-                '<h3>Skills to Master</h3>' + skillsHtml +
+                '<h3>💡 What You Will Learn</h3><p style="font-size:0.9rem; color:var(--mu); margin-bottom:1.5rem; line-height:1.6;">' + safeLearn + '</p>' +
+                (dayInLifeHtml ? '<h3>☀️ A Day in the Life</h3>' + dayInLifeHtml : '') +
+                (toolsHtml ? '<h3>💻 Technical &amp; Software Skills</h3>' + toolsHtml : '') +
+                (softHtml ? '<h3>🤝 Soft Skills &amp; Traits</h3>' + softHtml : '') +
+                '<h3>🛠 Skills to Master (Checklist)</h3>' + skillsHtml +
+                '<h3>🔬 Projects, Internships &amp; Portfolio</h3>' +
+                '<p style="font-size:0.85rem; color:var(--mu); margin-bottom:0.6rem;"><strong>📂 Projects:</strong> ' + safeProj + '</p>' +
+                '<p style="font-size:0.85rem; color:var(--mu); margin-bottom:0.6rem;"><strong>💼 Internships:</strong> ' + safeIntern + '</p>' +
+                '<p style="font-size:0.85rem; color:var(--mu); margin-bottom:1.5rem;"><strong>🌐 Portfolio Building:</strong> ' + safePort + '</p>' +
                 '<div class="notes-area"><label>Your Notes &amp; Remarks</label>' +
                 '<textarea class="ft" id="notes-' + id + '" rows="3" placeholder="Write progress notes, targets, or plans here…"></textarea>' +
                 '<button class="save-note-btn" onclick="saveNote(\'' + id + '\')">💾 Save Notes</button></div>'
@@ -865,13 +932,28 @@
                 +
                 '<div class="ai-sug-panel"><h4>🤖 AI Suggestions for You</h4><div class="sug-items">' + sugHtml + '</div></div>' +
                 '</div>'
-                // Right: roadmap + best for
+                // Right: roadmap + academics + companies + resources + best for
                 +
                 '<div class="cd-section">' +
-                (trajHtml ? '<h3>Career & Salary Trajectory</h3>' + trajHtml : '') +
-                (compsHtml ? '<h3>Top Hiring Companies</h3>' + compsHtml : '') +
-                (certsHtml ? '<h3>Recommended Certifications</h3>' + certsHtml : '') +
-                '<h3>Career Roadmap</h3><div class="roadmap-steps">' + rmHtml + '</div>' +
+                '<h3>🎓 Academics &amp; Eligibility</h3>' +
+                '<p style="font-size:0.85rem; color:var(--mu); margin-bottom:0.8rem;"><strong>Eligibility:</strong> ' + safeElig + ' | <strong>Stream:</strong> ' + safeStreamReq + '</p>' +
+                examsHtml + degsHtml + certsHtml +
+                '<h3>📍 Comprehensive Step-by-Step Roadmap</h3><div class="roadmap-steps">' +
+                '<div class="rm-step"><div class="rm-num" style="background:#3b82f6;color:#fff;font-size:0.7rem;width:28px;height:28px;padding:0;">Beg</div><div class="rm-txt"><strong>Beginner:</strong> ' + escapeHTML(c.roadBeginner || 'Foundational basics and introductory core concepts.') + '</div></div>' +
+                '<div class="rm-step"><div class="rm-num" style="background:#8b5cf6;color:#fff;font-size:0.7rem;width:28px;height:28px;padding:0;">Int</div><div class="rm-txt"><strong>Intermediate:</strong> ' + escapeHTML(c.roadIntermediate || 'Advanced tooling, practical implementations, and core projects.') + '</div></div>' +
+                '<div class="rm-step"><div class="rm-num" style="background:#10b981;color:#fff;font-size:0.7rem;width:28px;height:28px;padding:0;">Adv</div><div class="rm-txt"><strong>Advanced:</strong> ' + escapeHTML(c.roadAdvanced || 'Specialization, industry leadership, and large-scale architecture.') + '</div></div>' +
+                rmHtml + '</div>' +
+                '<h3>🏢 Hiring &amp; Market Opportunities</h3>' + compsHtml +
+                '<p style="font-size:0.85rem; color:var(--mu); margin-bottom:0.6rem;"><strong>🏛 Government Opportunities:</strong> ' + safeGov + '</p>' +
+                '<p style="font-size:0.85rem; color:var(--mu); margin-bottom:0.6rem;"><strong>💻 Freelance &amp; Remote:</strong> ' + safeFree + '</p>' +
+                '<p style="font-size:0.85rem; color:var(--mu); margin-bottom:1.5rem;"><strong>🚀 Startup &amp; Innovation:</strong> ' + safeStart + '</p>' +
+                (trajHtml ? '<h3>📈 Career &amp; Salary Trajectory</h3>' + trajHtml : '') +
+                '<h3>📚 Recommended Learning Resources</h3>' +
+                '<p style="font-size:0.85rem; color:var(--mu); margin-bottom:0.6rem;"><strong>📘 General Resources:</strong> ' + safeRes + '</p>' +
+                '<p style="font-size:0.85rem; color:var(--mu); margin-bottom:0.6rem;"><strong>📙 Top Books:</strong> ' + safeBooks + '</p>' +
+                '<p style="font-size:0.85rem; color:var(--mu); margin-bottom:0.6rem;"><strong>▶️ YouTube Channels &amp; Courses:</strong> ' + safeYT + '</p>' +
+                '<p style="font-size:0.85rem; color:var(--mu); margin-bottom:1.5rem;"><strong>🌐 Essential Websites:</strong> ' + safeWeb + '</p>' +
+                (relHtml ? '<h3>🔗 Related Careers</h3>' + relHtml : '') +
                 '<div style="margin-top:1.5rem;padding:1rem;background:rgba(232,140,42,.07);border:1px solid rgba(232,140,42,.18);border-radius:10px;">' +
                 '<div style="font-size:.78rem;font-weight:700;color:var(--amb);margin-bottom:.4rem;">💡 Best Suited For</div>' +
                 '<div style="font-size:.82rem;color:var(--mu);">' + safeBestFor + '</div>' +
@@ -898,7 +980,7 @@
                 id: id,
                 title: c.title,
                 skillsPct: pct,
-                predScore: pred.score,
+                predScore: recScore,
                 savedAt: new Date().toISOString()
             };
             if (already >= 0) APP_DATA.careerChoices[already] = choice;

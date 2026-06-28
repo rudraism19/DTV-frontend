@@ -205,33 +205,11 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // --- 8. Mobile Gyroscope 3D Tilt ---
+    // --- 8. Mobile Gyroscope 3D Tilt (DISABLED FOR PERFORMANCE) ---
+    // Disabled window.addEventListener('deviceorientation') to prevent 60Hz GSAP tween spam 
+    // and eliminate style recalculation storm against mobile CSS !important rules.
     if (window.DeviceOrientationEvent && ('ontouchstart' in window)) {
-        window.addEventListener('deviceorientation', (e) => {
-            if (typeof gsap === 'undefined') return;
-            // Gamma is left/right tilt (-90 to 90)
-            // Beta is front/back tilt (-180 to 180)
-            const gamma = e.gamma || 0; 
-            const beta = e.beta || 0;
-            
-            // Limit tilt values so it doesn't spin out of control
-            const tiltX = Math.min(Math.max(gamma, -25), 25);
-            // Assuming the user holds the phone at a ~45 degree angle naturally
-            const tiltY = Math.min(Math.max(beta - 45, -25), 25);
-
-            magneticCards.forEach(card => {
-                const isAnalyzer = card.classList.contains('analyzer-card');
-                const mult = isAnalyzer ? 0.6 : 0.3; // Stronger multiplier for gyro since values are smaller than pixels
-                
-                gsap.to(card, {
-                    transformPerspective: 1000,
-                    rotationY: tiltX * mult,
-                    rotationX: -tiltY * mult,
-                    duration: 0.6,
-                    ease: 'power2.out'
-                });
-            });
-        });
+        // Gyroscope tilt disabled to ensure smooth mobile scrolling without jank or freezing.
     }
 
     // --- 9. Deployment Version Checking ---

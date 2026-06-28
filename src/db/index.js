@@ -2,11 +2,14 @@ const { Pool } = require('pg');
 const env = require('../config/env');
 const logger = require('../config/logger');
 
-const isLocalHost = env.DATABASE_URL.includes('localhost') || env.DATABASE_URL.includes('127.0.0.1');
+const isTest = env.NODE_ENV === 'test';
+const connectionString = (isTest && env.TEST_DATABASE_URL && env.TEST_DATABASE_URL !== env.DATABASE_URL) ? env.TEST_DATABASE_URL : env.DATABASE_URL;
+
+const isLocalHost = connectionString.includes('localhost') || connectionString.includes('127.0.0.1');
 const sslConfig = (isLocalHost || env.DB_SSL_OFF) ? false : { rejectUnauthorized: false };
 
 const pool = new Pool({
-  connectionString: env.DATABASE_URL,
+  connectionString: connectionString,
   max: env.DB_POOL_MAX,
   idleTimeoutMillis: env.DB_IDLE_TIMEOUT_MS,
   connectionTimeoutMillis: env.DB_CONNECTION_TIMEOUT_MS,

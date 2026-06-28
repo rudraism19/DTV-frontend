@@ -11,6 +11,10 @@ beforeAll(async function() {
 }, 60000);
 
 afterEach(async function() {
+  if (process.env.DATABASE_URL && process.env.DATABASE_URL.includes('ep-sparkling-mode-apvo7mhj')) {
+    console.warn('SAFETY LOCK: Skipping TRUNCATE on production Neon database!');
+    return;
+  }
   await db.pool.query('TRUNCATE TABLE refresh_tokens, files, users RESTART IDENTITY CASCADE');
 }, 60000);
 

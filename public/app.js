@@ -3340,10 +3340,11 @@
 
         /* ═══ DECORATIVE PARALLAX ═════════════════════════════════ */
         function initDecorativeMotion() {
+            var isMobile = window.innerWidth <= 768 || 'ontouchstart' in window;
             var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
             var cursor = document.getElementById('cursor-glow');
             var items = Array.prototype.slice.call(document.querySelectorAll('.parallax'));
-            if (reduceMotion || !cursor || items.length === 0) {
+            if (reduceMotion || isMobile || !cursor || items.length === 0) {
                 if (cursor) cursor.style.display = 'none';
                 return;
             }

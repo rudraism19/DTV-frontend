@@ -43,37 +43,43 @@ assets.forEach(asset => {
     }
 });
 
-// Update index.html
-const indexPath = path.join(publicDir, 'index.html');
-if (fs.existsSync(indexPath)) {
-    let indexHtml = fs.readFileSync(indexPath, 'utf8');
-    
-    // Replace script src tags
-    // e.g. <script src="/app.js?v=7"></script> or <script src="/dist/app.xyz.js"></script>
-    
-    // For app.js
-    indexHtml = indexHtml.replace(/src="\/app\.js(\?[^"]*)?"/g, `src="${manifest['app.js']}"`);
-    indexHtml = indexHtml.replace(/src="\/dist\/app\.[a-f0-9]+\.js"/g, `src="${manifest['app.js']}"`);
-    
-    // For ux-engine.js
-    indexHtml = indexHtml.replace(/src="\/ux-engine\.js(\?[^"]*)?"/g, `src="${manifest['ux-engine.js']}"`);
-    indexHtml = indexHtml.replace(/src="\/dist\/ux-engine\.[a-f0-9]+\.js"/g, `src="${manifest['ux-engine.js']}"`);
-    
-    // For main.css
-    if (manifest['css/main.css']) {
-        indexHtml = indexHtml.replace(/href="\/css\/main\.css(\?[^"]*)?"/g, `href="${manifest['css/main.css']}"`);
-        indexHtml = indexHtml.replace(/href="\/dist\/main\.[a-f0-9]+\.css"/g, `href="${manifest['css/main.css']}"`);
+// Update index.html in both public and deploy-digital-twin/public
+const indexPaths = [
+    path.join(publicDir, 'index.html'),
+    path.join(__dirname, '..', 'deploy-digital-twin', 'public', 'index.html')
+];
+
+indexPaths.forEach(indexPath => {
+    if (fs.existsSync(indexPath)) {
+        let indexHtml = fs.readFileSync(indexPath, 'utf8');
+        
+        // Replace script src tags
+        // e.g. <script src="/app.js?v=7"></script> or <script src="/dist/app.xyz.js"></script>
+        
+        // For app.js
+        indexHtml = indexHtml.replace(/src="\/app\.js(\?[^"]*)?"/g, `src="${manifest['app.js']}"`);
+        indexHtml = indexHtml.replace(/src="\/dist\/app\.[a-f0-9]+\.js"/g, `src="${manifest['app.js']}"`);
+        
+        // For ux-engine.js
+        indexHtml = indexHtml.replace(/src="\/ux-engine\.js(\?[^"]*)?"/g, `src="${manifest['ux-engine.js']}"`);
+        indexHtml = indexHtml.replace(/src="\/dist\/ux-engine\.[a-f0-9]+\.js"/g, `src="${manifest['ux-engine.js']}"`);
+        
+        // For main.css
+        if (manifest['css/main.css']) {
+            indexHtml = indexHtml.replace(/href="\/css\/main\.css(\?[^"]*)?"/g, `href="${manifest['css/main.css']}"`);
+            indexHtml = indexHtml.replace(/href="\/dist\/main\.[a-f0-9]+\.css"/g, `href="${manifest['css/main.css']}"`);
+        }
+        
+        // For careers.js
+        if (manifest['js/data/careers.js']) {
+            indexHtml = indexHtml.replace(/src="\/js\/data\/careers\.js(\?[^"]*)?"/g, `src="${manifest['js/data/careers.js']}"`);
+            indexHtml = indexHtml.replace(/src="\/dist\/careers\.[a-f0-9]+\.js"/g, `src="${manifest['js/data/careers.js']}"`);
+        }
+        
+        fs.writeFileSync(indexPath, indexHtml);
+        console.log(`Updated ${indexPath} with hashed assets.`);
     }
-    
-    // For careers.js
-    if (manifest['js/data/careers.js']) {
-        indexHtml = indexHtml.replace(/src="\/js\/data\/careers\.js(\?[^"]*)?"/g, `src="${manifest['js/data/careers.js']}"`);
-        indexHtml = indexHtml.replace(/src="\/dist\/careers\.[a-f0-9]+\.js"/g, `src="${manifest['js/data/careers.js']}"`);
-    }
-    
-    fs.writeFileSync(indexPath, indexHtml);
-    console.log('Updated index.html with hashed assets.');
-}
+});
 
 // Generate version hash for deployment checking
 const buildVersion = crypto.randomBytes(8).toString('hex');

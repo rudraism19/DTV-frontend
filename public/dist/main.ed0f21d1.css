@@ -2409,11 +2409,12 @@
         }
 
         .career-explorer-body.open {
-            max-height: 8000px;
+            max-height: 250000px;
             opacity: 1;
             transform: translateY(0);
             visibility: visible;
             pointer-events: auto;
+            overflow: visible;
         }
 
         .dash-filters {

@@ -136,8 +136,49 @@ app.use(express.static(publicDir, {
   }
 }));
 
-// Serve parent portal static files
-app.use('/parent', express.static(parentUiDir));
+// Serve parent portal static files with strict caching headers
+app.use('/parent', express.static(parentUiDir, {
+  setHeaders: (res, filePath) => {
+    if (filePath.includes('/assets/') || filePath.match(/\.[0-9a-zA-Z]+\.(js|css)$/)) {
+      res.set('Cache-Control', 'public, max-age=31536000, immutable');
+    } else if (filePath.endsWith('.html')) {
+      res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
+      res.set('Pragma', 'no-cache');
+      res.set('Expires', '0');
+    } else {
+      res.set('Cache-Control', 'public, max-age=0, must-revalidate');
+    }
+  }
+}));
+
+// Auto-healing middleware for cached asset requests in Parent Portal
+app.use('/parent/assets', function(req, res, next) {
+  const fs = require('fs');
+  const assetPath = path.join(parentUiDir, 'assets', req.path);
+  if (fs.existsSync(assetPath)) {
+    return res.sendFile(assetPath);
+  }
+  // If exact hashed file doesn't exist (e.g., cached index.html requesting old hash),
+  // find the latest .js or .css file in parent-ui/dist/assets and serve it!
+  try {
+    const assetsDir = path.join(parentUiDir, 'assets');
+    if (fs.existsSync(assetsDir)) {
+      const files = fs.readdirSync(assetsDir);
+      const ext = path.extname(req.path); // .js or .css
+      const latestAsset = files.find(f => f.endsWith(ext));
+      if (latestAsset) {
+        console.log(`Auto-healing asset request: ${req.path} -> serving latest ${latestAsset}`);
+        if (ext === '.js') res.setHeader('Content-Type', 'application/javascript');
+        if (ext === '.css') res.setHeader('Content-Type', 'text/css');
+        res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
+        return res.sendFile(path.join(assetsDir, latestAsset));
+      }
+    }
+  } catch (err) {
+    console.error('Auto-healing asset error:', err);
+  }
+  res.status(404).send('Asset not found');
+});
 
 app.use(function(req, res, next) {
   if (req.path.startsWith('/api')) {

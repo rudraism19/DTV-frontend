@@ -7,7 +7,7 @@ const options = {
     info: {
       title: 'Digital Twin API',
       version: '1.0.0',
-      description: 'Production-ready API for digital-twin-app.onrender.com'
+      description: 'Production-ready API for digitaltwinvrs.com'
     },
     servers: [
       { url: '/api/v1' }

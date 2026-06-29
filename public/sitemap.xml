@@ -2,15 +2,16 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <!-- Homepage -->
   <url>
-    <loc>https://digital-twin-app.onrender.com/</loc>
+    <loc>https://digitaltwinvrs.com/</loc>
     <lastmod>2026-06-21</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
+
   
   <!-- Privacy Policy -->
   <url>
-    <loc>https://digital-twin-app.onrender.com/privacy.html</loc>
+    <loc>https://digitaltwinvrs.com/privacy.html</loc>
     <lastmod>2026-06-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
@@ -18,7 +19,7 @@
   
   <!-- Terms of Service -->
   <url>
-    <loc>https://digital-twin-app.onrender.com/terms.html</loc>
+    <loc>https://digitaltwinvrs.com/terms.html</loc>
     <lastmod>2026-06-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>

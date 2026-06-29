@@ -3,16 +3,23 @@
   <!-- Homepage -->
   <url>
     <loc>https://digitaltwinvrs.com/</loc>
-    <lastmod>2026-06-21</lastmod>
+    <lastmod>2026-06-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
 
+  <!-- Parent Portal -->
+  <url>
+    <loc>https://digitaltwinvrs.com/parent</loc>
+    <lastmod>2026-06-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
   
   <!-- Privacy Policy -->
   <url>
     <loc>https://digitaltwinvrs.com/privacy.html</loc>
-    <lastmod>2026-06-21</lastmod>
+    <lastmod>2026-06-29</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
@@ -20,7 +27,7 @@
   <!-- Terms of Service -->
   <url>
     <loc>https://digitaltwinvrs.com/terms.html</loc>
-    <lastmod>2026-06-21</lastmod>
+    <lastmod>2026-06-29</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>

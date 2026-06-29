@@ -44,21 +44,38 @@ app.use(helmet({
   contentSecurityPolicy: {
     directives: {
       defaultSrc: ["'self'", "*", "'unsafe-inline'", "'unsafe-eval'"],
-      scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "*"],
+      scriptSrc: [
+        "'self'", 
+        "'unsafe-inline'", 
+        "'unsafe-eval'", 
+        "https://www.googletagmanager.com", 
+        "https://checkout.razorpay.com", 
+        "*"
+      ],
       scriptSrcAttr: ["'unsafe-inline'"],
-      styleSrc: ["'self'", "'unsafe-inline'", "*"],
-      fontSrc: ["'self'", "data:", "*"],
-      imgSrc: ["'self'", "data:", "blob:", "*"],
-      connectSrc: ["'self'", "*"],
-      frameSrc: ["'self'", "*"],
+      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com", "*"],
+      fontSrc: ["'self'", "data:", "https://fonts.gstatic.com", "*"],
+      imgSrc: ["'self'", "data:", "blob:", "https://www.google-analytics.com", "*"],
+      connectSrc: ["'self'", "https://www.google-analytics.com", "https://*.analytics.google.com", "https://*.razorpay.com", "*"],
+      frameSrc: ["'self'", "https://api.razorpay.com", "*"],
       mediaSrc: ["'self'", "data:", "blob:", "*"]
     }
   },
   crossOriginEmbedderPolicy: false,
   crossOriginOpenerPolicy: false,
   crossOriginResourcePolicy: false,
-  hsts: false
+  hsts: {
+    maxAge: 31536000,
+    includeSubDomains: true,
+    preload: true
+  }
 }));
+
+app.use(function(req, res, next) {
+  res.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=(), interest-cohort=()');
+  res.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+  next();
+});
 app.use(cors({
   origin: true,
   credentials: true

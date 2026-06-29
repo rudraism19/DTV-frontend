@@ -1,14 +1,34 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { Calendar, Target, BookOpen, LogOut, Menu, X, Bell, Brain, ShieldCheck, Settings } from 'lucide-react';
+import { fetchStudentData } from '../services/apiService';
 
 export default function DashboardLayout() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [unreadCount, setUnreadCount] = useState(2);
+  const [studentInfo, setStudentInfo] = useState({
+    name: 'Kumar Kartikey',
+    linkCode: localStorage.getItem('studentCode') || 'FC0D52'
+  });
   const location = useLocation();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const studentCode = localStorage.getItem('studentCode') || 'FC0D52';
+        const result = await fetchStudentData(studentCode);
+        if (result && result.studentInfo) {
+          setStudentInfo(result.studentInfo);
+        }
+      } catch (err) {
+        console.error('Failed to load student info in layout', err);
+      }
+    };
+    loadData();
+  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem('parentToken');
@@ -23,6 +43,11 @@ export default function DashboardLayout() {
     { name: 'AI Behavioral Profile', path: '/dashboard/behavior', icon: <Brain size={20} /> },
     { name: 'Settings & Alerts', path: '/dashboard/settings', icon: <Settings size={20} /> },
   ];
+
+  const studentName = studentInfo.name || 'Kumar Kartikey';
+  const firstName = studentName.split(' ')[0];
+  const initials = studentName.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
+  const linkCode = studentInfo.linkCode || localStorage.getItem('studentCode') || 'FC0D52';
 
   return (
     <div className="flex h-screen bg-bg overflow-hidden relative">
@@ -44,16 +69,16 @@ export default function DashboardLayout() {
         <div className="px-6 py-4">
           <div className="p-4 bg-white/5 rounded-xl border border-white/10 flex items-center gap-4">
             <div className="w-12 h-12 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center text-white font-bold text-xl shadow-[0_0_15px_rgba(249,115,22,0.4)]">
-              AL
+              {initials}
             </div>
             <div>
               <p className="text-sm text-text-muted">Monitoring</p>
-              <p className="text-white font-bold">Alex Walker</p>
+              <p className="text-white font-bold">{studentName}</p>
             </div>
           </div>
           <div className="mt-3 flex items-center gap-2 text-xs font-bold text-green-400 bg-green-500/10 px-3 py-2 rounded-lg border border-green-500/20">
             <ShieldCheck size={14} />
-            Securely Linked (DTV-8834)
+            Securely Linked ({linkCode})
           </div>
         </div>
 
@@ -134,12 +159,12 @@ export default function DashboardLayout() {
                 <div className="max-h-[300px] overflow-y-auto">
                   <div className="p-4 border-b border-white/5 hover:bg-white/5 transition-colors cursor-pointer">
                     <p className="text-sm text-white font-medium mb-1">🔥 10-Day Streak Reached!</p>
-                    <p className="text-xs text-text-muted">Alex has successfully logged in and studied for 10 consecutive days.</p>
+                    <p className="text-xs text-text-muted">{firstName} has successfully logged in and studied for 10 consecutive days.</p>
                     <p className="text-[10px] text-text-muted mt-2">2 hours ago</p>
                   </div>
                   <div className="p-4 border-b border-white/5 hover:bg-white/5 transition-colors cursor-pointer">
                     <p className="text-sm text-white font-medium mb-1">⚠️ Subject Time Imbalance</p>
-                    <p className="text-xs text-text-muted">Alex spent 420 mins on Computer Sci but only 120 mins on English. AI has adjusted the schedule.</p>
+                    <p className="text-xs text-text-muted">{firstName} spent 420 mins on Computer Sci but only 120 mins on English. AI has adjusted the schedule.</p>
                     <p className="text-[10px] text-text-muted mt-2">Yesterday</p>
                   </div>
                 </div>
@@ -175,7 +200,7 @@ export default function DashboardLayout() {
             <div className="px-6 py-2 mb-4">
               <div className="flex items-center gap-2 text-xs font-bold text-green-400 bg-green-500/10 px-3 py-2 rounded-lg border border-green-500/20">
                 <ShieldCheck size={14} />
-                Securely Linked (DTV-8834)
+                Securely Linked ({linkCode})
               </div>
             </div>
 

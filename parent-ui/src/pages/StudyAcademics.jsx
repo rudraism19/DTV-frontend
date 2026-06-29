@@ -57,6 +57,8 @@ export default function StudyAcademics() {
 
   const timeData = data.timeData || [];
   const aiRecommendations = data.aiRecommendations || [];
+  const studentName = data.studentInfo?.name || 'Kumar Kartikey';
+  const firstName = studentName.split(' ')[0];
 
   return (
     <div className="space-y-8 relative">
@@ -96,7 +98,7 @@ export default function StudyAcademics() {
                 <p className="text-xs text-blue-200 leading-relaxed mb-4">{rec.desc}</p>
               </div>
               <button 
-                onClick={() => showToast(`🟢 Recommendation Applied: "${rec.title}" has been successfully pushed to Alex's real-time EdTech study schedule!`)}
+                onClick={() => showToast(`🟢 Recommendation Applied: "${rec.title}" has been successfully pushed to ${firstName}'s real-time EdTech study schedule!`)}
                 className="w-full py-2.5 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white rounded-xl font-bold text-xs shadow-[0_4px_15px_rgba(16,185,129,0.2)] transition-all transform hover:scale-[1.02] active:scale-95"
               >
                 Apply Recommendation to Schedule

@@ -57,7 +57,7 @@ export default function SummaryRoutine() {
           </div>
           <div>
             <h3 className="text-xs font-bold text-text-muted uppercase tracking-wider">Student Profile</h3>
-            <p className="text-lg font-bold text-white tracking-tight mt-0.5">{studentInfo.name || 'Alex Walker'}</p>
+            <p className="text-lg font-bold text-white tracking-tight mt-0.5">{studentInfo.name || 'Kumar Kartikey'}</p>
             <p className="text-xs text-green-400 font-medium mt-1">● {studentInfo.status || 'Active'}</p>
           </div>
         </div>
@@ -68,7 +68,7 @@ export default function SummaryRoutine() {
           </div>
           <div>
             <h3 className="text-xs font-bold text-text-muted uppercase tracking-wider">Secure Link Code</h3>
-            <p className="text-lg font-bold text-white tracking-tight mt-0.5">{studentInfo.linkCode || 'DTV-8834'}</p>
+            <p className="text-lg font-bold text-white tracking-tight mt-0.5">{studentInfo.linkCode || 'FC0D52'}</p>
             <p className="text-xs text-emerald-300 font-medium mt-1">Direct DB Pairing</p>
           </div>
         </div>

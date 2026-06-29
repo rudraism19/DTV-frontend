@@ -40,13 +40,17 @@ export const fetchStudentData = async (studentCode) => {
   } catch (error) {
     console.warn('Real backend fetch failed. Falling back to Mock Data for Parent Portal UI.', error.message);
     
+    const code = studentCode || localStorage.getItem('studentCode') || 'FC0D52';
+    const name = 'Kumar Kartikey';
+    const firstName = 'Kumar';
+
     // Return high-quality mock data structure matching the UI expectations
     return {
       studentInfo: {
-        name: 'Alex Walker',
-        id: studentCode || 'STU-9921',
-        email: 'alex@example.com',
-        linkCode: 'DTV-8834',
+        name: name,
+        id: code,
+        email: 'kumar.kartikey@example.com',
+        linkCode: code,
         status: 'Active',
         lastLoginAt: new Date().toISOString(),
         createdAt: new Date(Date.now() - 30 * 86400000).toISOString()
@@ -70,7 +74,7 @@ export const fetchStudentData = async (studentCode) => {
         { id: 103, title: 'Multi-Agent Study Routine Adjustment', time: '3 days ago', type: 'ai', score: 'Balanced' }
       ],
       aiRecommendations: [
-        { id: 201, title: 'Boost English Reading Time', desc: 'Alex spent 3.5x more time on Computer Science than English. AI recommends 20 mins daily reading.', priority: 'High' },
+        { id: 201, title: 'Boost English Reading Time', desc: `${firstName} spent 3.5x more time on Computer Science than English. AI recommends 20 mins daily reading.`, priority: 'High' },
         { id: 202, title: 'Advanced Math Track Eligible', desc: 'Consistent 90%+ scores in calculus indicate readiness for collegiate level modules.', priority: 'Medium' }
       ],
       careerInsights: [

@@ -46,6 +46,8 @@ export default function AIBehavioralProfile() {
     { subject: 'Self-Reliance', A: 60, fullMark: 100 },
     { subject: 'Emotional Regulation', A: 80, fullMark: 100 },
   ];
+  const studentName = data.studentInfo?.name || 'Kumar Kartikey';
+  const firstName = studentName.split(' ')[0];
 
   return (
     <div className="space-y-8 relative">
@@ -63,12 +65,12 @@ export default function AIBehavioralProfile() {
           </div>
           <div>
             <h2 className="text-3xl font-bold text-white tracking-tight">AI Behavioral Profile</h2>
-            <p className="text-blue-200 text-sm mt-0.5">Real-time analysis of how Alex interacts with the Digital Twin Verse AI Tutor</p>
+            <p className="text-blue-200 text-sm mt-0.5">Real-time analysis of how {firstName} interacts with the Digital Twin Verse AI Tutor</p>
           </div>
         </div>
 
         <button 
-          onClick={() => showToast('🔄 Recalibrating AI Models: Analyzing Alex\'s last 48 hours of prompt history and voice interactions...')}
+          onClick={() => showToast(`🔄 Recalibrating AI Models: Analyzing ${firstName}'s last 48 hours of prompt history and voice interactions...`)}
           className="flex items-center gap-2 px-4 py-2.5 bg-white/5 border border-white/10 hover:bg-white/10 hover:border-purple-500/30 text-purple-300 rounded-xl font-bold text-xs transition-all transform hover:scale-[1.02] active:scale-95 shadow-sm"
         >
           <RefreshCw size={16} />
@@ -96,7 +98,7 @@ export default function AIBehavioralProfile() {
                   <Tooltip 
                     contentStyle={{ backgroundColor: 'rgba(15, 23, 42, 0.95)', borderColor: 'rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff', fontWeight: 600 }} 
                   />
-                  <Radar name="Alex Walker" dataKey="A" stroke="#a855f7" strokeWidth={2} fill="#a855f7" fillOpacity={0.4} />
+                  <Radar name={studentName} dataKey="A" stroke="#a855f7" strokeWidth={2} fill="#a855f7" fillOpacity={0.4} />
                 </RadarChart>
               </ResponsiveContainer>
             </div>
@@ -150,7 +152,7 @@ export default function AIBehavioralProfile() {
                   onClick={() => {
                     const newState = !socraticMode;
                     setSocraticMode(newState);
-                    showToast(`🟢 Socratic Tutoring Mode is now ${newState ? 'ACTIVE' : 'INACTIVE'} for Alex's sessions.`);
+                    showToast(`🟢 Socratic Tutoring Mode is now ${newState ? 'ACTIVE' : 'INACTIVE'} for ${firstName}'s sessions.`);
                   }}
                   className={`w-full py-2.5 rounded-xl font-bold text-xs transition-all ${socraticMode ? 'bg-purple-500 hover:bg-purple-600 text-white shadow-[0_4px_15px_rgba(168,85,247,0.3)]' : 'bg-white/10 hover:bg-white/20 text-gray-300'}`}
                 >
@@ -162,14 +164,14 @@ export default function AIBehavioralProfile() {
                 <div>
                   <h4 className="text-white font-bold text-sm mb-1">Strict Academic Prompting</h4>
                   <p className="text-xs text-blue-200 leading-relaxed">
-                    Ensures the AI filters out non-academic tangents and redirects Alex back to the active syllabus topics during scheduled hours.
+                    Ensures the AI filters out non-academic tangents and redirects {firstName} back to the active syllabus topics during scheduled hours.
                   </p>
                 </div>
                 <button 
                   onClick={() => {
                     const newState = !strictPrompting;
                     setStrictPrompting(newState);
-                    showToast(`🟢 Strict Academic Prompting is now ${newState ? 'ACTIVE' : 'INACTIVE'} for Alex's routine.`);
+                    showToast(`🟢 Strict Academic Prompting is now ${newState ? 'ACTIVE' : 'INACTIVE'} for ${firstName}'s routine.`);
                   }}
                   className={`w-full py-2.5 rounded-xl font-bold text-xs transition-all ${strictPrompting ? 'bg-emerald-500 hover:bg-emerald-600 text-white shadow-[0_4px_15px_rgba(16,185,129,0.3)]' : 'bg-white/10 hover:bg-white/20 text-gray-300'}`}
                 >
@@ -187,7 +189,7 @@ export default function AIBehavioralProfile() {
                 <Activity className="text-green-400 mt-1 shrink-0" size={22} />
                 <div>
                   <h4 className="text-white font-bold text-base mb-1">High Curiosity Indicator</h4>
-                  <p className="text-sm text-text-muted leading-relaxed">Alex has been asking deep follow-up questions regarding Quantum Physics rather than accepting base answers. This indicates strong critical thinking.</p>
+                  <p className="text-sm text-text-muted leading-relaxed">{firstName} has been asking deep follow-up questions regarding Quantum Physics rather than accepting base answers. This indicates strong critical thinking.</p>
                 </div>
               </div>
 
@@ -195,7 +197,7 @@ export default function AIBehavioralProfile() {
                 <AlertTriangle className="text-orange-400 mt-1 shrink-0" size={22} />
                 <div>
                   <h4 className="text-orange-400 font-bold text-base mb-1">Over-Reliance on AI for Math</h4>
-                  <p className="text-sm text-orange-200/80 leading-relaxed">Alex tends to ask the AI for direct answers in Calculus without attempting the steps first. <strong className="text-orange-400">Action Taken:</strong> AI will now refuse direct answers and switch to Socratic tutoring mode for Math subjects.</p>
+                  <p className="text-sm text-orange-200/80 leading-relaxed">{firstName} tends to ask the AI for direct answers in Calculus without attempting the steps first. <strong className="text-orange-400">Action Taken:</strong> AI will now refuse direct answers and switch to Socratic tutoring mode for Math subjects.</p>
                 </div>
               </div>
 

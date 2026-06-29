@@ -1,5 +1,6 @@
 import { BellRing, Smartphone, Mail, AlertTriangle, Clock, MessageSquare, CheckCircle2, Send } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { fetchStudentData } from '../services/apiService';
 
 export default function SettingsAlerts() {
   const [alerts, setAlerts] = useState({
@@ -15,6 +16,25 @@ export default function SettingsAlerts() {
 
   const [phone, setPhone] = useState('+91 9876543210');
   const [toast, setToast] = useState(null);
+  const [studentInfo, setStudentInfo] = useState({ name: 'Kumar Kartikey', linkCode: localStorage.getItem('studentCode') || 'FC0D52' });
+
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const studentCode = localStorage.getItem('studentCode') || 'FC0D52';
+        const result = await fetchStudentData(studentCode);
+        if (result && result.studentInfo) {
+          setStudentInfo(result.studentInfo);
+        }
+      } catch (err) {
+        console.error('Failed to load student info', err);
+      }
+    };
+    loadData();
+  }, []);
+
+  const studentName = studentInfo.name || 'Kumar Kartikey';
+  const firstName = studentName.split(' ')[0];
 
   const toggleAlert = (key) => {
     setAlerts(prev => ({ ...prev, [key]: !prev[key] }));
@@ -30,7 +50,7 @@ export default function SettingsAlerts() {
       showToast('⚠️ Please enable WhatsApp Alerts toggle first!');
       return;
     }
-    showToast(`🟢 WhatsApp Simulation sent to ${phone}: "DTV AI Alert: Alex Walker has reached a 10-day study streak! Focus score is up by 12%."`);
+    showToast(`🟢 WhatsApp Simulation sent to ${phone}: "DTV AI Alert: ${studentName} has reached a 10-day study streak! Focus score is up by 12%."`);
   };
 
   const handleSave = () => {
@@ -52,7 +72,7 @@ export default function SettingsAlerts() {
         </div>
         <div>
           <h2 className="text-2xl font-bold text-white tracking-tight">Settings & Alerts</h2>
-          <p className="text-text-muted">Manage how and when you receive real-time updates about Alex.</p>
+          <p className="text-text-muted">Manage how and when you receive real-time updates about {firstName}.</p>
         </div>
       </div>
 
@@ -136,7 +156,7 @@ export default function SettingsAlerts() {
           
           <div className="mt-6 p-4 bg-orange-500/10 border border-orange-500/20 rounded-2xl">
             <p className="text-xs text-orange-300 font-medium leading-relaxed">
-              💡 <strong>AI Tip:</strong> Triggers are actively calculated by our Multi-Agent EdTech Engine in real-time based on Alex's interaction with the study modules and career simulations.
+              💡 <strong>AI Tip:</strong> Triggers are actively calculated by our Multi-Agent EdTech Engine in real-time based on {firstName}'s interaction with the study modules and career simulations.
             </p>
           </div>
         </div>

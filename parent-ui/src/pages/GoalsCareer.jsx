@@ -55,6 +55,8 @@ export default function GoalsCareer() {
     { title: 'Software Architect', match: 94, status: 'Primary Path', growth: '+28% Demand', salary: '$160k - $220k', focus: 'System Design & High-scale Cloud' },
     { title: 'AI Research Scientist', match: 88, status: 'Alternative Path', growth: '+45% Demand', salary: '$180k - $250k', focus: 'Deep Learning & Advanced Calculus' }
   ];
+  const studentName = data.studentInfo?.name || 'Kumar Kartikey';
+  const firstName = studentName.split(' ')[0];
 
   return (
     <div className="space-y-8 relative">
@@ -138,7 +140,7 @@ export default function GoalsCareer() {
               {toAchieve.map((goal, idx) => (
                 <div 
                   key={idx} 
-                  onClick={() => showToast(`🟢 Action Triggered: Live AI tutor has prioritized "${goal.title}" for Alex's next 24-hour study cycle.`)}
+                  onClick={() => showToast(`🟢 Action Triggered: Live AI tutor has prioritized "${goal.title}" for ${firstName}'s next 24-hour study cycle.`)}
                   className="group p-5 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-orange-500/30 transition-all duration-300 transform hover:scale-[1.01] active:scale-[0.99] cursor-pointer flex justify-between items-center shadow-sm hover:shadow-[0_4px_20px_rgba(249,115,22,0.1)]"
                 >
                   <div>
@@ -258,7 +260,7 @@ export default function GoalsCareer() {
                       </span>
                     </div>
                     <p className="text-sm text-blue-200 leading-relaxed">
-                      Based on Alex's current performance across Mathematics (88/100) and Computer Science (95/100), the Digital Twin simulation engine projects a 94% alignment with elite enterprise software organizations within 36 months.
+                      Based on {firstName}'s current performance across Mathematics (88/100) and Computer Science (95/100), the Digital Twin simulation engine projects a 94% alignment with elite enterprise software organizations within 36 months.
                     </p>
                     <div className="p-4 bg-black/40 border border-white/10 rounded-xl flex items-center justify-between">
                       <span className="text-xs text-text-muted font-bold uppercase tracking-wider">Key Optimization Focus</span>
@@ -316,7 +318,7 @@ export default function GoalsCareer() {
             <div className="p-6 border-t border-white/10 bg-black/20 rounded-b-3xl flex justify-end gap-4 flex-shrink-0">
               <button 
                 onClick={() => {
-                  showToast(`🟢 Optimization Active: AI Engine is now tailoring Alex's routine for the "${selectedCareer.title}" career track.`);
+                  showToast(`🟢 Optimization Active: AI Engine is now tailoring ${firstName}'s routine for the "${selectedCareer.title}" career track.`);
                   setSelectedCareer(null);
                 }}
                 className="px-6 py-3 bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white rounded-xl font-bold text-sm transition-all transform hover:scale-105 active:scale-95 shadow-[0_4px_20px_rgba(168,85,247,0.3)]"

@@ -14,14 +14,18 @@ const getDashboard = asyncHandler(async (req, res) => {
   const student = students[0]; // Fetch the first linked student
   const appData = await userModel.getAppData(student.id);
 
+  const studentName = student.name || student.email || 'Alex Walker';
+  const firstName = studentName.split(' ')[0];
+  const linkCode = student.linkCode || 'FC0D52';
+
   // Return real database metrics and full structure expected by enriched Parent Portal UI
   res.json({
     data: {
       studentInfo: {
-        name: student.name || student.email || 'Alex Walker',
+        name: studentName,
         id: student.id,
-        email: student.email || 'alex@example.com',
-        linkCode: student.linkCode || 'DTV-8834',
+        email: student.email || `${firstName.toLowerCase()}@example.com`,
+        linkCode: linkCode,
         status: student.isActive !== false ? 'Active' : 'Inactive',
         lastLoginAt: student.lastLoginAt || new Date().toISOString(),
         createdAt: student.createdAt || new Date().toISOString(),
@@ -46,7 +50,7 @@ const getDashboard = asyncHandler(async (req, res) => {
         { id: 103, title: 'Multi-Agent Study Routine Adjustment', time: '3 days ago', type: 'ai', score: 'Balanced' }
       ],
       aiRecommendations: [
-        { id: 201, title: 'Boost English Reading Time', desc: 'Alex spent 3.5x more time on Computer Science than English. AI recommends 20 mins daily reading.', priority: 'High' },
+        { id: 201, title: 'Boost English Reading Time', desc: `${firstName} spent 3.5x more time on Computer Science than English. AI recommends 20 mins daily reading.`, priority: 'High' },
         { id: 202, title: 'Advanced Math Track Eligible', desc: 'Consistent 90%+ scores in calculus indicate readiness for collegiate level modules.', priority: 'Medium' }
       ],
       careerInsights: [

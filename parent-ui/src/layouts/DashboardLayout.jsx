@@ -36,7 +36,7 @@ export default function DashboardLayout() {
       <aside className="hidden lg:flex w-72 flex-col glass-panel border-r border-white/5 relative z-10">
         <div className="p-6 flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-white tracking-tight">Digital<span className="text-orange-400">Twin</span> Verse</h1>
+            <div className="text-2xl font-bold text-white tracking-tight">Digital<span className="text-orange-400">Twin</span> Verse</div>
             <p className="text-xs text-text-muted mt-1 uppercase tracking-wider font-bold">Parent Portal</p>
           </div>
         </div>
@@ -99,7 +99,7 @@ export default function DashboardLayout() {
             >
               <Menu size={24} />
             </button>
-            <h1 className="text-xl font-bold text-white ml-4 tracking-tight">Digital<span className="text-orange-400">Twin</span> Verse</h1>
+            <div className="text-xl font-bold text-white ml-4 tracking-tight">Digital<span className="text-orange-400">Twin</span> Verse</div>
           </div>
           
           <div className="hidden lg:block">
@@ -166,7 +166,7 @@ export default function DashboardLayout() {
           <div className="fixed inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setIsMobileMenuOpen(false)}></div>
           <div className="fixed inset-y-0 left-0 w-72 glass-panel border-r border-white/10 flex flex-col">
             <div className="p-6 flex items-center justify-between">
-              <h1 className="text-2xl font-bold text-white tracking-tight">Digital<span className="text-orange-400">Twin</span> Verse</h1>
+              <div className="text-2xl font-bold text-white tracking-tight">Digital<span className="text-orange-400">Twin</span> Verse</div>
               <button onClick={() => setIsMobileMenuOpen(false)} className="text-white hover:bg-white/10 p-2 rounded-lg">
                 <X size={24} />
               </button>

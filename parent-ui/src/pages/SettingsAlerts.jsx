@@ -91,13 +91,13 @@ export default function SettingsAlerts() {
                     <p className="text-xs text-text-muted">Notify if VR sessions exceed 2 hours/day</p>
                   </div>
                 </div>
+                <button 
+                  onClick={() => toggleAlert('screenTime')}
+                  className={`w-12 h-6 rounded-full transition-colors relative ${alerts.screenTime ? 'bg-orange-500' : 'bg-gray-600'}`}
+                >
+                  <div className={`w-4 h-4 bg-white rounded-full absolute top-1 transition-transform ${alerts.screenTime ? 'left-7' : 'left-1'}`}></div>
+                </button>
               </div>
-              <button 
-                onClick={() => toggleAlert('screenTime')}
-                className={`w-12 h-6 rounded-full transition-colors relative ${alerts.screenTime ? 'bg-orange-500' : 'bg-gray-600'}`}
-              >
-                <div className={`w-4 h-4 bg-white rounded-full absolute top-1 transition-transform ${alerts.screenTime ? 'left-7' : 'left-1'}`}></div>
-              </button>
             </div>
 
             <div className="flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/10 hover:bg-white/10 transition-colors mt-4">

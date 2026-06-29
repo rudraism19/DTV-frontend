@@ -74,8 +74,8 @@ export const fetchStudentData = async (studentCode) => {
         { id: 202, title: 'Advanced Math Track Eligible', desc: 'Consistent 90%+ scores in calculus indicate readiness for collegiate level modules.', priority: 'Medium' }
       ],
       careerInsights: [
-        { career: 'Space Tech Architect', match: 94, demand: 'Very High', growth: '+32% by 2030' },
-        { career: 'AI Systems Engineer', match: 96, demand: 'Extremely High', growth: '+45% by 2030' }
+        { title: 'Space Tech Architect', match: 94, status: 'Primary Path', growth: '+32% Demand', salary: '$160k - $220k', focus: 'System Design & High-scale Cloud' },
+        { title: 'AI Systems Engineer', match: 96, status: 'Alternative Path', growth: '+45% Demand', salary: '$180k - $250k', focus: 'Deep Learning & Advanced Calculus' }
       ],
       parentAlertSettings: {
         gradeDrop: true,

@@ -29,20 +29,6 @@ export default function GoalsCareer() {
     setTimeout(() => setToast(null), 3500);
   };
 
-  const toAchieve = [
-    { title: 'Master Data Structures', deadline: 'Next Week', priority: 'High', type: 'Skill', impact: '+15% Algorithm Match' },
-    { title: 'Build Full-stack E-commerce', deadline: 'End of Month', priority: 'Medium', type: 'Project', impact: '+25% System Design' },
-    { title: 'Clear Mock Interview L1', deadline: 'Tomorrow', priority: 'High', type: 'Assessment', impact: '+10% Communication' },
-    { title: 'Optimizing Virtual DOM state', deadline: 'In 3 Days', priority: 'High', type: 'Frameworks', impact: '+18% Frontend Arch' }
-  ];
-
-  const achieved = [
-    { title: 'Python Fundamentals', date: '2 days ago', type: 'Course Completed', score: '98% Accuracy' },
-    { title: '10-day Study Streak', date: 'Last week', type: 'Milestone', score: 'Flawless Execution' },
-    { title: 'Top 5% in Logic Quiz', date: 'Last week', type: 'Achievement', score: 'Percentile 95' },
-    { title: 'React Performance Foundations', date: '2 weeks ago', type: 'Certification', score: 'Elite Badge Passed' }
-  ];
-
   if (loading || !data) {
     return (
       <div className="flex items-center justify-center h-full min-h-[400px]">
@@ -50,6 +36,22 @@ export default function GoalsCareer() {
       </div>
     );
   }
+
+  const toAchieve = data.toAchieve || [
+    { title: 'Master Data Structures', deadline: 'Next Week', priority: 'High', type: 'Skill', impact: '+15% Algorithm Match' },
+    { title: 'Build Full-stack E-commerce', deadline: 'End of Month', priority: 'Medium', type: 'Project', impact: '+25% System Design' },
+    { title: 'Clear Mock Interview L1', deadline: 'Tomorrow', priority: 'High', type: 'Assessment', impact: '+10% Communication' },
+    { title: 'Optimizing Virtual DOM state', deadline: 'In 3 Days', priority: 'High', type: 'Frameworks', impact: '+18% Frontend Arch' }
+  ];
+
+  const achieved = data.achieved || [
+    { title: 'Python Fundamentals', date: '2 days ago', type: 'Course Completed', score: '98% Accuracy' },
+    { title: '10-day Study Streak', date: 'Last week', type: 'Milestone', score: 'Flawless Execution' },
+    { title: 'Top 5% in Logic Quiz', date: 'Last week', type: 'Achievement', score: 'Percentile 95' },
+    { title: 'React Performance Foundations', date: '2 weeks ago', type: 'Certification', score: 'Elite Badge Passed' }
+  ];
+
+  // Loading check performed earlier
 
   const chosenCareers = data.careerInsights || [
     { title: 'Software Architect', match: 94, status: 'Primary Path', growth: '+28% Demand', salary: '$160k - $220k', focus: 'System Design & High-scale Cloud' },

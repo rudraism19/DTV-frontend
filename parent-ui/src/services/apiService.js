@@ -73,6 +73,18 @@ export const fetchStudentData = async (studentCode) => {
         { id: 102, title: 'Advanced Data Structures Assessment', time: 'Yesterday', type: 'assessment', score: '98/100' },
         { id: 103, title: 'Multi-Agent Study Routine Adjustment', time: '3 days ago', type: 'ai', score: 'Balanced' }
       ],
+      toAchieve: [
+        { title: 'Master Data Structures', deadline: 'Next Week', priority: 'High', type: 'Skill', impact: '+15% Algorithm Match' },
+        { title: 'Build Full-stack E-commerce', deadline: 'End of Month', priority: 'Medium', type: 'Project', impact: '+25% System Design' },
+        { title: 'Clear Mock Interview L1', deadline: 'Tomorrow', priority: 'High', type: 'Assessment', impact: '+10% Communication' },
+        { title: 'Optimizing Virtual DOM state', deadline: 'In 3 Days', priority: 'High', type: 'Frameworks', impact: '+18% Frontend Arch' }
+      ],
+      achieved: [
+        { title: 'Python Fundamentals', date: '2 days ago', type: 'Course Completed', score: '98% Accuracy' },
+        { title: '10-day Study Streak', date: 'Last week', type: 'Milestone', score: 'Flawless Execution' },
+        { title: 'Top 5% in Logic Quiz', date: 'Last week', type: 'Achievement', score: 'Percentile 95' },
+        { title: 'React Performance Foundations', date: '2 weeks ago', type: 'Certification', score: 'Elite Badge Passed' }
+      ],
       aiRecommendations: [
         { id: 201, title: 'Boost English Reading Time', desc: `${firstName} spent 3.5x more time on Computer Science than English. AI recommends 20 mins daily reading.`, priority: 'High' },
         { id: 202, title: 'Advanced Math Track Eligible', desc: 'Consistent 90%+ scores in calculus indicate readiness for collegiate level modules.', priority: 'Medium' }

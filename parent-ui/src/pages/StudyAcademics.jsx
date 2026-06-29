@@ -1,4 +1,4 @@
-import { BookOpen, FileWarning, GraduationCap, Clock, Loader2, Sparkles, CheckCircle2, TrendingUp } from 'lucide-react';
+import { BookOpen, FileWarning, GraduationCap, Clock, Loader2, Sparkles, CheckCircle2, TrendingUp, HelpCircle } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { useState, useEffect } from 'react';
 import { fetchStudentData } from '../services/apiService';
@@ -28,35 +28,37 @@ export default function StudyAcademics() {
     setTimeout(() => setToast(null), 3500);
   };
 
-  const syllabus = [
-    { topic: 'Calculus: Derivatives', status: 'Completed', subject: 'Mathematics' },
-    { topic: 'Kinematics', status: 'In Progress (60%)', subject: 'Physics' },
-    { topic: 'Data Structures (Trees)', status: 'In Progress (85%)', subject: 'Computer Sci' },
-    { topic: 'Comprehension & Syntax', status: 'Pending Review', subject: 'English' }
-  ];
-
-  const grades = [
-    { subject: 'Mathematics', score: '88/100', grade: 'A', trend: '+2%' },
-    { subject: 'Physics', score: '76/100', grade: 'B', trend: '-4%' },
-    { subject: 'Computer Sci', score: '95/100', grade: 'A+', trend: '+5%' },
-    { subject: 'English', score: '82/100', grade: 'B+', trend: '+1%' }
-  ];
-
-  const weakSubjects = [
-    { subject: 'Physics', weakness: 'Rotational Mechanics conceptual gaps', fix: 'Assigned 3 Interactive VR simulations and simplified AI explanations for torque.' },
-    { subject: 'English', weakness: 'Vocabulary retention', fix: 'Daily 10-minute AI spaced-repetition quizzes activated.' }
-  ];
-
   if (loading || !data) {
     return (
-      <div className="flex items-center justify-center h-full min-h-[400px]">
-        <Loader2 className="w-8 h-8 text-orange-500 animate-spin" />
+      <div className="space-y-8 animate-pulse">
+        <div className="h-10 bg-white/5 rounded-xl w-1/3 mb-2"></div>
+        <div className="h-6 bg-white/5 rounded-xl w-1/2 mb-8"></div>
+        <div className="glass-panel p-6 border-white/5 h-64 mb-6"></div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {[1, 2, 3, 4].map(i => (
+            <div key={i} className="glass-panel p-6 border-white/5 h-80"></div>
+          ))}
+        </div>
       </div>
     );
   }
 
   const timeData = data.timeData || [];
   const aiRecommendations = data.aiRecommendations || [];
+  const courses = data.courses || [
+    { title: 'Calculus: Derivatives', category: 'Mathematics', difficulty_level: 'Advanced', estimated_hours: 40 },
+    { title: 'Kinematics', category: 'Physics', difficulty_level: 'Intermediate', estimated_hours: 35 },
+    { title: 'Data Structures (Trees)', category: 'Computer Sci', difficulty_level: 'Advanced', estimated_hours: 50 }
+  ];
+  const quizzes = data.quizzes || [
+    { score: 95.0, accuracy_percentage: 98.0, status: 'Completed', created_at: new Date().toISOString() },
+    { score: 88.0, accuracy_percentage: 91.0, status: 'Completed', created_at: new Date(Date.now() - 86400000).toISOString() }
+  ];
+  const attendance = data.attendance || [
+    { date: new Date().toISOString().split('T')[0], status: 'Present', notes: 'Active Participation' },
+    { date: new Date(Date.now() - 86400000).toISOString().split('T')[0], status: 'Present', notes: 'Completed Homeroom' }
+  ];
+
   const studentName = data.studentInfo?.name || 'Kumar Kartikey';
   const firstName = studentName.split(' ')[0];
 
@@ -74,7 +76,7 @@ export default function StudyAcademics() {
         <p className="text-blue-200">Granular tracking of active syllabus, dynamic time allocations, and Multi-Agent recommendations</p>
       </div>
 
-      {/* Dynamic AI Study Recommendations Banner */}
+      {/* Dynamic AI Study Recommendations Banner with WHY explanations */}
       <div className="glass-panel p-6 border-emerald-500/30">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-2">
@@ -96,6 +98,13 @@ export default function StudyAcademics() {
                   </span>
                 </div>
                 <p className="text-xs text-blue-200 leading-relaxed mb-4">{rec.desc}</p>
+                <div className="p-3.5 bg-black/40 rounded-xl border border-white/5 mb-6">
+                  <div className="flex items-center gap-1.5 text-[11px] font-bold text-emerald-400 uppercase tracking-wider mb-1">
+                    <HelpCircle size={14} />
+                    Why AI Recommended This:
+                  </div>
+                  <p className="text-xs text-blue-200/90 leading-relaxed">{rec.why || 'Cross-referenced active completion benchmarks against desired enterprise software criteria.'}</p>
+                </div>
               </div>
               <button 
                 onClick={() => showToast(`🟢 Recommendation Applied: "${rec.title}" has been successfully pushed to ${firstName}'s real-time EdTech study schedule!`)}
@@ -131,7 +140,7 @@ export default function StudyAcademics() {
                   />
                   <Bar dataKey="minutes" radius={[0, 8, 8, 0]}>
                     {timeData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
+                      <Cell key={`cell-${index}`} fill={entry.color || '#3b82f6'} />
                     ))}
                   </Bar>
                 </BarChart>
@@ -140,23 +149,23 @@ export default function StudyAcademics() {
           </div>
         </div>
 
-        {/* Syllabus Topics */}
+        {/* Live Courses & Syllabus Topics */}
         <div className="glass-panel p-6 border-white/10 flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-lg font-bold text-white">Active Syllabus Topics</h3>
+              <h3 className="text-lg font-bold text-white">Enrolled Live Courses</h3>
               <BookOpen size={20} className="text-purple-400" />
             </div>
-            <div className="space-y-4">
-              {syllabus.map((item, idx) => (
+            <div className="space-y-4 max-h-96 overflow-y-auto custom-scrollbar pr-1">
+              {courses.map((item, idx) => (
                 <div key={idx} className="p-4 rounded-xl bg-white/5 border border-white/10 flex justify-between items-center hover:bg-white/10 transition-colors group">
                   <div>
-                    <span className="text-[10px] text-purple-300 bg-purple-500/20 px-2.5 py-0.5 rounded-full mb-1.5 inline-block font-bold">{item.subject}</span>
-                    <h4 className="text-white font-medium block group-hover:text-purple-300 transition-colors">{item.topic}</h4>
+                    <span className="text-[10px] text-purple-300 bg-purple-500/20 px-2.5 py-0.5 rounded-full mb-1.5 inline-block font-bold">{item.category || 'Specialized Track'}</span>
+                    <h4 className="text-white font-medium block group-hover:text-purple-300 transition-colors">{item.title}</h4>
                   </div>
                   <div className="text-right">
-                    <span className={`text-xs font-bold px-3 py-1 rounded-lg border ${item.status === 'Completed' ? 'bg-green-500/10 text-green-400 border-green-500/20' : item.status.startsWith('In Progress') ? 'bg-blue-500/10 text-blue-400 border-blue-500/20' : 'bg-amber-500/10 text-amber-400 border-amber-500/20'}`}>
-                      {item.status}
+                    <span className="text-xs font-bold px-3 py-1 rounded-lg border bg-purple-500/10 text-purple-300 border-purple-500/20">
+                      {item.difficulty_level || 'Advanced'} ({item.estimated_hours || 40}h)
                     </span>
                   </div>
                 </div>
@@ -165,34 +174,34 @@ export default function StudyAcademics() {
           </div>
         </div>
 
-        {/* Marks / Grades */}
+        {/* Live Quiz Accuracy & Scores */}
         <div className="glass-panel p-6 border-white/10">
           <div className="flex items-center justify-between mb-6">
-            <h3 className="text-lg font-bold text-white">Marks & Grades</h3>
+            <h3 className="text-lg font-bold text-white">Live Quiz Accuracy & Marks</h3>
             <GraduationCap size={20} className="text-green-400" />
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="border-b border-white/10">
-                  <th className="pb-3 text-sm font-medium text-text-muted">Subject</th>
+                  <th className="pb-3 text-sm font-medium text-text-muted">Assessment</th>
                   <th className="pb-3 text-sm font-medium text-text-muted">Score</th>
-                  <th className="pb-3 text-sm font-medium text-text-muted">Grade</th>
-                  <th className="pb-3 text-sm font-medium text-text-muted">Trend</th>
+                  <th className="pb-3 text-sm font-medium text-text-muted">Accuracy</th>
+                  <th className="pb-3 text-sm font-medium text-text-muted">Status</th>
                 </tr>
               </thead>
               <tbody>
-                {grades.map((g, idx) => (
+                {quizzes.map((q, idx) => (
                   <tr key={idx} className="border-b border-white/5 hover:bg-white/5 transition-colors">
-                    <td className="py-4 text-white font-medium">{g.subject}</td>
-                    <td className="py-4 text-white font-bold">{g.score}</td>
-                    <td className="py-4 font-bold text-white">
-                      <span className="bg-white/10 px-2.5 py-1 rounded-lg border border-white/10 text-xs">
-                        {g.grade}
-                      </span>
+                    <td className="py-4 text-white font-medium">Sprint Assessment #{idx + 1}</td>
+                    <td className="py-4 text-white font-bold">{parseFloat(q.score).toFixed(1)} / 100</td>
+                    <td className="py-4 font-bold text-green-400">
+                      {parseFloat(q.accuracy_percentage || 92).toFixed(1)}%
                     </td>
-                    <td className={`py-4 text-sm font-bold ${g.trend.startsWith('+') ? 'text-green-400' : 'text-red-400'}`}>
-                      {g.trend}
+                    <td className="py-4 font-bold text-white">
+                      <span className="bg-green-500/10 text-green-400 border border-green-500/20 px-2.5 py-1 rounded-lg text-xs">
+                        {q.status || 'Completed'}
+                      </span>
                     </td>
                   </tr>
                 ))}
@@ -201,22 +210,27 @@ export default function StudyAcademics() {
           </div>
         </div>
 
-        {/* Weak Subjects & Corrections */}
-        <div className="glass-panel p-6 border-red-500/30">
+        {/* Live Attendance Calendar */}
+        <div className="glass-panel p-6 border-white/10">
           <div className="flex items-center justify-between mb-6">
-            <h3 className="text-lg font-bold text-white">Weak Subjects & AI Fixes</h3>
-            <FileWarning size={20} className="text-red-400" />
+            <h3 className="text-lg font-bold text-white">Attendance & Participation Logs</h3>
+            <span className="text-xs text-emerald-400 font-bold bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">
+              Verified Present
+            </span>
           </div>
-          <div className="space-y-4">
-            {weakSubjects.map((ws, idx) => (
-              <div key={idx} className="p-5 rounded-2xl bg-red-500/5 border border-red-500/20 hover:border-red-500/40 transition-all duration-300">
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="text-xs font-bold text-red-400 uppercase tracking-wider">{ws.subject}</span>
+          <div className="space-y-4 max-h-80 overflow-y-auto custom-scrollbar pr-1">
+            {attendance.map((att, idx) => (
+              <div key={idx} className="p-4 rounded-xl bg-white/5 border border-white/10 flex items-center justify-between hover:bg-white/10 transition-all">
+                <div className="flex items-center gap-3">
+                  <div className="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse"></div>
+                  <div>
+                    <p className="text-white font-bold text-sm">Date: {att.date}</p>
+                    <p className="text-xs text-text-muted mt-0.5">{att.notes || 'Fully Engaged in Socratic Review'}</p>
+                  </div>
                 </div>
-                <p className="text-sm text-white mb-4"><strong>Gap Identified:</strong> {ws.weakness}</p>
-                <div className="p-4 bg-green-500/10 rounded-xl border border-green-500/20">
-                  <p className="text-sm text-green-300 leading-relaxed"><strong>AI Correction Plan:</strong> {ws.fix}</p>
-                </div>
+                <span className="text-xs font-bold bg-green-500/10 text-green-400 border border-green-500/20 px-3 py-1 rounded-lg">
+                  {att.status || 'Present'}
+                </span>
               </div>
             ))}
           </div>

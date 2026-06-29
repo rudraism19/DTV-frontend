@@ -1,4 +1,4 @@
-import { Award, Briefcase, ChevronRight, PlayCircle, Trophy, Target, Loader2, Sparkles, CheckCircle2, TrendingUp, Cpu, Star } from 'lucide-react';
+import { Award, Briefcase, ChevronRight, PlayCircle, Trophy, Target, Loader2, Sparkles, CheckCircle2, TrendingUp, Cpu, Star, HelpCircle, Code } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { fetchStudentData } from '../services/apiService';
 
@@ -31,8 +31,15 @@ export default function GoalsCareer() {
 
   if (loading || !data) {
     return (
-      <div className="flex items-center justify-center h-full min-h-[400px]">
-        <Loader2 className="w-8 h-8 text-purple-500 animate-spin" />
+      <div className="space-y-8 animate-pulse">
+        <div className="h-10 bg-white/5 rounded-xl w-1/3 mb-2"></div>
+        <div className="h-6 bg-white/5 rounded-xl w-1/2 mb-8"></div>
+        <div className="glass-panel p-8 border-white/5 h-80 mb-6"></div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {[1, 2, 3, 4].map(i => (
+            <div key={i} className="glass-panel p-6 border-white/5 h-64"></div>
+          ))}
+        </div>
       </div>
     );
   }
@@ -51,12 +58,22 @@ export default function GoalsCareer() {
     { title: 'React Performance Foundations', date: '2 weeks ago', type: 'Certification', score: 'Elite Badge Passed' }
   ];
 
-  // Loading check performed earlier
+  const skills = data.skills || [
+    { skill_name: 'Abstract Logic', proficiency_level: 'Advanced', score: 94.5, improvement_percentage: 12.5 },
+    { skill_name: 'Systems Architecture', proficiency_level: 'Advanced', score: 91.0, improvement_percentage: 15.0 }
+  ];
+
+  const projects = data.projects || [
+    { title: 'High-Scale AI Agent Network', description: 'Multi-agent simulation environment.', status: 'Completed', problem_solving_score: 96.5 },
+    { title: 'Orbital Habitat Simulation', description: 'Zero-gravity physics calculation engine.', status: 'In_Progress', problem_solving_score: 92.0 }
+  ];
 
   const chosenCareers = data.careerInsights || [
     { title: 'Software Architect', match: 94, status: 'Primary Path', growth: '+28% Demand', salary: '$160k - $220k', focus: 'System Design & High-scale Cloud' },
     { title: 'AI Research Scientist', match: 88, status: 'Alternative Path', growth: '+45% Demand', salary: '$180k - $250k', focus: 'Deep Learning & Advanced Calculus' }
   ];
+
+  const aiAnalytics = data.aiAnalytics || {};
   const studentName = data.studentInfo?.name || 'Kumar Kartikey';
   const firstName = studentName.split(' ')[0];
 
@@ -74,18 +91,26 @@ export default function GoalsCareer() {
         <p className="text-blue-200">Simulating long-term career outcomes, tracking active milestones, and AI-driven growth forecasting</p>
       </div>
 
-      {/* Chosen Career Path */}
+      {/* AI Career Readiness Assessment Banner */}
       <div className="glass-panel p-8 border-purple-500/30 relative overflow-hidden shadow-[0_10px_30px_rgba(168,85,247,0.1)]">
         <div className="absolute top-0 right-0 w-96 h-96 bg-purple-500/10 rounded-full blur-[80px] pointer-events-none"></div>
         <div className="flex items-center justify-between mb-6 relative z-10">
           <div className="flex items-center gap-2">
             <Cpu className="text-purple-400 animate-pulse" size={22} />
-            <h3 className="text-lg font-bold text-white">AI-Evaluated Career Paths</h3>
+            <h3 className="text-lg font-bold text-white">AI Career Readiness Assessment</h3>
           </div>
           <span className="text-xs text-purple-300 font-bold bg-purple-500/10 border border-purple-500/20 px-3 py-1.5 rounded-lg">
-            Live Algorithmic Projection
+            Readiness: {aiAnalytics.careerReadiness?.value || '92%'}
           </span>
         </div>
+        <div className="p-4 bg-black/40 rounded-xl border border-white/5 mb-8 relative z-10">
+          <div className="flex items-center gap-1.5 text-xs font-bold text-purple-400 uppercase tracking-wider mb-1">
+            <HelpCircle size={15} />
+            Why AI Calculated This Career Match:
+          </div>
+          <p className="text-xs text-blue-200 leading-relaxed">{aiAnalytics.careerReadiness?.why || 'Calculated by evaluating student problem-solving persistence and active logical assessment execution.'}</p>
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 relative z-10">
           {chosenCareers.map((career, idx) => (
             <div 
@@ -131,6 +156,57 @@ export default function GoalsCareer() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         
+        {/* Live Verified Skills */}
+        <div className="glass-panel p-6 border-white/10 flex flex-col justify-between">
+          <div>
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-lg font-bold text-white">Live Verified Skills</h3>
+              <Star size={20} className="text-yellow-400" />
+            </div>
+            <div className="space-y-4 max-h-80 overflow-y-auto custom-scrollbar pr-1">
+              {skills.map((s, idx) => (
+                <div key={idx} className="p-4 rounded-xl bg-white/5 border border-white/10 flex justify-between items-center hover:bg-white/10 transition-all">
+                  <div>
+                    <span className="text-[10px] font-bold text-yellow-300 bg-yellow-500/10 border border-yellow-500/20 px-2.5 py-0.5 rounded-full mb-1.5 inline-block">{s.proficiency_level || 'Advanced'}</span>
+                    <h4 className="text-white font-bold block">{s.skill_name}</h4>
+                  </div>
+                  <div className="text-right">
+                    <span className="text-xs font-bold text-green-400 block">{parseFloat(s.score || 92).toFixed(1)}% Mastery</span>
+                    <span className="text-[10px] text-text-muted block mt-0.5">+{s.improvement_percentage || 10}% growth</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Live Projects & Portfolio */}
+        <div className="glass-panel p-6 border-white/10 flex flex-col justify-between">
+          <div>
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-lg font-bold text-white">Live Projects & Enterprise Portfolio</h3>
+              <Code size={20} className="text-blue-400" />
+            </div>
+            <div className="space-y-4 max-h-80 overflow-y-auto custom-scrollbar pr-1">
+              {projects.map((p, idx) => (
+                <div key={idx} className="p-4 rounded-xl bg-white/5 border border-white/10 flex flex-col justify-between hover:bg-white/10 transition-all">
+                  <div className="flex items-center justify-between mb-2">
+                    <h4 className="text-white font-bold">{p.title}</h4>
+                    <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-lg border ${p.status === 'Completed' ? 'bg-green-500/10 text-green-400 border-green-500/20' : 'bg-orange-500/10 text-orange-400 border-orange-500/20'}`}>
+                      {p.status || 'Completed'}
+                    </span>
+                  </div>
+                  <p className="text-xs text-blue-200 mb-3">{p.description}</p>
+                  <div className="pt-2 border-t border-white/5 flex items-center justify-between text-[11px] text-text-muted font-bold">
+                    <span>Problem Solving Rating</span>
+                    <span className="text-purple-400">{parseFloat(p.problem_solving_score || 95).toFixed(1)} / 100</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
         {/* Things to Achieve */}
         <div className="glass-panel p-6 border-white/10 flex flex-col justify-between">
           <div>

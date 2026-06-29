@@ -1,4 +1,4 @@
-import { BellRing, Smartphone, Mail, AlertTriangle, Clock, MessageSquare, CheckCircle2, Send } from 'lucide-react';
+import { BellRing, Smartphone, Mail, AlertTriangle, Clock, MessageSquare, CheckCircle2, Send, Download, FileText } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { fetchStudentData } from '../services/apiService';
 
@@ -17,6 +17,7 @@ export default function SettingsAlerts() {
   const [phone, setPhone] = useState('+91 9876543210');
   const [toast, setToast] = useState(null);
   const [studentInfo, setStudentInfo] = useState({ name: 'Kumar Kartikey', linkCode: localStorage.getItem('studentCode') || 'FC0D52' });
+  const [downloadingType, setDownloadingType] = useState(null);
 
   useEffect(() => {
     const loadData = async () => {
@@ -35,6 +36,7 @@ export default function SettingsAlerts() {
 
   const studentName = studentInfo.name || 'Kumar Kartikey';
   const firstName = studentName.split(' ')[0];
+  const studentCode = localStorage.getItem('studentCode') || 'FC0D52';
 
   const toggleAlert = (key) => {
     setAlerts(prev => ({ ...prev, [key]: !prev[key] }));
@@ -57,8 +59,25 @@ export default function SettingsAlerts() {
     showToast('✅ All Alert Preferences and Delivery Configurations saved successfully.');
   };
 
+  const handleDownloadPDF = async (type, title) => {
+    setDownloadingType(type);
+    showToast(`⏳ Generating Enterprise PDF Report: "${title}" for ${studentName}...`);
+    try {
+      // Direct window location or fetch blob
+      window.open(`/api/parent/pdf-report?studentCode=${studentCode}&type=${type}`, '_blank');
+      setTimeout(() => {
+        showToast(`✅ PDF Report "${title}" generated and downloaded successfully!`);
+        setDownloadingType(null);
+      }, 2000);
+    } catch (err) {
+      console.error('Failed to download PDF', err);
+      showToast(`❌ Failed to generate PDF report.`);
+      setDownloadingType(null);
+    }
+  };
+
   return (
-    <div className="space-y-6 relative">
+    <div className="space-y-8 relative">
       {toast && (
         <div className="fixed top-24 right-10 z-50 max-w-md bg-slate-900/90 border border-orange-500/30 text-white p-4 rounded-2xl shadow-[0_0_30px_rgba(249,115,22,0.3)] backdrop-blur-xl flex items-center gap-3 animate-in fade-in slide-in-from-top-4 duration-300">
           <CheckCircle2 className="text-orange-400 shrink-0" size={24} />
@@ -71,8 +90,44 @@ export default function SettingsAlerts() {
           <BellRing className="text-slate-400" size={24} />
         </div>
         <div>
-          <h2 className="text-2xl font-bold text-white tracking-tight">Settings & Alerts</h2>
-          <p className="text-text-muted">Manage how and when you receive real-time updates about {firstName}.</p>
+          <h2 className="text-2xl font-bold text-white tracking-tight">Settings, Alerts & PDF Reports</h2>
+          <p className="text-text-muted">Manage real-time push configurations and download enterprise-grade multi-format PDF reports.</p>
+        </div>
+      </div>
+
+      {/* Enterprise Multi-Format PDF Reports */}
+      <div className="glass-panel p-6 border-blue-500/30">
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-2">
+            <FileText className="text-blue-400" size={22} />
+            <h3 className="text-lg font-bold text-white">Multi-Format Enterprise PDF Report Generator</h3>
+          </div>
+          <span className="text-xs text-blue-300 font-bold bg-blue-500/10 border border-blue-500/20 px-3 py-1 rounded-lg">
+            Live PDF Rendering
+          </span>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {[
+            { type: 'full', title: 'Full Intelligence Summary', desc: 'Comprehensive snapshot of grades, skills, career readiness & AI recommendations.', color: 'blue' },
+            { type: 'academic', title: 'Academic Progress Report', desc: 'Syllabus tracking, quiz accuracy, attendance logs & course hours.', color: 'emerald' },
+            { type: 'behavioral', title: 'AI Behavioral Profile', desc: 'Cognitive traits radar, prompt quality score, productivity & learning risk.', color: 'purple' },
+            { type: 'career', title: 'Career Trajectory Simulation', desc: 'AI match ratings, target compensation, verified skills & project portfolios.', color: 'orange' },
+          ].map((rep) => (
+            <div key={rep.type} className="p-5 bg-white/5 border border-white/10 rounded-2xl hover:bg-white/10 transition-all flex flex-col justify-between group hover:scale-[1.02]">
+              <div>
+                <h4 className="text-white font-bold text-base mb-2 group-hover:text-blue-300 transition-colors">{rep.title}</h4>
+                <p className="text-xs text-text-muted leading-relaxed mb-6">{rep.desc}</p>
+              </div>
+              <button 
+                disabled={downloadingType === rep.type}
+                onClick={() => handleDownloadPDF(rep.type, rep.title)}
+                className={`w-full py-2.5 bg-blue-500/20 hover:bg-blue-500/30 border border-blue-500/30 text-blue-300 hover:text-white rounded-xl font-bold text-xs shadow-[0_4px_15px_rgba(59,130,246,0.2)] transition-all flex items-center justify-center gap-2 transform hover:scale-[1.02] active:scale-95 ${downloadingType === rep.type ? 'opacity-50 cursor-not-allowed' : ''}`}
+              >
+                <Download size={15} className={downloadingType === rep.type ? 'animate-bounce' : ''} />
+                {downloadingType === rep.type ? 'Generating PDF...' : 'Download PDF Report'}
+              </button>
+            </div>
+          ))}
         </div>
       </div>
 

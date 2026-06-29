@@ -1,4 +1,4 @@
-import { Brain, MessageSquare, Zap, Activity, AlertTriangle, Loader2, Sparkles, CheckCircle2, Sliders, RefreshCw } from 'lucide-react';
+import { Brain, MessageSquare, Zap, Activity, AlertTriangle, Loader2, Sparkles, CheckCircle2, Sliders, RefreshCw, HelpCircle, ShieldAlert } from 'lucide-react';
 import { ResponsiveContainer, Radar, RadarChart, PolarGrid, PolarAngleAxis, Tooltip } from 'recharts';
 import { useState, useEffect } from 'react';
 import { fetchStudentData } from '../services/apiService';
@@ -32,22 +32,32 @@ export default function AIBehavioralProfile() {
 
   if (loading || !data) {
     return (
-      <div className="flex items-center justify-center h-full min-h-[400px]">
-        <Loader2 className="w-8 h-8 text-purple-500 animate-spin" />
+      <div className="space-y-8 animate-pulse">
+        <div className="h-10 bg-white/5 rounded-xl w-1/3 mb-2"></div>
+        <div className="h-6 bg-white/5 rounded-xl w-1/2 mb-8"></div>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="glass-panel p-6 border-white/5 h-80"></div>
+          <div className="lg:col-span-2 space-y-6">
+            <div className="glass-panel p-6 border-white/5 h-32"></div>
+            <div className="glass-panel p-6 border-white/5 h-48"></div>
+          </div>
+        </div>
       </div>
     );
   }
 
-  const behaviorData = [
-    { subject: 'Curiosity', A: 90, fullMark: 100 },
-    { subject: 'Critical Thinking', A: 85, fullMark: 100 },
-    { subject: 'Resilience', A: 65, fullMark: 100 },
-    { subject: 'Focus Level', A: 75, fullMark: 100 },
-    { subject: 'Self-Reliance', A: 60, fullMark: 100 },
-    { subject: 'Emotional Regulation', A: 80, fullMark: 100 },
-  ];
+  const aiAnalytics = data.aiAnalytics || {};
   const studentName = data.studentInfo?.name || 'Kumar Kartikey';
   const firstName = studentName.split(' ')[0];
+
+  const behaviorData = [
+    { subject: 'Productivity', A: aiAnalytics.productivityScore?.value || 92, fullMark: 100 },
+    { subject: 'Consistency', A: aiAnalytics.consistencyScore?.value || 88, fullMark: 100 },
+    { subject: 'Study Habit', A: aiAnalytics.studyHabitScore?.value || 94, fullMark: 100 },
+    { subject: 'Time Mgmt', A: aiAnalytics.timeManagementScore?.value || 85, fullMark: 100 },
+    { subject: 'Behavioral Index', A: aiAnalytics.behaviorScore?.value || 95, fullMark: 100 },
+    { subject: 'Self-Reliance', A: 90, fullMark: 100 },
+  ];
 
   return (
     <div className="space-y-8 relative">
@@ -103,8 +113,9 @@ export default function AIBehavioralProfile() {
               </ResponsiveContainer>
             </div>
           </div>
-          <div className="pt-4 border-t border-white/5 text-xs text-text-muted leading-relaxed">
-            🟢 Curiosity and Emotional Regulation score in the top 10% among national peers in AI engagement.
+          <div className="pt-4 border-t border-white/5 text-xs text-text-muted leading-relaxed space-y-2">
+            <p>🟢 Behavioral Index and Productivity score in the top 10% among national peers in AI engagement.</p>
+            <p className="text-purple-300"><strong>Why:</strong> {aiAnalytics.behaviorScore?.why || 'Consistently deep question formulation with excellent focus retention.'}</p>
           </div>
         </div>
 
@@ -130,6 +141,47 @@ export default function AIBehavioralProfile() {
                 <p className="text-xs font-bold text-text-muted uppercase tracking-wider">Prompt Quality Score</p>
                 <p className="text-3xl font-bold text-white tracking-tight mt-0.5">A- <span className="text-sm font-normal text-purple-300 ml-1">Excellent</span></p>
                 <p className="text-xs text-orange-300 font-medium mt-1">High conceptual structuring</p>
+              </div>
+            </div>
+          </div>
+
+          {/* AI Metrics & WHY Rationale Accordeon/Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="glass-panel border border-white/10 rounded-2xl p-6 flex flex-col justify-between hover:border-purple-500/30 transition-all">
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <h4 className="text-white font-bold text-base">Productivity Score</h4>
+                  <span className="text-xs font-bold text-green-400 bg-green-500/10 px-2.5 py-1 rounded border border-green-500/20">
+                    {aiAnalytics.productivityScore?.value || 92}%
+                  </span>
+                </div>
+                <p className="text-xs text-blue-200 mb-4">Tracking active outputs vs allocated focus windows.</p>
+              </div>
+              <div className="p-3.5 bg-black/40 rounded-xl border border-white/5">
+                <div className="flex items-center gap-1.5 text-[11px] font-bold text-purple-400 uppercase tracking-wider mb-1">
+                  <HelpCircle size={14} />
+                  Why AI Scored This:
+                </div>
+                <p className="text-xs text-blue-200/90 leading-relaxed">{aiAnalytics.productivityScore?.why || 'Evaluated based on active problem solving execution without multi-tasking penalty.'}</p>
+              </div>
+            </div>
+
+            <div className="glass-panel border border-white/10 rounded-2xl p-6 flex flex-col justify-between hover:border-purple-500/30 transition-all">
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <h4 className="text-white font-bold text-base">Consistency Rating</h4>
+                  <span className="text-xs font-bold text-green-400 bg-green-500/10 px-2.5 py-1 rounded border border-green-500/20">
+                    {aiAnalytics.consistencyScore?.value || 88}%
+                  </span>
+                </div>
+                <p className="text-xs text-blue-200 mb-4">Measurement of daily study streak stability and routine execution.</p>
+              </div>
+              <div className="p-3.5 bg-black/40 rounded-xl border border-white/5">
+                <div className="flex items-center gap-1.5 text-[11px] font-bold text-purple-400 uppercase tracking-wider mb-1">
+                  <HelpCircle size={14} />
+                  Why AI Scored This:
+                </div>
+                <p className="text-xs text-blue-200/90 leading-relaxed">{aiAnalytics.consistencyScore?.why || 'Minor weekend dropoff noted but excellent weekday adherence.'}</p>
               </div>
             </div>
           </div>
@@ -182,7 +234,12 @@ export default function AIBehavioralProfile() {
           </div>
 
           <div className="glass-panel border border-white/10 rounded-2xl p-6">
-            <h3 className="text-lg font-bold text-white mb-6">Behavioral Alerts & Insights</h3>
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-lg font-bold text-white">Behavioral Alerts & Real-time Risks</h3>
+              <span className="text-xs font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 rounded-lg">
+                Risk Level: {aiAnalytics.learningRisk?.value || 'Low'}
+              </span>
+            </div>
             <div className="space-y-4">
               
               <div className="p-5 bg-white/5 rounded-2xl border border-white/10 flex gap-4 items-start hover:bg-white/10 transition-colors duration-300">
@@ -198,6 +255,14 @@ export default function AIBehavioralProfile() {
                 <div>
                   <h4 className="text-orange-400 font-bold text-base mb-1">Over-Reliance on AI for Math</h4>
                   <p className="text-sm text-orange-200/80 leading-relaxed">{firstName} tends to ask the AI for direct answers in Calculus without attempting the steps first. <strong className="text-orange-400">Action Taken:</strong> AI will now refuse direct answers and switch to Socratic tutoring mode for Math subjects.</p>
+                </div>
+              </div>
+
+              <div className="p-5 bg-blue-500/10 rounded-2xl border border-blue-500/20 flex gap-4 items-start hover:border-blue-500/30 transition-all duration-300">
+                <ShieldAlert className="text-blue-400 mt-1 shrink-0" size={22} />
+                <div>
+                  <h4 className="text-blue-400 font-bold text-base mb-1">Learning Risk Assessment</h4>
+                  <p className="text-sm text-blue-200/90 leading-relaxed"><strong>AI Risk Explanation:</strong> {aiAnalytics.learningRisk?.why || 'Low risk observed due to high engagement with quizzes and prompt adherence.'}</p>
                 </div>
               </div>
 

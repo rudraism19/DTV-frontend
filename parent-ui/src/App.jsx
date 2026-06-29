@@ -6,6 +6,7 @@ import GoalsCareer from './pages/GoalsCareer';
 import StudyAcademics from './pages/StudyAcademics';
 import AIBehavioralProfile from './pages/AIBehavioralProfile';
 import SettingsAlerts from './pages/SettingsAlerts';
+import AdminPanel from './pages/AdminPanel';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
           <Route path="academics" element={<StudyAcademics />} />
           <Route path="behavior" element={<AIBehavioralProfile />} />
           <Route path="settings" element={<SettingsAlerts />} />
+          <Route path="admin" element={<AdminPanel />} />
         </Route>
       </Routes>
     </BrowserRouter>

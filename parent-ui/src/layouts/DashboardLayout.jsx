@@ -1,13 +1,15 @@
 import { useState, useEffect } from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
-import { Calendar, Target, BookOpen, LogOut, Menu, X, Bell, Brain, ShieldCheck, Settings } from 'lucide-react';
-import { fetchStudentData } from '../services/apiService';
+import { Calendar, Target, BookOpen, LogOut, Menu, X, Bell, Brain, ShieldCheck, Settings, Shield } from 'lucide-react';
+import { fetchStudentData, subscribeToLiveStream } from '../services/apiService';
 
 export default function DashboardLayout() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [unreadCount, setUnreadCount] = useState(2);
+  const [notificationsList, setNotificationsList] = useState([]);
+  const [liveToast, setLiveToast] = useState(null);
   const [studentInfo, setStudentInfo] = useState({
     name: 'Kumar Kartikey',
     linkCode: localStorage.getItem('studentCode') || 'FC0D52'
@@ -23,11 +25,35 @@ export default function DashboardLayout() {
         if (result && result.studentInfo) {
           setStudentInfo(result.studentInfo);
         }
+        if (result && result.notifications) {
+          setNotificationsList(result.notifications);
+          setUnreadCount(result.notifications.filter(n => !n.is_read).length || 2);
+        }
       } catch (err) {
         console.error('Failed to load student info in layout', err);
       }
     };
     loadData();
+
+    // Subscribe to real-time SSE stream
+    const unsubscribe = subscribeToLiveStream((message) => {
+      if (message.type !== 'CONNECTED') {
+        const title = `Live Update: ${message.type}`;
+        const desc = message.data?.message || message.data?.title || JSON.stringify(message.data);
+        
+        setLiveToast({ title, desc, time: new Date().toLocaleTimeString() });
+        setUnreadCount(prev => prev + 1);
+        setNotificationsList(prev => [
+          { id: Date.now(), title, message: desc, created_at: new Date().toISOString(), is_read: false },
+          ...prev
+        ]);
+
+        // Auto hide toast after 5s
+        setTimeout(() => setLiveToast(null), 5000);
+      }
+    });
+
+    return () => unsubscribe();
   }, []);
 
   const handleLogout = () => {
@@ -42,6 +68,7 @@ export default function DashboardLayout() {
     { name: 'Study & Academics', path: '/dashboard/academics', icon: <BookOpen size={20} /> },
     { name: 'AI Behavioral Profile', path: '/dashboard/behavior', icon: <Brain size={20} /> },
     { name: 'Settings & Alerts', path: '/dashboard/settings', icon: <Settings size={20} /> },
+    { name: 'Admin Management', path: '/dashboard/admin', icon: <Shield size={20} /> },
   ];
 
   const studentName = studentInfo.name || 'Kumar Kartikey';
@@ -56,6 +83,24 @@ export default function DashboardLayout() {
         <div className="absolute top-[-20%] left-[-10%] w-[600px] h-[600px] bg-blue-600/10 rounded-full blur-[120px]"></div>
         <div className="absolute bottom-[-20%] right-[-10%] w-[500px] h-[500px] bg-purple-600/10 rounded-full blur-[120px]"></div>
       </div>
+
+      {/* Real-Time Live Toast Alert */}
+      {liveToast && (
+        <div className="fixed top-24 right-6 z-50 glass-panel border border-orange-500/40 p-4 rounded-2xl shadow-[0_0_30px_rgba(249,115,22,0.3)] max-w-sm animate-in fade-in slide-in-from-top-5 duration-300">
+          <div className="flex items-center justify-between mb-1">
+            <span className="text-xs font-bold text-orange-400 uppercase tracking-wider flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+              Live Broadcast
+            </span>
+            <button onClick={() => setLiveToast(null)} className="text-text-muted hover:text-white">
+              <X size={16} />
+            </button>
+          </div>
+          <p className="text-sm font-bold text-white">{liveToast.title}</p>
+          <p className="text-xs text-text-muted mt-1">{liveToast.desc}</p>
+          <p className="text-[10px] text-text-muted mt-2">{liveToast.time}</p>
+        </div>
+      )}
 
       {/* Desktop Sidebar */}
       <aside className="hidden lg:flex w-72 flex-col glass-panel border-r border-white/5 relative z-10">
@@ -157,16 +202,28 @@ export default function DashboardLayout() {
                   )}
                 </div>
                 <div className="max-h-[300px] overflow-y-auto">
-                  <div className="p-4 border-b border-white/5 hover:bg-white/5 transition-colors cursor-pointer">
-                    <p className="text-sm text-white font-medium mb-1">🔥 10-Day Streak Reached!</p>
-                    <p className="text-xs text-text-muted">{firstName} has successfully logged in and studied for 10 consecutive days.</p>
-                    <p className="text-[10px] text-text-muted mt-2">2 hours ago</p>
-                  </div>
-                  <div className="p-4 border-b border-white/5 hover:bg-white/5 transition-colors cursor-pointer">
-                    <p className="text-sm text-white font-medium mb-1">⚠️ Subject Time Imbalance</p>
-                    <p className="text-xs text-text-muted">{firstName} spent 420 mins on Computer Sci but only 120 mins on English. AI has adjusted the schedule.</p>
-                    <p className="text-[10px] text-text-muted mt-2">Yesterday</p>
-                  </div>
+                  {notificationsList.length > 0 ? (
+                    notificationsList.map(n => (
+                      <div key={n.id} className="p-4 border-b border-white/5 hover:bg-white/5 transition-colors cursor-pointer">
+                        <p className="text-sm text-white font-medium mb-1">🔔 {n.title}</p>
+                        <p className="text-xs text-text-muted">{n.message}</p>
+                        <p className="text-[10px] text-text-muted mt-2">{new Date(n.created_at).toLocaleTimeString()}</p>
+                      </div>
+                    ))
+                  ) : (
+                    <>
+                      <div className="p-4 border-b border-white/5 hover:bg-white/5 transition-colors cursor-pointer">
+                        <p className="text-sm text-white font-medium mb-1">🔥 10-Day Streak Reached!</p>
+                        <p className="text-xs text-text-muted">{firstName} has successfully logged in and studied for 10 consecutive days.</p>
+                        <p className="text-[10px] text-text-muted mt-2">2 hours ago</p>
+                      </div>
+                      <div className="p-4 border-b border-white/5 hover:bg-white/5 transition-colors cursor-pointer">
+                        <p className="text-sm text-white font-medium mb-1">⚠️ Subject Time Imbalance</p>
+                        <p className="text-xs text-text-muted">{firstName} spent 420 mins on Computer Sci but only 120 mins on English. AI has adjusted the schedule.</p>
+                        <p className="text-[10px] text-text-muted mt-2">Yesterday</p>
+                      </div>
+                    </>
+                  )}
                 </div>
                 <div className="p-3 text-center bg-white/5">
                   <Link to="/dashboard/settings" onClick={() => setShowNotifications(false)} className="text-xs text-text-muted hover:text-white transition-colors">

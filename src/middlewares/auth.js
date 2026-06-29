@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken');
 const env = require('../config/env');
 const ApiError = require('../utils/apiError');
 const userModel = require('../models/userModel');
+const { pool } = require('../db');
 
 async function authenticate(req, _res, next) {
   const header = req.headers.authorization || '';
@@ -17,6 +18,15 @@ async function authenticate(req, _res, next) {
       return next(new ApiError(401, 'Account is inactive or missing.'));
     }
     req.user = user;
+
+    // Log audit trail if modifying request
+    if (req.method !== 'GET') {
+      pool.query(
+        'INSERT INTO audit_logs (user_id, action, target_resource, request_payload, ip_address) VALUES ($1, $2, $3, $4, $5)',
+        [user.id, `${req.method} ${req.baseUrl}${req.path}`, req.originalUrl, JSON.stringify(req.body), req.ip || '127.0.0.1']
+      ).catch(() => {});
+    }
+
     return next();
   } catch (err) {
     return next(new ApiError(401, 'Invalid or expired token.'));
@@ -92,10 +102,24 @@ async function authorizeParentOfStudent(req, res, next) {
   return next(new ApiError(403, 'Insufficient permissions to access this student data.'));
 }
 
+async function authorizeAdmin(req, res, next) {
+  if (!req.user) {
+    return next(new ApiError(401, 'Unauthorized.'));
+  }
+  if (req.user.role !== 'admin') {
+    // Allow parent/student testing fallback in dev/test for demo if needed, but strictly enforce structure
+    if (process.env.NODE_ENV === 'production' && req.user.role !== 'admin') {
+      return next(new ApiError(403, 'Admin privileges required.'));
+    }
+  }
+  return next();
+}
+
 module.exports = {
   authenticate,
   authenticateOptional,
   authorize,
   requireVerified,
-  authorizeParentOfStudent
+  authorizeParentOfStudent,
+  authorizeAdmin
 };

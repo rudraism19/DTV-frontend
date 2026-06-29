@@ -1,4 +1,4 @@
-import { CheckCircle2, Circle, Clock, Target, TrendingUp, Loader2, User, Key, Calendar, Zap } from 'lucide-react';
+import { CheckCircle2, Circle, Clock, Target, TrendingUp, Loader2, User, Key, Calendar, Zap, Brain } from 'lucide-react';
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import { useState, useEffect } from 'react';
 import { fetchStudentData } from '../services/apiService';
@@ -32,8 +32,19 @@ export default function SummaryRoutine() {
 
   if (loading || !data) {
     return (
-      <div className="flex items-center justify-center h-full min-h-[400px]">
-        <Loader2 className="w-8 h-8 text-orange-500 animate-spin" />
+      <div className="space-y-8 animate-pulse">
+        <div className="h-10 bg-white/5 rounded-xl w-1/3 mb-2"></div>
+        <div className="h-6 bg-white/5 rounded-xl w-1/2 mb-8"></div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {[1, 2, 3, 4].map(i => (
+            <div key={i} className="glass-panel p-6 border-white/5 h-32"></div>
+          ))}
+        </div>
+        <div className="glass-panel p-8 border-white/5 h-40"></div>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2 glass-panel p-6 border-white/5 h-96"></div>
+          <div className="glass-panel p-6 border-white/5 h-96"></div>
+        </div>
       </div>
     );
   }
@@ -41,6 +52,7 @@ export default function SummaryRoutine() {
   const weeklyData = data.weeklyData || [];
   const studentInfo = data.studentInfo || {};
   const recentActivities = data.recentActivities || [];
+  const aiAnalytics = data.aiAnalytics || {};
 
   return (
     <div className="space-y-8">
@@ -91,10 +103,10 @@ export default function SummaryRoutine() {
             <Zap size={24} />
           </div>
           <div>
-            <h3 className="text-xs font-bold text-text-muted uppercase tracking-wider">Goal Accuracy</h3>
+            <h3 className="text-xs font-bold text-text-muted uppercase tracking-wider">Growth Index</h3>
             <div className="flex items-center gap-2 mt-0.5">
-              <span className="text-lg font-bold text-white tracking-tight">88%</span>
-              <span className="text-xs text-green-400 flex items-center font-bold"><TrendingUp size={14} className="mr-0.5"/> +5%</span>
+              <span className="text-lg font-bold text-white tracking-tight">{aiAnalytics.overallGrowthIndex?.value || 89.5}%</span>
+              <span className="text-xs text-green-400 flex items-center font-bold"><TrendingUp size={14} className="mr-0.5"/> {aiAnalytics.improvementPercentage?.value || '+12.5%'}</span>
             </div>
             <p className="text-xs text-blue-300 font-medium mt-1">Multi-agent evaluated</p>
           </div>
@@ -128,7 +140,12 @@ export default function SummaryRoutine() {
         {/* Weekly Progress Summary */}
         <div className="lg:col-span-2 glass-panel p-6 border-white/10 flex flex-col justify-between">
           <div>
-            <h3 className="text-lg font-bold text-white mb-6">Weekly Progress Summary</h3>
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-lg font-bold text-white">Weekly Progress Summary</h3>
+              <span className="text-xs text-blue-400 font-bold bg-blue-500/10 px-3 py-1 rounded-full border border-blue-500/20">
+                {aiAnalytics.learningTrend?.value || 'Upward / Accelerating'}
+              </span>
+            </div>
             <div className="min-h-[300px] h-[300px] sm:h-80 w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={weeklyData}>

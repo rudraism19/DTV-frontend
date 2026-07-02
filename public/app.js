@@ -3601,6 +3601,10 @@
         function requireAuth(callback) {
             window.trackAnalyticsEvent('Protected Feature Clicked', { action: callback ? callback.name : 'unknown' });
             if (isLoggedIn()) {
+                if (APP_DATA.userData && APP_DATA.userData.role === 'parent') {
+                    showToast('🚫', 'Wrong ID: Aap Parent ID se login kiye hue hain, isliye aap premium student features use nahi kar sakte. Kripya Student ID se login karein.');
+                    return;
+                }
                 if (typeof callback === 'function') callback();
             } else {
                 window.pendingAuthAction = callback;
@@ -3873,6 +3877,10 @@
                 openLoginPage();
                 return false;
             }
+            if (APP_DATA.userData && APP_DATA.userData.role === 'parent') {
+                showToast('🚫', 'Wrong ID: Aap Parent ID se login kiye hue hain, isliye aap premium student features use nahi kar sakte.');
+                return false;
+            }
             var now = new Date();
             var subExp = APP_DATA.userData.subscriptionExpiresAt ? new Date(APP_DATA.userData.subscriptionExpiresAt) : null;
             if (subExp && subExp > now) {
@@ -3891,6 +3899,10 @@
             if (!isLoggedIn()) {
                 showToast('🔒', 'Please sign in to access Achievement Analyzer.');
                 openLoginPage();
+                return;
+            }
+            if (APP_DATA.userData && APP_DATA.userData.role === 'parent') {
+                showToast('🚫', 'Wrong ID: Aap Parent ID se login kiye hue hain, isliye aap Achievement Analyzer use nahi kar sakte.');
                 return;
             }
             var now = new Date();

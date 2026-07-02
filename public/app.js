@@ -2820,11 +2820,7 @@
         }
 
         function initDashboardToggle() {
-            var saved = '0';
-            try {
-                saved = localStorage.getItem('dt_dashboard_open') || '0';
-            } catch (e) {}
-            setDashboardOpen(saved === '1', false);
+            setDashboardOpen(false, false);
         }
 
         function setCareerExplorerOpen(isOpen, persist) {
@@ -2862,11 +2858,7 @@
         }
 
         function initCareerExplorerToggle() {
-            var saved = '0';
-            try {
-                saved = localStorage.getItem('dt_career_open') || '0';
-            } catch (e) {}
-            setCareerExplorerOpen(saved === '1', false);
+            setCareerExplorerOpen(false, false);
         }
 
         function initStudentDashboard() {

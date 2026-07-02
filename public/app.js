@@ -3598,11 +3598,122 @@
 
         window.pendingAuthAction = null;
 
+        function triggerParentScare() {
+            var existing = document.getElementById('parent-scare-overlay');
+            if (existing) existing.remove();
+            
+            var overlay = document.createElement('div');
+            overlay.id = 'parent-scare-overlay';
+            overlay.style.position = 'fixed';
+            overlay.style.top = '0';
+            overlay.style.left = '0';
+            overlay.style.width = '100vw';
+            overlay.style.height = '100vh';
+            overlay.style.zIndex = '999999999';
+            overlay.style.display = 'flex';
+            overlay.style.flexDirection = 'column';
+            overlay.style.alignItems = 'center';
+            overlay.style.justifyContent = 'center';
+            overlay.style.padding = '20px';
+            overlay.style.textAlign = 'center';
+            overlay.style.cursor = 'pointer';
+            
+            var style = document.createElement('style');
+            style.innerHTML = `
+                @keyframes redSiren {
+                    0% { background-color: #ff0000; color: #fff; }
+                    50% { background-color: #000000; color: #ff0000; }
+                    100% { background-color: #ff0000; color: #fff; }
+                }
+                @keyframes glitchShake {
+                    0% { transform: translate(2px, 1px) rotate(0deg); }
+                    10% { transform: translate(-1px, -2px) rotate(-2deg); }
+                    20% { transform: translate(-3px, 0px) rotate(2deg); }
+                    30% { transform: translate(0px, 2px) rotate(0deg); }
+                    40% { transform: translate(1px, -1px) rotate(1deg); }
+                    50% { transform: translate(-1px, 2px) rotate(-1deg); }
+                    60% { transform: translate(-3px, 1px) rotate(0deg); }
+                    70% { transform: translate(2px, 1px) rotate(-2deg); }
+                    80% { transform: translate(-1px, -1px) rotate(2deg); }
+                    90% { transform: translate(2px, 2px) rotate(0deg); }
+                    100% { transform: translate(1px, -2px) rotate(-1deg); }
+                }
+                #parent-scare-overlay {
+                    animation: redSiren 0.15s infinite;
+                }
+                .scare-text {
+                    font-size: clamp(3rem, 8vw, 6rem);
+                    font-weight: 900;
+                    text-transform: uppercase;
+                    margin-bottom: 20px;
+                    animation: glitchShake 0.1s infinite;
+                    text-shadow: 4px 4px 0px #000, -4px -4px 0px #fff;
+                    font-family: monospace;
+                    line-height: 1;
+                }
+                .scare-subtext {
+                    font-size: clamp(1.2rem, 3vw, 2.5rem);
+                    font-weight: 800;
+                    max-width: 900px;
+                    line-height: 1.5;
+                    animation: glitchShake 0.3s infinite reverse;
+                    background: #000;
+                    color: #fff;
+                    padding: 30px;
+                    border: 8px dashed red;
+                    box-shadow: 0 0 50px red;
+                }
+            `;
+            
+            overlay.innerHTML = `
+                <div class="scare-text">🚨 ACCESS DENIED 🚨</div>
+                <div class="scare-subtext">
+                    <span style="color:red; font-size: 1.2em;">WRONG ID DETECTED!</span><br><br>
+                    Bhai sahab, aap <u>Parent ID</u> se login kiye hue hain!<br>
+                    Bachhon wale Premium Features mein kyu ghus rahe ho? 👀<br>
+                    Kripya jaldi se <span style="color:#0f0;">Student ID</span> se login karein varna website 5 second mein BLAST ho jayega! 💣💥<br><br>
+                    <span style="font-size: 1rem; font-weight: normal; color: #ff0; animation: none;">(Click anywhere to escape before blast!)</span>
+                </div>
+            `;
+            
+            overlay.appendChild(style);
+            document.body.appendChild(overlay);
+            
+            try {
+                var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                var count = 0;
+                var beepInt = setInterval(function() {
+                    count++;
+                    if(count > 15) { clearInterval(beepInt); return; }
+                    var osc = audioCtx.createOscillator();
+                    var gn = audioCtx.createGain();
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(300 + (Math.random()*600), audioCtx.currentTime);
+                    gn.gain.setValueAtTime(0.3, audioCtx.currentTime);
+                    gn.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
+                    osc.connect(gn);
+                    gn.connect(audioCtx.destination);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.15);
+                }, 100);
+            } catch(e) {}
+
+            overlay.onclick = function() {
+                overlay.remove();
+            };
+            
+            setTimeout(function() {
+                if(document.getElementById('parent-scare-overlay')) {
+                    document.getElementById('parent-scare-overlay').remove();
+                }
+            }, 5500);
+        }
+
         function requireAuth(callback) {
             window.trackAnalyticsEvent('Protected Feature Clicked', { action: callback ? callback.name : 'unknown' });
             if (isLoggedIn()) {
                 if (APP_DATA.userData && APP_DATA.userData.role === 'parent') {
-                    showToast('🚫', 'Wrong ID: Aap Parent ID se login kiye hue hain, isliye aap premium student features use nahi kar sakte. Kripya Student ID se login karein.');
+                    triggerParentScare();
                     return;
                 }
                 if (typeof callback === 'function') callback();
@@ -3878,7 +3989,7 @@
                 return false;
             }
             if (APP_DATA.userData && APP_DATA.userData.role === 'parent') {
-                showToast('🚫', 'Wrong ID: Aap Parent ID se login kiye hue hain, isliye aap premium student features use nahi kar sakte.');
+                triggerParentScare();
                 return false;
             }
             var now = new Date();
@@ -3902,7 +4013,7 @@
                 return;
             }
             if (APP_DATA.userData && APP_DATA.userData.role === 'parent') {
-                showToast('🚫', 'Wrong ID: Aap Parent ID se login kiye hue hain, isliye aap Achievement Analyzer use nahi kar sakte.');
+                triggerParentScare();
                 return;
             }
             var now = new Date();

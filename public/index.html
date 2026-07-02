@@ -638,7 +638,7 @@
                         onclick="if (doLogout()) hideAccountMenu()">Log Out</button>
                 </div>
             </li>
-            <li><button type="button" onclick="requireAuth(function(){window.location.href='https://analyzer.niat.tech/'})"
+            <li><button type="button" onclick="openAnalyzer()"
                     class="nav-pill-purple">🧠 Analyzer</button></li>
         </ul>
         <div class="hbg" id="hbg" onclick="togMenu()"><span></span><span></span><span></span></div>
@@ -659,7 +659,7 @@
         <a href="#rev" onclick="togMenu()">Reviews</a>
         <button type="button" onclick="requireAuth(function(){openPricingPage(); togMenu();}); return false;" class="btn-reset"
             style="cursor:pointer; display:block; padding: 1rem 1.5rem; text-decoration: none; color: #e88c2a; width: 100%; text-align: left; font-size: 1.1rem; font-weight: 700;">💎 Go Premium</button>
-        <button type="button" onclick="requireAuth(function(){window.location.href='https://analyzer.niat.tech/'; togMenu();})" class="btn-reset"
+        <button type="button" onclick="openAnalyzer(); togMenu();" class="btn-reset"
             style="cursor:pointer; display:block; padding: 1rem 1.5rem; text-decoration: none; color: var(--wh, #fff); width: 100%; text-align: left; font-size: 1.1rem; font-weight: 600;">🧠
             Achievement Analyzer</button>
 
@@ -904,7 +904,7 @@
                     <div class="hero-btns">
 
                         <a href="#ai-section" class="btn btn-out">Talk to Career AI</a>
-                        <button type="button" onclick="window.location.href='https://analyzer.niat.tech/'"
+                        <button type="button" onclick="openAnalyzer()"
                             class="btn btn-out"
                             style="border-color:rgba(167,139,250,.4);color:var(--purple,#a78bfa); cursor:pointer;">🧠
                             Analyze My Profile</button>
@@ -1659,7 +1659,7 @@
                                 <span>Download a full colorful PDF report with your roadmap</span>
                             </div>
                         </div>
-                        <button type="button" onclick="window.location.href='https://analyzer.niat.tech/'"
+                        <button type="button" onclick="openAnalyzer()"
                             class="btn btn-amb"
                             style="display:inline-flex;align-items:center;gap:.5rem;text-decoration:none; cursor:pointer;">🚀
                             Launch Achievement Analyzer →</button>
@@ -1696,7 +1696,7 @@
                                 </div>
                             </div>
                             <div style="text-align:center;margin-top:.3rem;">
-                                <button type="button" onclick="requireAuth(function(){window.location.href='https://analyzer.niat.tech/'})"
+                                <button type="button" onclick="openAnalyzer()"
                                     class="btn-reset"
                                     style="font-size:.78rem;color:var(--amb,#e88c2a);font-weight:600;text-decoration:none; cursor:pointer;">Analyze
                                     my profile → </button>
@@ -2081,7 +2081,7 @@
                     <a href="#student-dashboard">Student Dashboard</a>
                     <a href="#dashboard">Career Explorer</a>
                     <a href="#ai-section">AI Career Advisor</a>
-                    <a href="https://analyzer.niat.tech/" target="_blank" style="color: var(--wh2);">🧠 Achievement
+                    <a href="javascript:void(0)" onclick="openAnalyzer()" style="color: var(--wh2);">🧠 Achievement
                         Analyzer</a>
                     <a href="#features">Features</a>
                     <a href="#road">Roadmap</a>

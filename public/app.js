@@ -3887,6 +3887,22 @@
             return false;
         }
 
+        window.openAnalyzer = function() {
+            if (!isLoggedIn()) {
+                showToast('🔒', 'Please sign in to access Achievement Analyzer.');
+                openLoginPage();
+                return;
+            }
+            var now = new Date();
+            var subExp = APP_DATA.userData.subscriptionExpiresAt ? new Date(APP_DATA.userData.subscriptionExpiresAt) : null;
+            if (subExp && subExp > now) {
+                window.location.href = 'https://analyzer.niat.tech/';
+                return;
+            }
+            showToast('💎', 'Achievement Analyzer is an exclusive Premium feature. Please buy at least a 1-month Premium Plan to use it.');
+            openPricingPage();
+        };
+
         function openPricingPage() {
             var modal = document.getElementById('pricing-modal');
             if (modal) {
@@ -4756,9 +4772,8 @@
         document.addEventListener('click', function(e) {
             var target = e.target.closest('a[href="https://analyzer.niat.tech/"]');
             if (target) {
-                if (!checkPremiumAccess('Achievement Analyzer')) {
-                    e.preventDefault();
-                }
+                e.preventDefault();
+                openAnalyzer();
             }
         });
 

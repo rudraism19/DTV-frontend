@@ -3612,25 +3612,7 @@
                 if (typeof callback === 'function') callback();
             } else {
                 window.pendingAuthAction = callback;
-                openPremiumAuthModal();
-            }
-        }
-
-        function openPremiumAuthModal() {
-            var modal = document.getElementById('premium-auth-modal');
-            if (modal) {
-                modal.style.display = 'flex';
-                document.body.classList.add('premium-auth-blur');
-            } else {
                 openLoginGate();
-            }
-        }
-
-        function closePremiumAuthModal() {
-            var modal = document.getElementById('premium-auth-modal');
-            if (modal) {
-                modal.style.display = 'none';
-                document.body.classList.remove('premium-auth-blur');
             }
         }
 
@@ -4311,7 +4293,7 @@
                     openOTPModal();
                 } else {
                     closeMod();
-                    closePremiumAuthModal();
+                    unlockSite();
                     window.trackAnalyticsEvent('Signup Conversion', { role: APP_DATA.userData.role });
                     showToast('✅', 'Account created and signed in successfully.');
                     if (typeof window.pendingAuthAction === 'function') {
@@ -4435,7 +4417,7 @@
                     openOTPModal();
                 } else {
                     closeMod();
-                    closePremiumAuthModal();
+                    unlockSite();
                     window.trackAnalyticsEvent('Login Success', { email: email });
                     showToast('✅', 'Signed in successfully.');
                     if (typeof window.pendingAuthAction === 'function') {

@@ -3,6 +3,7 @@ const Joi = require('joi');
 const aiController = require('../controllers/aiController');
 const validate = require('../middlewares/validate');
 const { authenticateOptional } = require('../middlewares/auth');
+const { aiLimiter } = require('../middlewares/rateLimiter');
 
 const router = express.Router();
 
@@ -49,7 +50,7 @@ const aiSchema = Joi.object({
  *       200:
  *         description: AI response
  */
-router.post('/ai/messages', authenticateOptional, validate(aiSchema), aiController.sendMessages);
-router.post('/messages', authenticateOptional, validate(aiSchema), aiController.sendMessages);
+router.post('/ai/messages', authenticateOptional, aiLimiter, validate(aiSchema), aiController.sendMessages);
+router.post('/messages', authenticateOptional, aiLimiter, validate(aiSchema), aiController.sendMessages);
 
 module.exports = router;

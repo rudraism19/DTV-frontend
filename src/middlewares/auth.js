@@ -107,10 +107,7 @@ async function authorizeAdmin(req, res, next) {
     return next(new ApiError(401, 'Unauthorized.'));
   }
   if (req.user.role !== 'admin') {
-    // Allow parent/student testing fallback in dev/test for demo if needed, but strictly enforce structure
-    if (process.env.NODE_ENV === 'production' && req.user.role !== 'admin') {
-      return next(new ApiError(403, 'Admin privileges required.'));
-    }
+    return next(new ApiError(403, 'Admin privileges required.'));
   }
   return next();
 }

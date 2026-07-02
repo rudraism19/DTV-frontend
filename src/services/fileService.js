@@ -9,10 +9,11 @@ const fileModel = require('../models/fileModel');
 function buildObjectKey(userId, filename) {
   let ext = path.extname(filename || '').toLowerCase();
   const allowedExts = ['.jpg', '.jpeg', '.png', '.gif', '.pdf', '.doc', '.docx', '.txt', '.webp'];
-  if (!allowedExts.includes(ext)) {
+  let isSafeExt = allowedExts.includes(ext);
+  if (!isSafeExt) {
     ext = '.bin'; // Neutralize arbitrary executable extensions to prevent Remote Code Execution
   }
-  return 'users/' + userId + '/' + crypto.randomUUID() + ext;
+  return { key: 'users/' + userId + '/' + crypto.randomUUID() + ext, isSafeExt };
 }
 
 function buildPublicUrl(key) {
@@ -26,7 +27,7 @@ function buildPublicUrl(key) {
 }
 
 async function storeLocal(file, userId) {
-  const relativeKey = buildObjectKey(userId, file.originalname);
+  const { key: relativeKey } = buildObjectKey(userId, file.originalname);
   const targetPath = path.join(process.cwd(), env.UPLOAD_DIR, relativeKey);
   const targetDir = path.dirname(targetPath);
 
@@ -45,12 +46,16 @@ async function storeLocal(file, userId) {
 
 async function storeS3(file, userId) {
   const client = getS3Client();
-  const objectKey = buildObjectKey(userId, file.originalname);
+  const { key: objectKey, isSafeExt } = buildObjectKey(userId, file.originalname);
+  
+  // Prevent Stored XSS by forcing application/octet-stream if extension was neutralized
+  const safeMimeType = isSafeExt ? file.mimetype : 'application/octet-stream';
+
   await client.send(new PutObjectCommand({
     Bucket: env.S3_BUCKET,
     Key: objectKey,
     Body: file.buffer,
-    ContentType: file.mimetype
+    ContentType: safeMimeType
   }));
 
   return {

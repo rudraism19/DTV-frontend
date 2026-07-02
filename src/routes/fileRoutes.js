@@ -8,7 +8,15 @@ const { authenticate } = require('../middlewares/auth');
 const router = express.Router();
 const upload = multer({
   storage: multer.memoryStorage(),
-  limits: { fileSize: 10 * 1024 * 1024 }
+  limits: { fileSize: 10 * 1024 * 1024 },
+  fileFilter: (req, file, cb) => {
+    const allowedMimeTypes = ['image/jpeg', 'image/png', 'image/webp', 'application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'text/plain'];
+    if (allowedMimeTypes.includes(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(new Error('SECURITY ALERT: Invalid file type detected. Only Images, PDFs, Docs, and TXT files are allowed.'), false);
+    }
+  }
 });
 
 const fileIdSchema = Joi.object({

@@ -3599,9 +3599,15 @@
             if (!('loggedInAt' in APP_DATA.userData)) APP_DATA.userData.loggedInAt = null;
         }
 
+        window.trackAnalyticsEvent = function(eventName, payload) {
+            // Placeholder for real analytics integration (e.g. Mixpanel, GA4)
+            console.log('[Analytics Tracked]', eventName, payload || {});
+        };
+
         window.pendingAuthAction = null;
 
         function requireAuth(callback) {
+            window.trackAnalyticsEvent('Protected Feature Clicked', { action: callback ? callback.name : 'unknown' });
             if (isLoggedIn()) {
                 if (typeof callback === 'function') callback();
             } else {
@@ -3616,7 +3622,6 @@
                 modal.style.display = 'flex';
                 document.body.classList.add('premium-auth-blur');
             } else {
-                // Fallback to old login gate if modal isn't ready
                 openLoginGate();
             }
         }
@@ -3642,6 +3647,7 @@
                 if (!rememberMe && (now - loginTime > hours48)) {
                     APP_DATA.userData.token = null;
                     setLoggedIn(false);
+                    window.trackAnalyticsEvent('Session Expiry');
                     showToast('🔒', 'Session Expired. Please login again to continue.');
                     return false;
                 }
@@ -4298,6 +4304,7 @@
                 } else {
                     closeMod();
                     closePremiumAuthModal();
+                    window.trackAnalyticsEvent('Signup Conversion', { role: APP_DATA.userData.role });
                     showToast('✅', 'Account created and signed in successfully.');
                     if (typeof window.pendingAuthAction === 'function') {
                         window.pendingAuthAction();
@@ -4310,6 +4317,7 @@
                     }
                 }
             } catch (err) {
+                window.trackAnalyticsEvent('Signup Failure', { error: err.message });
                 showToast('❌', err.message);
                 var pe = document.getElementById('su-pe');
                 if (pe) { pe.textContent = err.message; pe.style.display = 'block'; }
@@ -4420,6 +4428,7 @@
                 } else {
                     closeMod();
                     closePremiumAuthModal();
+                    window.trackAnalyticsEvent('Login Success', { email: email });
                     showToast('✅', 'Signed in successfully.');
                     if (typeof window.pendingAuthAction === 'function') {
                         window.pendingAuthAction();
@@ -4432,6 +4441,7 @@
                     }
                 }
             } catch (err) {
+                window.trackAnalyticsEvent('Login Failure', { error: err.message, email: email });
                 showToast('❌', err.message);
                 var pe = document.getElementById('li-pe');
                 if (pe) { pe.textContent = err.message; pe.style.display = 'block'; }

@@ -3596,8 +3596,6 @@
             console.log('[Analytics Tracked]', eventName, payload || {});
         };
 
-        window.pendingAuthAction = null;
-
         function triggerParentScare() {
             var existing = document.getElementById('parent-scare-overlay');
             if (existing) existing.remove();
@@ -3610,103 +3608,186 @@
             overlay.style.width = '100vw';
             overlay.style.height = '100vh';
             overlay.style.zIndex = '999999999';
+            overlay.style.backgroundColor = '#020202';
+            overlay.style.backgroundImage = 'radial-gradient(circle at center, #1a0000 0%, #000000 100%)';
             overlay.style.display = 'flex';
             overlay.style.flexDirection = 'column';
             overlay.style.alignItems = 'center';
             overlay.style.justifyContent = 'center';
-            overlay.style.padding = '20px';
+            overlay.style.padding = '40px';
             overlay.style.textAlign = 'center';
             overlay.style.cursor = 'pointer';
+            overlay.style.fontFamily = '"Courier New", Courier, monospace';
+            overlay.style.overflow = 'hidden';
             
             var style = document.createElement('style');
             style.innerHTML = `
-                @keyframes redSiren {
-                    0% { background-color: #ff0000; color: #fff; }
-                    50% { background-color: #000000; color: #ff0000; }
-                    100% { background-color: #ff0000; color: #fff; }
+                @keyframes scanline {
+                    0% { transform: translateY(-100vh); }
+                    100% { transform: translateY(100vh); }
                 }
-                @keyframes glitchShake {
-                    0% { transform: translate(2px, 1px) rotate(0deg); }
-                    10% { transform: translate(-1px, -2px) rotate(-2deg); }
-                    20% { transform: translate(-3px, 0px) rotate(2deg); }
-                    30% { transform: translate(0px, 2px) rotate(0deg); }
-                    40% { transform: translate(1px, -1px) rotate(1deg); }
-                    50% { transform: translate(-1px, 2px) rotate(-1deg); }
-                    60% { transform: translate(-3px, 1px) rotate(0deg); }
-                    70% { transform: translate(2px, 1px) rotate(-2deg); }
-                    80% { transform: translate(-1px, -1px) rotate(2deg); }
-                    90% { transform: translate(2px, 2px) rotate(0deg); }
-                    100% { transform: translate(1px, -2px) rotate(-1deg); }
+                @keyframes crtFlicker {
+                    0% { opacity: 0.9; }
+                    5% { opacity: 0.5; }
+                    10% { opacity: 0.95; }
+                    15% { opacity: 0.8; }
+                    50% { opacity: 0.99; }
+                    80% { opacity: 0.7; }
+                    100% { opacity: 0.9; }
+                }
+                @keyframes cyberGlitch {
+                    0% { clip-path: inset(20% 0 80% 0); transform: translate(-2px, 2px); }
+                    20% { clip-path: inset(60% 0 10% 0); transform: translate(2px, -2px); }
+                    40% { clip-path: inset(40% 0 50% 0); transform: translate(2px, 2px); }
+                    60% { clip-path: inset(80% 0 5% 0); transform: translate(-2px, -2px); }
+                    80% { clip-path: inset(10% 0 70% 0); transform: translate(2px, -2px); }
+                    100% { clip-path: inset(30% 0 50% 0); transform: translate(-2px, 2px); }
                 }
                 #parent-scare-overlay {
-                    animation: redSiren 0.15s infinite;
+                    animation: crtFlicker 0.15s infinite;
                 }
-                .scare-text {
-                    font-size: clamp(3rem, 8vw, 6rem);
+                #parent-scare-overlay::before {
+                    content: " ";
+                    display: block;
+                    position: absolute;
+                    top: 0; left: 0; bottom: 0; right: 0;
+                    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+                    z-index: 2;
+                    background-size: 100% 2px, 3px 100%;
+                    pointer-events: none;
+                }
+                .scare-scanline {
+                    position: absolute;
+                    top: 0; left: 0; width: 100%; height: 10px;
+                    background: rgba(255, 0, 0, 0.3);
+                    opacity: 0.4;
+                    animation: scanline 6s linear infinite;
+                    pointer-events: none;
+                    z-index: 3;
+                }
+                .scare-title {
+                    font-size: clamp(2.5rem, 6vw, 5rem);
                     font-weight: 900;
+                    color: #ff003c;
+                    letter-spacing: 5px;
+                    margin-bottom: 30px;
+                    position: relative;
                     text-transform: uppercase;
+                    z-index: 4;
+                    text-shadow: 0 0 20px rgba(255, 0, 60, 0.6);
+                }
+                .scare-title::before, .scare-title::after {
+                    content: "SECURITY BREACH DETECTED";
+                    position: absolute;
+                    top: 0; left: 0; width: 100%; height: 100%;
+                    background: transparent;
+                }
+                .scare-title::before {
+                    left: 3px;
+                    text-shadow: -2px 0 red;
+                    animation: cyberGlitch 2s infinite linear alternate-reverse;
+                }
+                .scare-title::after {
+                    left: -3px;
+                    text-shadow: -2px 0 blue;
+                    animation: cyberGlitch 3s infinite linear alternate-reverse;
+                }
+                .scare-box {
+                    background: rgba(10, 0, 0, 0.8);
+                    border: 1px solid #ff003c;
+                    border-left: 5px solid #ff003c;
+                    padding: 40px;
+                    max-width: 800px;
+                    z-index: 4;
+                    box-shadow: 0 0 30px rgba(255, 0, 60, 0.2);
+                    position: relative;
+                }
+                .scare-box p {
+                    color: #e0e0e0;
+                    font-size: 1.2rem;
+                    line-height: 1.8;
                     margin-bottom: 20px;
-                    animation: glitchShake 0.1s infinite;
-                    text-shadow: 4px 4px 0px #000, -4px -4px 0px #fff;
-                    font-family: monospace;
-                    line-height: 1;
+                    text-align: left;
                 }
-                .scare-subtext {
-                    font-size: clamp(1.2rem, 3vw, 2.5rem);
-                    font-weight: 800;
-                    max-width: 900px;
-                    line-height: 1.5;
-                    animation: glitchShake 0.3s infinite reverse;
-                    background: #000;
-                    color: #fff;
-                    padding: 30px;
-                    border: 8px dashed red;
-                    box-shadow: 0 0 50px red;
+                .scare-box p strong {
+                    color: #ff003c;
                 }
+                .system-log {
+                    text-align: left;
+                    font-size: 0.9rem;
+                    color: #666;
+                    margin-top: 30px;
+                    border-top: 1px solid #333;
+                    padding-top: 20px;
+                }
+                .system-log span { color: #ff003c; }
             `;
             
             overlay.innerHTML = `
-                <div class="scare-text">🚨 ACCESS DENIED 🚨</div>
-                <div class="scare-subtext">
-                    <span style="color:red; font-size: 1.2em;">WRONG ID DETECTED!</span><br><br>
-                    Bhai sahab, aap <u>Parent ID</u> se login kiye hue hain!<br>
-                    Bachhon wale Premium Features mein kyu ghus rahe ho? 👀<br>
-                    Kripya jaldi se <span style="color:#0f0;">Student ID</span> se login karein varna website 5 second mein BLAST ho jayega! 💣💥<br><br>
-                    <span style="font-size: 1rem; font-weight: normal; color: #ff0; animation: none;">(Click anywhere to escape before blast!)</span>
+                <div class="scare-scanline"></div>
+                <div class="scare-title">SECURITY BREACH DETECTED</div>
+                <div class="scare-box">
+                    <p><strong>UNAUTHORIZED ACCESS ATTEMPT LOGGED.</strong></p>
+                    <p>You are currently authenticated via a <strong>Parent Node</strong>. Attempting to bypass security protocols and access the Student Core Infrastructure is strictly prohibited.</p>
+                    <p>Your session telemetry has been recorded. Disconnect and re-authenticate with a valid Student ID immediately.</p>
+                    <div class="system-log">
+                        > TRACE_IP: [ENCRYPTED]<br>
+                        > ROLE_VERIFICATION: <span>FAILED (PARENT_NODE)</span><br>
+                        > ACTION_REQUIRED: TERMINATE_SESSION<br>
+                        <br>
+                        <span style="color:#555;">(Click anywhere to abort termination sequence)</span>
+                    </div>
                 </div>
             `;
             
             overlay.appendChild(style);
             document.body.appendChild(overlay);
             
+            // 1. Cyberpunk low drone sound
             try {
                 var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                var count = 0;
-                var beepInt = setInterval(function() {
-                    count++;
-                    if(count > 15) { clearInterval(beepInt); return; }
-                    var osc = audioCtx.createOscillator();
-                    var gn = audioCtx.createGain();
-                    osc.type = 'sawtooth';
-                    osc.frequency.setValueAtTime(300 + (Math.random()*600), audioCtx.currentTime);
-                    gn.gain.setValueAtTime(0.3, audioCtx.currentTime);
-                    gn.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
-                    osc.connect(gn);
-                    gn.connect(audioCtx.destination);
-                    osc.start();
-                    osc.stop(audioCtx.currentTime + 0.15);
-                }, 100);
+                var osc = audioCtx.createOscillator();
+                var gn = audioCtx.createGain();
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(50, audioCtx.currentTime); // Low rumble
+                osc.frequency.linearRampToValueAtTime(30, audioCtx.currentTime + 10);
+                gn.gain.setValueAtTime(0.5, audioCtx.currentTime);
+                gn.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 10);
+                osc.connect(gn);
+                gn.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 10);
             } catch(e) {}
 
+            // 2. Creepy Laugh using SpeechSynthesis
+            try {
+                if ('speechSynthesis' in window) {
+                    var msg = new SpeechSynthesisUtterance("Ha. Ha. Ha. You are in the wrong place.");
+                    msg.pitch = 0.1; // Deep creepy voice
+                    msg.rate = 0.6;  // Slow speed
+                    msg.volume = 1;
+                    
+                    // Try to find a creepy voice (Google UK English Male often sounds good dropped down)
+                    var voices = window.speechSynthesis.getVoices();
+                    var creepyVoice = voices.find(v => v.name.includes('Male') || v.name.includes('David')) || voices[0];
+                    if (creepyVoice) msg.voice = creepyVoice;
+                    
+                    window.speechSynthesis.speak(msg);
+                }
+            } catch(e) {}
+
+            var aborted = false;
             overlay.onclick = function() {
+                aborted = true;
+                if ('speechSynthesis' in window) window.speechSynthesis.cancel();
                 overlay.remove();
             };
             
             setTimeout(function() {
-                if(document.getElementById('parent-scare-overlay')) {
+                if(!aborted && document.getElementById('parent-scare-overlay')) {
                     document.getElementById('parent-scare-overlay').remove();
                 }
-            }, 5500);
+            }, 10000);
         }
 
         function requireAuth(callback) {

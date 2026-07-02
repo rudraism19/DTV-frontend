@@ -3759,27 +3759,46 @@
                 osc.stop(audioCtx.currentTime + 10);
             } catch(e) {}
 
-            // 2. Creepy Laugh using SpeechSynthesis
+            // 2. Synthesized Evil Cyberpunk Laugh
             try {
-                if ('speechSynthesis' in window) {
-                    var msg = new SpeechSynthesisUtterance("Ha. Ha. Ha. You are in the wrong place.");
-                    msg.pitch = 0.1; // Deep creepy voice
-                    msg.rate = 0.6;  // Slow speed
-                    msg.volume = 1;
+                var lCtx = new (window.AudioContext || window.webkitAudioContext)();
+                function playLaughSyllable(time, pitch, duration) {
+                    var osc = lCtx.createOscillator();
+                    var gain = lCtx.createGain();
+                    osc.type = 'sawtooth';
                     
-                    // Try to find a creepy voice (Google UK English Male often sounds good dropped down)
-                    var voices = window.speechSynthesis.getVoices();
-                    var creepyVoice = voices.find(v => v.name.includes('Male') || v.name.includes('David')) || voices[0];
-                    if (creepyVoice) msg.voice = creepyVoice;
+                    var filter = lCtx.createBiquadFilter();
+                    filter.type = 'lowpass';
+                    filter.frequency.value = pitch * 3;
+                    filter.Q.value = 8; // high resonance for vocal tract feel
+
+                    osc.frequency.setValueAtTime(pitch, time);
+                    osc.frequency.exponentialRampToValueAtTime(pitch * 0.4, time + duration);
+
+                    gain.gain.setValueAtTime(0, time);
+                    gain.gain.linearRampToValueAtTime(1, time + 0.05);
+                    gain.gain.exponentialRampToValueAtTime(0.01, time + duration);
+
+                    osc.connect(filter);
+                    filter.connect(gain);
+                    gain.connect(lCtx.destination);
                     
-                    window.speechSynthesis.speak(msg);
+                    osc.start(time);
+                    osc.stop(time + duration);
+                }
+
+                var lNow = lCtx.currentTime + 0.5; // slight delay
+                var pitches = [150, 140, 130, 110, 90, 80, 70, 60, 50];
+                var times = [0, 0.4, 0.75, 1.05, 1.3, 1.5, 1.65, 1.8, 1.95];
+                
+                for(var i = 0; i < pitches.length; i++) {
+                    playLaughSyllable(lNow + times[i], pitches[i], 0.35);
                 }
             } catch(e) {}
 
             var aborted = false;
             overlay.onclick = function() {
                 aborted = true;
-                if ('speechSynthesis' in window) window.speechSynthesis.cancel();
                 overlay.remove();
             };
             

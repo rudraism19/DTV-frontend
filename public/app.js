@@ -1490,7 +1490,7 @@
             APP_DATA.studentProfile.updatedAt = new Date().toISOString();
             syncData();
             closeStudentOnboard();
-            openLoginGate();
+            // REMOVED: openLoginGate() to keep user in Guest Mode
         }
 
         function setStudentType(type) {
@@ -3599,8 +3599,54 @@
             if (!('loggedInAt' in APP_DATA.userData)) APP_DATA.userData.loggedInAt = null;
         }
 
+        window.pendingAuthAction = null;
+
+        function requireAuth(callback) {
+            if (isLoggedIn()) {
+                if (typeof callback === 'function') callback();
+            } else {
+                window.pendingAuthAction = callback;
+                openPremiumAuthModal();
+            }
+        }
+
+        function openPremiumAuthModal() {
+            var modal = document.getElementById('premium-auth-modal');
+            if (modal) {
+                modal.style.display = 'flex';
+                document.body.classList.add('premium-auth-blur');
+            } else {
+                // Fallback to old login gate if modal isn't ready
+                openLoginGate();
+            }
+        }
+
+        function closePremiumAuthModal() {
+            var modal = document.getElementById('premium-auth-modal');
+            if (modal) {
+                modal.style.display = 'none';
+                document.body.classList.remove('premium-auth-blur');
+            }
+        }
+
         function isLoggedIn() {
-            return !!(APP_DATA.userData && APP_DATA.userData.loggedIn);
+            if (!APP_DATA.userData || !APP_DATA.userData.loggedIn) return false;
+            
+            // 48-hour session logic
+            if (APP_DATA.userData.loggedInAt) {
+                var loginTime = new Date(APP_DATA.userData.loggedInAt).getTime();
+                var rememberMe = !!APP_DATA.userData.rememberMe;
+                var now = Date.now();
+                var hours48 = 48 * 60 * 60 * 1000;
+                
+                if (!rememberMe && (now - loginTime > hours48)) {
+                    APP_DATA.userData.token = null;
+                    setLoggedIn(false);
+                    showToast('🔒', 'Session Expired. Please login again to continue.');
+                    return false;
+                }
+            }
+            return true;
         }
 
         function getUserInitial() {
@@ -4179,12 +4225,14 @@
                 setLoggedIn(false);
                 showToast('🔒', 'Your session expired. Please sign in again.');
             }
-            lockSite();
+            
+            // Guest Mode: We no longer lock the site by default.
+            // lockSite();
+
             if (!APP_DATA.studentProfile || !APP_DATA.studentProfile.type) {
                 openStudentOnboard();
-            } else {
-                openLoginGate();
             }
+            // Guest Mode: We no longer force openLoginGate()
         }
 
         async function doSignup() {
@@ -4238,6 +4286,8 @@
                 APP_DATA.userData.linkCode = data.user.linkCode || null;
                 APP_DATA.userData.trialExpiresAt = data.user.trialExpiresAt || null;
                 APP_DATA.userData.subscriptionExpiresAt = data.user.subscriptionExpiresAt || null;
+                var rememberMe = document.getElementById('su-remember') ? document.getElementById('su-remember').checked : false;
+                APP_DATA.userData.rememberMe = rememberMe;
                 setLoggedIn(true);
                 loginGateActive = false;
                 var signup = document.getElementById('page-signup');
@@ -4247,8 +4297,12 @@
                     openOTPModal();
                 } else {
                     closeMod();
-                    unlockSite();
+                    closePremiumAuthModal();
                     showToast('✅', 'Account created and signed in successfully.');
+                    if (typeof window.pendingAuthAction === 'function') {
+                        window.pendingAuthAction();
+                        window.pendingAuthAction = null;
+                    }
                     var pendingPlan = sessionStorage.getItem('pending_payment_plan');
                     if (pendingPlan) {
                         sessionStorage.removeItem('pending_payment_plan');
@@ -4356,6 +4410,8 @@
                 APP_DATA.userData.linkCode = data.user.linkCode || null;
                 APP_DATA.userData.trialExpiresAt = data.user.trialExpiresAt || null;
                 APP_DATA.userData.subscriptionExpiresAt = data.user.subscriptionExpiresAt || null;
+                var rememberMe = document.getElementById('li-remember') ? document.getElementById('li-remember').checked : false;
+                APP_DATA.userData.rememberMe = rememberMe;
                 setLoggedIn(true);
                 loginGateActive = false;
                 
@@ -4363,8 +4419,12 @@
                     openOTPModal();
                 } else {
                     closeMod();
-                    unlockSite();
+                    closePremiumAuthModal();
                     showToast('✅', 'Signed in successfully.');
+                    if (typeof window.pendingAuthAction === 'function') {
+                        window.pendingAuthAction();
+                        window.pendingAuthAction = null;
+                    }
                     var pendingPlan = sessionStorage.getItem('pending_payment_plan');
                     if (pendingPlan) {
                         sessionStorage.removeItem('pending_payment_plan');

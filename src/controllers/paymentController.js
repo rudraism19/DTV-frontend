@@ -89,8 +89,8 @@ async function verifyPayment(req, res, next) {
       .update(body.toString())
       .digest('hex');
 
-    const isProduction = env.NODE_ENV === 'production' && env.ALLOW_MOCK_PAYMENTS !== 'true';
-    const isValidMock = !isProduction && (razorpay_signature === 'mock_signature' || razorpay_order_id.startsWith('client_order_'));
+    const isProduction = env.NODE_ENV === 'production';
+    const isValidMock = !isProduction && env.ALLOW_MOCK_PAYMENTS === 'true' && (razorpay_signature === 'mock_signature' || razorpay_order_id.startsWith('client_order_'));
 
     if (expectedSignature === razorpay_signature || isValidMock) {
       // Signature is valid or valid development mock checkout. Update order status and user subscription
@@ -273,11 +273,21 @@ async function verifyPaymentProof(req, res, next) {
 
     // STRICT ATOMIC INSERTION: If this fails, abort immediately so subscription is never updated twice!
     if (userId) {
-      await db.query(
-        `INSERT INTO orders (user_id, razorpay_order_id, razorpay_payment_id, razorpay_signature, plan_duration, amount, status, mobile_number, proof_file_path, user_name) 
-         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
-        [userId, orderId, cleanRef, 'verified_proof', plan_duration, amount * 100, 'paid', mobile_number || '', proofFilePath, name || '']
-      );
+      try {
+        await db.query(
+          `INSERT INTO orders (user_id, razorpay_order_id, razorpay_payment_id, razorpay_signature, plan_duration, amount, status, mobile_number, proof_file_path, user_name) 
+           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
+          [userId, orderId, cleanRef, 'verified_proof', plan_duration, amount * 100, 'paid', mobile_number || '', proofFilePath, name || '']
+        );
+      } catch (insertErr) {
+        if (insertErr.code === '23505') { // Postgres Unique Violation
+          return res.status(400).json({ 
+            success: false, 
+            message: `SECURITY ALERT: Transaction ID (${cleanRef}) has already been verified. Duplicate claims using the same receipt are strictly prohibited.` 
+          });
+        }
+        throw insertErr;
+      }
     }
 
     // Add time to subscription

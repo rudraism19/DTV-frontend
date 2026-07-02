@@ -3,6 +3,9 @@ function sanitizeValue(value) {
     return value
       .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
       .replace(/javascript:/gi, '')
+      .replace(/on\w+\s*=/gi, 'x-on=')
+      .replace(/<(iframe|object|embed|applet|svg|math)\b/gi, '<x-$1')
+      .replace(/data:text\/html/gi, 'data:text/plain')
       .trim();
   }
 

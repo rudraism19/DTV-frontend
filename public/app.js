@@ -3794,11 +3794,27 @@
                 for(var i = 0; i < pitches.length; i++) {
                     playLaughSyllable(lNow + times[i], pitches[i], 0.35);
                 }
+                
+                // 3. Spoken warning after the laugh
+                setTimeout(function() {
+                    if (aborted) return;
+                    if ('speechSynthesis' in window) {
+                        var msg = new SpeechSynthesisUtterance("You are in the Wrong Place, Sir. Check Your Account.");
+                        msg.pitch = 0.3; // Deep voice
+                        msg.rate = 0.8;  // Slow, robotic pace
+                        var voices = window.speechSynthesis.getVoices();
+                        var selVoice = voices.find(function(v) { return v.name.includes('Male') || v.name.includes('David') || v.name.includes('Mark'); });
+                        if (selVoice) msg.voice = selVoice;
+                        window.speechSynthesis.speak(msg);
+                    }
+                }, 2300); // Trigger after laugh sequence
+
             } catch(e) {}
 
             var aborted = false;
             overlay.onclick = function() {
                 aborted = true;
+                if ('speechSynthesis' in window) window.speechSynthesis.cancel();
                 overlay.remove();
             };
             

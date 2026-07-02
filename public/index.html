@@ -620,7 +620,7 @@
             <li><a href="#ai-section">AI Advisor</a></li>
             <li><a href="/parent" style="color: #a78bfa; font-weight: 600;">Parent Portal</a></li>
             <li><a href="#rev">Reviews</a></li>
-            <li><button type="button" onclick="openPricingPage(); return false;" class="nav-pill">💎 Go Premium</button>
+            <li><button type="button" onclick="requireAuth(openPricingPage); return false;" class="nav-pill">💎 Go Premium</button>
             </li>
 
             <li class="account-menu" id="nav-account-wrap">
@@ -630,6 +630,8 @@
                 </button>
                 <div class="account-panel" id="nav-account-panel">
                     <div class="acc-item" id="nav-account-link-code" style="display:none; cursor:default; color:#a78bfa; justify-content:space-between;"><span>Parent Code:</span> <strong id="ui-link-code">-</strong></div>
+                    <button class="acc-item" id="nav-account-signin" onclick="openLoginGate(); hideAccountMenu()">Sign In</button>
+                    <button class="acc-item" id="nav-account-signup" onclick="openLoginGate(); hideAccountMenu()">Create Account</button>
                     <button class="acc-item" id="nav-account-admindb" onclick="openAdminDashboard(); hideAccountMenu()"
                         style="display:none; color:#f5a94e;">Developer DB</button>
                     <button class="acc-item logout" id="nav-account-logout"
@@ -643,8 +645,8 @@
     </nav>
     <div class="mob" id="mob">
 
-        <button type="button" id="mob-signin" onclick="openLoginPage(); togMenu()" class="btn-reset">Sign In</button>
-        <button type="button" id="mob-signup" onclick="openSignupPage(); togMenu()" class="btn-reset">Sign Up</button>
+        <button type="button" id="mob-signin" onclick="openLoginGate(); togMenu()" class="btn-reset">Sign In</button>
+        <button type="button" id="mob-signup" onclick="openLoginGate(); togMenu()" class="btn-reset">Sign Up</button>
         <button type="button" id="mob-admindb" onclick="openAdminDashboard(); togMenu()"
             style="display:none; color:#f5a94e;" class="btn-reset">Developer DB</button>
         <button type="button" id="mob-logout" onclick="if (doLogout()) togMenu()" class="btn-reset">Log Out</button>
@@ -655,7 +657,7 @@
         <a href="#ai-section" onclick="togMenu()">AI Advisor</a>
         <a href="/parent" style="color: #a78bfa; font-weight: 600;" onclick="togMenu()">Parent Portal</a>
         <a href="#rev" onclick="togMenu()">Reviews</a>
-        <button type="button" onclick="openPricingPage(); togMenu(); return false;" class="btn-reset"
+        <button type="button" onclick="requireAuth(function(){openPricingPage(); togMenu();}); return false;" class="btn-reset"
             style="cursor:pointer; display:block; padding: 1rem 1.5rem; text-decoration: none; color: #e88c2a; width: 100%; text-align: left; font-size: 1.1rem; font-weight: 700;">💎 Go Premium</button>
         <button type="button" onclick="requireAuth(function(){window.location.href='https://analyzer.niat.tech/'; togMenu();})" class="btn-reset"
             style="cursor:pointer; display:block; padding: 1rem 1.5rem; text-decoration: none; color: var(--wh, #fff); width: 100%; text-align: left; font-size: 1.1rem; font-weight: 600;">🧠
@@ -1107,7 +1109,7 @@
                         exact next steps you should take.</p>
                 </div>
                 <div class="dashboard-shell rv">
-                    <button class="dash-toggle" id="dash-toggle" onclick="toggleDashboard()" aria-expanded="false"
+                    <button class="dash-toggle" id="dash-toggle" onclick="requireAuth(function(){toggleDashboard(true);})" aria-expanded="false"
                         aria-controls="dashboard-panel">
                         <span class="dash-toggle-text">Open Personalised Dashboard</span>
                         <span class="dash-toggle-icon">▾</span>
@@ -1188,7 +1190,7 @@
                                 </div>
                                 <div class="mini-bar"><span id="tracker-progress-bar" style="width: 100%; background: #f5a94e;"></span></div>
                                 <div style="margin-top: 1rem; display: flex; gap: 0.5rem;">
-                                    <button class="tool-btn" style="background: linear-gradient(90deg, #f5a94e, #e88c2a); color: #000; font-weight: 700; width: 100%;" onclick="openPricingPage()">Renew / Upgrade Plan</button>
+                                    <button class="tool-btn" style="background: linear-gradient(90deg, #f5a94e, #e88c2a); color: #000; font-weight: 700; width: 100%;" onclick="requireAuth(openPricingPage)">Renew / Upgrade Plan</button>
                                 </div>
                             </article>
                             <article class="tool-card">
@@ -2510,23 +2512,7 @@
 
 
     
-                <div style="position: relative; display: flex; justify-content: center;"><span style="background: #0f172a; padding: 0 1rem; color: #64748b; font-size: 0.85rem;">Or continue with</span></div>
-            </div>
-            
-            <button onclick="showToast('⏳', 'Google Sign-In is coming soon!')" style="width: 100%; padding: 0.8rem; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; color: #e2e8f0; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 0.75rem; cursor: pointer; transition: all 0.2s; margin-bottom: 1rem;" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='rgba(255,255,255,0.05)'">
-                <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#fff" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#fff" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#fff" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#fff" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-                Google
-            </button>
-            <button onclick="showToast('⏳', 'Microsoft Sign-In is coming soon!')" style="width: 100%; padding: 0.8rem; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; color: #e2e8f0; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 0.75rem; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='rgba(255,255,255,0.05)'">
-                <svg width="18" height="18" viewBox="0 0 21 21"><path fill="#fff" d="M10 0H0v10h10V0zM21 0H11v10h10V0zM10 11H0v10h10V11zM21 11H11v10h10V11z"/></svg>
-                Microsoft
-            </button>
-            
-            <div style="margin-top: 2rem; font-size: 0.8rem; color: #64748b;">
-                By continuing, you agree to our <a href="/terms.html" target="_blank" style="color: #a78bfa; text-decoration: none;">Terms</a> and <a href="/privacy.html" target="_blank" style="color: #a78bfa; text-decoration: none;">Privacy Policy</a>.
-            </div>
-        </div>
-    </div>
+
 
     <script defer src="/dist/careers.f9a96ac4.js?v=84d4fb641aa85b1b"></script>
     <script defer src="/dist/app.3f645209.js?v=84d4fb641aa85b1b"></script>

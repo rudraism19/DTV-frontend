@@ -1490,7 +1490,7 @@
             APP_DATA.studentProfile.updatedAt = new Date().toISOString();
             syncData();
             closeStudentOnboard();
-            openLoginGate();
+            // REMOVED: openLoginGate() to keep user in Guest Mode
         }
 
         function setStudentType(type) {
@@ -2820,11 +2820,7 @@
         }
 
         function initDashboardToggle() {
-            var saved = '0';
-            try {
-                saved = localStorage.getItem('dt_dashboard_open') || '0';
-            } catch (e) {}
-            setDashboardOpen(saved === '1', false);
+            setDashboardOpen(false, false);
         }
 
         function setCareerExplorerOpen(isOpen, persist) {
@@ -2862,11 +2858,7 @@
         }
 
         function initCareerExplorerToggle() {
-            var saved = '0';
-            try {
-                saved = localStorage.getItem('dt_career_open') || '0';
-            } catch (e) {}
-            setCareerExplorerOpen(saved === '1', false);
+            setCareerExplorerOpen(false, false);
         }
 
         function initStudentDashboard() {
@@ -3599,8 +3591,273 @@
             if (!('loggedInAt' in APP_DATA.userData)) APP_DATA.userData.loggedInAt = null;
         }
 
+        window.trackAnalyticsEvent = function(eventName, payload) {
+            // Placeholder for real analytics integration (e.g. Mixpanel, GA4)
+            console.log('[Analytics Tracked]', eventName, payload || {});
+        };
+
+        function triggerParentScare() {
+            var existing = document.getElementById('parent-scare-overlay');
+            if (existing) existing.remove();
+            
+            var overlay = document.createElement('div');
+            overlay.id = 'parent-scare-overlay';
+            overlay.style.position = 'fixed';
+            overlay.style.top = '0';
+            overlay.style.left = '0';
+            overlay.style.width = '100vw';
+            overlay.style.height = '100vh';
+            overlay.style.zIndex = '999999999';
+            overlay.style.backgroundColor = '#020202';
+            overlay.style.backgroundImage = 'radial-gradient(circle at center, #1a0000 0%, #000000 100%)';
+            overlay.style.display = 'flex';
+            overlay.style.flexDirection = 'column';
+            overlay.style.alignItems = 'center';
+            overlay.style.justifyContent = 'center';
+            overlay.style.padding = '40px';
+            overlay.style.textAlign = 'center';
+            overlay.style.cursor = 'pointer';
+            overlay.style.fontFamily = '"Courier New", Courier, monospace';
+            overlay.style.overflow = 'hidden';
+            
+            var style = document.createElement('style');
+            style.innerHTML = `
+                @keyframes scanline {
+                    0% { transform: translateY(-100vh); }
+                    100% { transform: translateY(100vh); }
+                }
+                @keyframes crtFlicker {
+                    0% { opacity: 0.9; }
+                    5% { opacity: 0.5; }
+                    10% { opacity: 0.95; }
+                    15% { opacity: 0.8; }
+                    50% { opacity: 0.99; }
+                    80% { opacity: 0.7; }
+                    100% { opacity: 0.9; }
+                }
+                @keyframes cyberGlitch {
+                    0% { clip-path: inset(20% 0 80% 0); transform: translate(-2px, 2px); }
+                    20% { clip-path: inset(60% 0 10% 0); transform: translate(2px, -2px); }
+                    40% { clip-path: inset(40% 0 50% 0); transform: translate(2px, 2px); }
+                    60% { clip-path: inset(80% 0 5% 0); transform: translate(-2px, -2px); }
+                    80% { clip-path: inset(10% 0 70% 0); transform: translate(2px, -2px); }
+                    100% { clip-path: inset(30% 0 50% 0); transform: translate(-2px, 2px); }
+                }
+                #parent-scare-overlay {
+                    animation: crtFlicker 0.15s infinite;
+                }
+                #parent-scare-overlay::before {
+                    content: " ";
+                    display: block;
+                    position: absolute;
+                    top: 0; left: 0; bottom: 0; right: 0;
+                    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+                    z-index: 2;
+                    background-size: 100% 2px, 3px 100%;
+                    pointer-events: none;
+                }
+                .scare-scanline {
+                    position: absolute;
+                    top: 0; left: 0; width: 100%; height: 10px;
+                    background: rgba(255, 0, 0, 0.3);
+                    opacity: 0.4;
+                    animation: scanline 6s linear infinite;
+                    pointer-events: none;
+                    z-index: 3;
+                }
+                .scare-title {
+                    font-size: clamp(2.5rem, 6vw, 5rem);
+                    font-weight: 900;
+                    color: #ff003c;
+                    letter-spacing: 5px;
+                    margin-bottom: 30px;
+                    position: relative;
+                    text-transform: uppercase;
+                    z-index: 4;
+                    text-shadow: 0 0 20px rgba(255, 0, 60, 0.6);
+                }
+                .scare-title::before, .scare-title::after {
+                    content: "SECURITY BREACH DETECTED";
+                    position: absolute;
+                    top: 0; left: 0; width: 100%; height: 100%;
+                    background: transparent;
+                }
+                .scare-title::before {
+                    left: 3px;
+                    text-shadow: -2px 0 red;
+                    animation: cyberGlitch 2s infinite linear alternate-reverse;
+                }
+                .scare-title::after {
+                    left: -3px;
+                    text-shadow: -2px 0 blue;
+                    animation: cyberGlitch 3s infinite linear alternate-reverse;
+                }
+                .scare-box {
+                    background: rgba(10, 0, 0, 0.8);
+                    border: 1px solid #ff003c;
+                    border-left: 5px solid #ff003c;
+                    padding: 40px;
+                    max-width: 800px;
+                    z-index: 4;
+                    box-shadow: 0 0 30px rgba(255, 0, 60, 0.2);
+                    position: relative;
+                }
+                .scare-box p {
+                    color: #e0e0e0;
+                    font-size: 1.2rem;
+                    line-height: 1.8;
+                    margin-bottom: 20px;
+                    text-align: left;
+                }
+                .scare-box p strong {
+                    color: #ff003c;
+                }
+                .system-log {
+                    text-align: left;
+                    font-size: 0.9rem;
+                    color: #666;
+                    margin-top: 30px;
+                    border-top: 1px solid #333;
+                    padding-top: 20px;
+                }
+                .system-log span { color: #ff003c; }
+            `;
+            
+            overlay.innerHTML = `
+                <div class="scare-scanline"></div>
+                <div class="scare-title">SECURITY BREACH DETECTED</div>
+                <div class="scare-box">
+                    <p><strong>UNAUTHORIZED ACCESS ATTEMPT LOGGED.</strong></p>
+                    <p>You are currently authenticated via a <strong>Parent Node</strong>. Attempting to bypass security protocols and access the Student Core Infrastructure is strictly prohibited.</p>
+                    <p>Your session telemetry has been recorded. Disconnect and re-authenticate with a valid Student ID immediately.</p>
+                    <div class="system-log">
+                        > TRACE_IP: [ENCRYPTED]<br>
+                        > ROLE_VERIFICATION: <span>FAILED (PARENT_NODE)</span><br>
+                        > ACTION_REQUIRED: TERMINATE_SESSION<br>
+                        <br>
+                        <span style="color:#555;">(Click anywhere to abort termination sequence)</span>
+                    </div>
+                </div>
+            `;
+            
+            overlay.appendChild(style);
+            document.body.appendChild(overlay);
+            
+            // 1. Cyberpunk low drone sound
+            try {
+                var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                var osc = audioCtx.createOscillator();
+                var gn = audioCtx.createGain();
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(50, audioCtx.currentTime); // Low rumble
+                osc.frequency.linearRampToValueAtTime(30, audioCtx.currentTime + 10);
+                gn.gain.setValueAtTime(0.5, audioCtx.currentTime);
+                gn.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 10);
+                osc.connect(gn);
+                gn.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 10);
+            } catch(e) {}
+
+            // 2. Synthesized Evil Cyberpunk Laugh
+            try {
+                var lCtx = new (window.AudioContext || window.webkitAudioContext)();
+                function playLaughSyllable(time, pitch, duration) {
+                    var osc = lCtx.createOscillator();
+                    var gain = lCtx.createGain();
+                    osc.type = 'sawtooth';
+                    
+                    var filter = lCtx.createBiquadFilter();
+                    filter.type = 'lowpass';
+                    filter.frequency.value = pitch * 3;
+                    filter.Q.value = 8; // high resonance for vocal tract feel
+
+                    osc.frequency.setValueAtTime(pitch, time);
+                    osc.frequency.exponentialRampToValueAtTime(pitch * 0.4, time + duration);
+
+                    gain.gain.setValueAtTime(0, time);
+                    gain.gain.linearRampToValueAtTime(1, time + 0.05);
+                    gain.gain.exponentialRampToValueAtTime(0.01, time + duration);
+
+                    osc.connect(filter);
+                    filter.connect(gain);
+                    gain.connect(lCtx.destination);
+                    
+                    osc.start(time);
+                    osc.stop(time + duration);
+                }
+
+                var lNow = lCtx.currentTime + 0.5; // slight delay
+                var pitches = [150, 140, 130, 110, 90, 80, 70, 60, 50];
+                var times = [0, 0.4, 0.75, 1.05, 1.3, 1.5, 1.65, 1.8, 1.95];
+                
+                for(var i = 0; i < pitches.length; i++) {
+                    playLaughSyllable(lNow + times[i], pitches[i], 0.35);
+                }
+                
+                // 3. Spoken warning after the laugh
+                setTimeout(function() {
+                    if (aborted) return;
+                    if ('speechSynthesis' in window) {
+                        var msg = new SpeechSynthesisUtterance("You are in the Wrong Place, Sir. Check Your Account.");
+                        msg.pitch = 0.3; // Deep voice
+                        msg.rate = 0.8;  // Slow, robotic pace
+                        var voices = window.speechSynthesis.getVoices();
+                        var selVoice = voices.find(function(v) { return v.name.includes('Male') || v.name.includes('David') || v.name.includes('Mark'); });
+                        if (selVoice) msg.voice = selVoice;
+                        window.speechSynthesis.speak(msg);
+                    }
+                }, 2300); // Trigger after laugh sequence
+
+            } catch(e) {}
+
+            var aborted = false;
+            overlay.onclick = function() {
+                aborted = true;
+                if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+                overlay.remove();
+            };
+            
+            setTimeout(function() {
+                if(!aborted && document.getElementById('parent-scare-overlay')) {
+                    document.getElementById('parent-scare-overlay').remove();
+                }
+            }, 10000);
+        }
+
+        function requireAuth(callback) {
+            window.trackAnalyticsEvent('Protected Feature Clicked', { action: callback ? callback.name : 'unknown' });
+            if (isLoggedIn()) {
+                if (APP_DATA.userData && APP_DATA.userData.role === 'parent') {
+                    triggerParentScare();
+                    return;
+                }
+                if (typeof callback === 'function') callback();
+            } else {
+                window.pendingAuthAction = callback;
+                openLoginGate();
+            }
+        }
+
         function isLoggedIn() {
-            return !!(APP_DATA.userData && APP_DATA.userData.loggedIn);
+            if (!APP_DATA.userData || !APP_DATA.userData.loggedIn) return false;
+            
+            // 48-hour session logic
+            if (APP_DATA.userData.loggedInAt) {
+                var loginTime = new Date(APP_DATA.userData.loggedInAt).getTime();
+                var rememberMe = !!APP_DATA.userData.rememberMe;
+                var now = Date.now();
+                var hours48 = 48 * 60 * 60 * 1000;
+                
+                if (!rememberMe && (now - loginTime > hours48)) {
+                    APP_DATA.userData.token = null;
+                    setLoggedIn(false);
+                    window.trackAnalyticsEvent('Session Expiry');
+                    showToast('🔒', 'Session Expired. Please login again to continue.');
+                    return false;
+                }
+            }
+            return true;
         }
 
         function getUserInitial() {
@@ -3847,6 +4104,10 @@
                 openLoginPage();
                 return false;
             }
+            if (APP_DATA.userData && APP_DATA.userData.role === 'parent') {
+                triggerParentScare();
+                return false;
+            }
             var now = new Date();
             var subExp = APP_DATA.userData.subscriptionExpiresAt ? new Date(APP_DATA.userData.subscriptionExpiresAt) : null;
             if (subExp && subExp > now) {
@@ -3860,6 +4121,26 @@
             openPricingPage();
             return false;
         }
+
+        window.openAnalyzer = function() {
+            if (!isLoggedIn()) {
+                showToast('🔒', 'Please sign in to access Achievement Analyzer.');
+                openLoginPage();
+                return;
+            }
+            if (APP_DATA.userData && APP_DATA.userData.role === 'parent') {
+                triggerParentScare();
+                return;
+            }
+            var now = new Date();
+            var subExp = APP_DATA.userData.subscriptionExpiresAt ? new Date(APP_DATA.userData.subscriptionExpiresAt) : null;
+            if (subExp && subExp > now) {
+                window.location.href = 'https://analyzer.niat.tech/';
+                return;
+            }
+            showToast('💎', 'Achievement Analyzer is an exclusive Premium feature. Please buy at least a 1-month Premium Plan to use it.');
+            openPricingPage();
+        };
 
         function openPricingPage() {
             var modal = document.getElementById('pricing-modal');
@@ -3893,6 +4174,14 @@
 
         function initiatePayment(planId) {
             closePricingPage();
+            
+            if (!isLoggedIn()) {
+                window.trackAnalyticsEvent('Premium Gate Triggered', { planId: planId });
+                window.pendingAuthAction = function() { initiatePayment(planId); };
+                openPremiumAuthModal();
+                return;
+            }
+
             showToast('🔄', 'Opening Razorpay Secure Gateway...');
             
             var rzpModal = document.getElementById('rzp-payment-modal');
@@ -4179,12 +4468,14 @@
                 setLoggedIn(false);
                 showToast('🔒', 'Your session expired. Please sign in again.');
             }
-            lockSite();
+            
+            // Guest Mode: We no longer lock the site by default.
+            // lockSite();
+
             if (!APP_DATA.studentProfile || !APP_DATA.studentProfile.type) {
                 openStudentOnboard();
-            } else {
-                openLoginGate();
             }
+            // Guest Mode: We no longer force openLoginGate()
         }
 
         async function doSignup() {
@@ -4238,6 +4529,8 @@
                 APP_DATA.userData.linkCode = data.user.linkCode || null;
                 APP_DATA.userData.trialExpiresAt = data.user.trialExpiresAt || null;
                 APP_DATA.userData.subscriptionExpiresAt = data.user.subscriptionExpiresAt || null;
+                var rememberMe = document.getElementById('su-remember') ? document.getElementById('su-remember').checked : false;
+                APP_DATA.userData.rememberMe = rememberMe;
                 setLoggedIn(true);
                 loginGateActive = false;
                 var signup = document.getElementById('page-signup');
@@ -4248,7 +4541,12 @@
                 } else {
                     closeMod();
                     unlockSite();
+                    window.trackAnalyticsEvent('Signup Conversion', { role: APP_DATA.userData.role });
                     showToast('✅', 'Account created and signed in successfully.');
+                    if (typeof window.pendingAuthAction === 'function') {
+                        window.pendingAuthAction();
+                        window.pendingAuthAction = null;
+                    }
                     var pendingPlan = sessionStorage.getItem('pending_payment_plan');
                     if (pendingPlan) {
                         sessionStorage.removeItem('pending_payment_plan');
@@ -4256,6 +4554,7 @@
                     }
                 }
             } catch (err) {
+                window.trackAnalyticsEvent('Signup Failure', { error: err.message });
                 showToast('❌', err.message);
                 var pe = document.getElementById('su-pe');
                 if (pe) { pe.textContent = err.message; pe.style.display = 'block'; }
@@ -4356,6 +4655,8 @@
                 APP_DATA.userData.linkCode = data.user.linkCode || null;
                 APP_DATA.userData.trialExpiresAt = data.user.trialExpiresAt || null;
                 APP_DATA.userData.subscriptionExpiresAt = data.user.subscriptionExpiresAt || null;
+                var rememberMe = document.getElementById('li-remember') ? document.getElementById('li-remember').checked : false;
+                APP_DATA.userData.rememberMe = rememberMe;
                 setLoggedIn(true);
                 loginGateActive = false;
                 
@@ -4364,7 +4665,12 @@
                 } else {
                     closeMod();
                     unlockSite();
+                    window.trackAnalyticsEvent('Login Success', { email: email });
                     showToast('✅', 'Signed in successfully.');
+                    if (typeof window.pendingAuthAction === 'function') {
+                        window.pendingAuthAction();
+                        window.pendingAuthAction = null;
+                    }
                     var pendingPlan = sessionStorage.getItem('pending_payment_plan');
                     if (pendingPlan) {
                         sessionStorage.removeItem('pending_payment_plan');
@@ -4372,6 +4678,7 @@
                     }
                 }
             } catch (err) {
+                window.trackAnalyticsEvent('Login Failure', { error: err.message, email: email });
                 showToast('❌', err.message);
                 var pe = document.getElementById('li-pe');
                 if (pe) { pe.textContent = err.message; pe.style.display = 'block'; }
@@ -4704,9 +5011,8 @@
         document.addEventListener('click', function(e) {
             var target = e.target.closest('a[href="https://analyzer.niat.tech/"]');
             if (target) {
-                if (!checkPremiumAccess('Achievement Analyzer')) {
-                    e.preventDefault();
-                }
+                e.preventDefault();
+                openAnalyzer();
             }
         });
 

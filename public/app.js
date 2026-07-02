@@ -3945,6 +3945,14 @@
 
         function initiatePayment(planId) {
             closePricingPage();
+            
+            if (!isLoggedIn()) {
+                window.trackAnalyticsEvent('Premium Gate Triggered', { planId: planId });
+                window.pendingAuthAction = function() { initiatePayment(planId); };
+                openPremiumAuthModal();
+                return;
+            }
+
             showToast('🔄', 'Opening Razorpay Secure Gateway...');
             
             var rzpModal = document.getElementById('rzp-payment-modal');

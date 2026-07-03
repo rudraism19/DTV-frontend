@@ -123,6 +123,34 @@ app.use('/api', function(_req, res) {
   res.status(404).json({ error: 'API route not found.' });
 });
 
+// Self-healing fallback route for trapped Service Workers requesting old hashes
+app.use('/dist', (req, res, next) => {
+  const fs = require('fs');
+  const path = require('path');
+  const distDir = path.join(publicDir, 'dist');
+  
+  const requestedPath = path.join(distDir, req.path);
+  if (fs.existsSync(requestedPath)) return next();
+
+  try {
+    if (fs.existsSync(distDir)) {
+      const files = fs.readdirSync(distDir);
+      const baseMatch = req.path.match(/^\/(app|ux-engine|main|careers)\.[0-9a-f]+\.(js|css)$/);
+      if (baseMatch) {
+        const prefix = baseMatch[1] + '.';
+        const ext = '.' + baseMatch[2];
+        const latestFile = files.find(f => f.startsWith(prefix) && f.endsWith(ext));
+        if (latestFile) {
+          // Serve latest file, prevent caching so they eventually get the right one
+          res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
+          return res.sendFile(path.join(distDir, latestFile));
+        }
+      }
+    }
+  } catch (e) { /* ignore */ }
+  next();
+});
+
 app.use(express.static(publicDir, {
   index: false, // Handle index.html manually for strict caching
   setHeaders: (res, filePath) => {

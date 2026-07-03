@@ -257,7 +257,8 @@ document.addEventListener("DOMContentLoaded", () => {
     // Handle Service Worker Registration
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-            navigator.serviceWorker.register('/service-worker.js').then(reg => {
+            // Use ?v=killswitch to forcefully bypass aggressive 24-hour browser cache on mobile devices like Motorola
+            navigator.serviceWorker.register('/service-worker.js?v=killswitch', { updateViaCache: 'none' }).then(reg => {
                 reg.addEventListener('updatefound', () => {
                     const newWorker = reg.installing;
                     newWorker.addEventListener('statechange', () => {

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Shield, Search, Users, BookOpen, Activity, ArrowUpDown, Filter, ChevronLeft, ChevronRight, RefreshCw, FileText, CheckCircle2, AlertCircle } from 'lucide-react';
+import { Shield, Search, Users, BookOpen, Activity, ArrowUpDown, ChevronLeft, ChevronRight, RefreshCw, FileText, CheckCircle2 } from 'lucide-react';
 import { fetchAdminData } from '../services/apiService';
 
 export default function AdminPanel() {
@@ -32,7 +32,9 @@ export default function AdminPanel() {
   };
 
   useEffect(() => {
+    // eslint-disable-next-line
     loadData(page, search, sort, order);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, sort, order]);
 
   const handleSearchSubmit = (e) => {
@@ -285,7 +287,9 @@ export default function AdminPanel() {
                 let parsedDetails = {};
                 try {
                   parsedDetails = typeof log.action_details === 'string' ? JSON.parse(log.action_details) : log.action_details;
-                } catch(e){}
+                } catch {
+                  // ignore parse error
+                }
 
                 return (
                   <div key={log.id} className="p-4 bg-white/5 border border-white/10 rounded-2xl flex items-center justify-between hover:bg-white/10 transition-colors">

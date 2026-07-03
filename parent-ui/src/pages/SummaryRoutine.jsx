@@ -1,7 +1,9 @@
-import { CheckCircle2, Circle, Clock, Target, TrendingUp, Loader2, User, Key, Calendar, Zap, Brain } from 'lucide-react';
+import { CheckCircle2, Circle, Clock, Target, TrendingUp, User, Key, Calendar, Zap } from 'lucide-react';
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import { useState, useEffect } from 'react';
 import { fetchStudentData } from '../services/apiService';
+
+const FALLBACK_TIME = Date.now();
 
 export default function SummaryRoutine() {
   const [data, setData] = useState(null);
@@ -92,7 +94,7 @@ export default function SummaryRoutine() {
           <div>
             <h3 className="text-xs font-bold text-text-muted uppercase tracking-wider">Last Activity</h3>
             <p className="text-sm font-bold text-white tracking-tight mt-0.5">
-              {new Date(studentInfo.lastLoginAt || Date.now()).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+              {new Date(studentInfo.lastLoginAt || FALLBACK_TIME).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
             </p>
             <p className="text-xs text-purple-300 font-medium mt-1">Real-time sync</p>
           </div>

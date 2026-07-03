@@ -10,5 +10,19 @@ export default defineConfig({
     host: true,
     port: 5174,
     strictPort: true
+  },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (id.includes('lucide-react')) return 'icons';
+            if (id.includes('recharts') || id.includes('d3-') || id.includes('lodash')) return 'charts';
+            if (id.includes('react') || id.includes('react-dom') || id.includes('react-router-dom')) return 'vendor';
+            return 'modules';
+          }
+        }
+      }
+    }
   }
 })

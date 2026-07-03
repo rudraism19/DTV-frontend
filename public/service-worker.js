@@ -12,4 +12,5 @@ self.addEventListener('activate', (e) => {
   );
   self.registration.unregister();
 });
-// VERSION: 6e358e397f4f4ed3
+
+// VERSION: 46ba1d28723e8258

@@ -1,4 +1,4 @@
-import { Award, Briefcase, ChevronRight, PlayCircle, Trophy, Target, Loader2, Sparkles, CheckCircle2, TrendingUp, Cpu, Star, HelpCircle, Code } from 'lucide-react';
+import { Award, Briefcase, ChevronRight, PlayCircle, Trophy, Target, Sparkles, CheckCircle2, TrendingUp, Cpu, Star, HelpCircle, Code } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { fetchStudentData } from '../services/apiService';
 

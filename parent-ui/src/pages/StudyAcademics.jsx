@@ -1,7 +1,13 @@
-import { BookOpen, FileWarning, GraduationCap, Clock, Loader2, Sparkles, CheckCircle2, TrendingUp, HelpCircle } from 'lucide-react';
+import { BookOpen, GraduationCap, Clock, Sparkles, CheckCircle2, HelpCircle } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { useState, useEffect } from 'react';
 import { fetchStudentData } from '../services/apiService';
+
+const NOW = new Date();
+const TODAY_ISO = NOW.toISOString();
+const TODAY_SHORT = TODAY_ISO.split('T')[0];
+const YESTERDAY_ISO = new Date(NOW.getTime() - 86400000).toISOString();
+const YESTERDAY_SHORT = YESTERDAY_ISO.split('T')[0];
 
 export default function StudyAcademics() {
   const [data, setData] = useState(null);
@@ -51,12 +57,12 @@ export default function StudyAcademics() {
     { title: 'Data Structures (Trees)', category: 'Computer Sci', difficulty_level: 'Advanced', estimated_hours: 50 }
   ];
   const quizzes = data.quizzes || [
-    { score: 95.0, accuracy_percentage: 98.0, status: 'Completed', created_at: new Date().toISOString() },
-    { score: 88.0, accuracy_percentage: 91.0, status: 'Completed', created_at: new Date(Date.now() - 86400000).toISOString() }
+    { score: 95.0, accuracy_percentage: 98.0, status: 'Completed', created_at: TODAY_ISO },
+    { score: 88.0, accuracy_percentage: 91.0, status: 'Completed', created_at: YESTERDAY_ISO }
   ];
   const attendance = data.attendance || [
-    { date: new Date().toISOString().split('T')[0], status: 'Present', notes: 'Active Participation' },
-    { date: new Date(Date.now() - 86400000).toISOString().split('T')[0], status: 'Present', notes: 'Completed Homeroom' }
+    { date: TODAY_SHORT, status: 'Present', notes: 'Active Participation' },
+    { date: YESTERDAY_SHORT, status: 'Present', notes: 'Completed Homeroom' }
   ];
 
   const studentName = data.studentInfo?.name || 'Kumar Kartikey';

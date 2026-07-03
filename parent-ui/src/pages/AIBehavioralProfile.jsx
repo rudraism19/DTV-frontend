@@ -1,4 +1,4 @@
-import { Brain, MessageSquare, Zap, Activity, AlertTriangle, Loader2, Sparkles, CheckCircle2, Sliders, RefreshCw, HelpCircle, ShieldAlert } from 'lucide-react';
+import { Brain, MessageSquare, Zap, Activity, AlertTriangle, CheckCircle2, Sliders, RefreshCw, HelpCircle, ShieldAlert } from 'lucide-react';
 import { ResponsiveContainer, Radar, RadarChart, PolarGrid, PolarAngleAxis, Tooltip } from 'recharts';
 import { useState, useEffect } from 'react';
 import { fetchStudentData } from '../services/apiService';

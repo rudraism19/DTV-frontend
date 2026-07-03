@@ -4267,8 +4267,15 @@
                 btnElem.innerHTML = originalText;
                 
                 if (!data.success || !data.order_id) {
-                    // Fallback to Razorpay Payment Link if backend fails
-                    window.location.href = 'https://rzp.io/l/' + fallbackLinkId;
+                    // Fallback to Razorpay Payment Button if backend keys are missing/failed
+                    var formContainer = btnElem.parentNode;
+                    btnElem.style.display = 'none';
+                    formContainer.innerHTML = '<p style="color:#93c5fd;font-size:0.95rem;margin-bottom:15px;font-weight:600;">Secure fallback activated. Please click the Razorpay button below to pay.</p>';
+                    var scriptElem = document.createElement('script');
+                    scriptElem.src = 'https://checkout.razorpay.com/v1/payment-button.js';
+                    scriptElem.setAttribute('data-payment_button_id', fallbackLinkId);
+                    scriptElem.async = true;
+                    formContainer.appendChild(scriptElem);
                     return;
                 }
 

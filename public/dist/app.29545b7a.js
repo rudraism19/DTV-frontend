@@ -4225,25 +4225,117 @@
                 targetBtnId = 'pl_T6LP8q96flBl9y';
             }
 
-            // Always dynamically inject the script tag to force render when visible!
+            // Render a native Subscribe button that triggers the Razorpay popup directly
             var formElem = document.getElementById(targetFormId);
             if (formElem) {
-                formElem.innerHTML = ''; // clear any failed/pending script tags or old iframes
+                formElem.innerHTML = ''; // clear previous elements
                 
-                // Add the Razorpay button script
-                var scriptElem = document.createElement('script');
-                scriptElem.src = 'https://checkout.razorpay.com/v1/payment-button.js';
-                scriptElem.setAttribute('data-payment_button_id', targetBtnId);
-                scriptElem.async = true;
-                formElem.appendChild(scriptElem);
-
-                // Add a native fallback link underneath in case iframe gets blocked by mobile browser
-                var fallbackDiv = document.createElement('div');
-                fallbackDiv.style.marginTop = '15px';
-                fallbackDiv.style.textAlign = 'center';
-                fallbackDiv.innerHTML = `<a href="https://rzp.io/l/${targetBtnId}" target="_blank" style="color:#60a5fa; text-decoration:underline; font-size:0.9rem;">If the button above does not load or click, tap here to pay securely</a>`;
-                formElem.appendChild(fallbackDiv);
+                var nativeBtn = document.createElement('button');
+                nativeBtn.type = 'button';
+                nativeBtn.innerHTML = '⚡ Subscribe Now <span style="font-size:0.8rem;opacity:0.8;display:block;">Secured by Razorpay</span>';
+                nativeBtn.style.cssText = 'width: 100%; background: linear-gradient(135deg, #2a7de1, #1e40af); color: #fff; border: none; padding: 1.2rem; border-radius: 12px; font-size: 1.2rem; font-weight: 700; cursor: pointer; box-shadow: 0 10px 25px rgba(42, 125, 225, 0.4); transition: transform 0.2s;';
+                nativeBtn.onmouseover = function() { this.style.transform = 'scale(1.02)'; };
+                nativeBtn.onmouseout = function() { this.style.transform = 'scale(1)'; };
+                
+                nativeBtn.onclick = function(e) {
+                    e.preventDefault();
+                    initiateNativeCheckout(planId, nativeBtn, targetBtnId);
+                };
+                
+                formElem.appendChild(nativeBtn);
             }
+        }
+
+        function initiateNativeCheckout(planId, btnElem, fallbackLinkId) {
+            btnElem.disabled = true;
+            var originalText = btnElem.innerHTML;
+            btnElem.innerHTML = '<span class="loading-spinner" style="display:inline-block;width:20px;height:20px;border:3px solid rgba(255,255,255,0.3);border-radius:50%;border-top-color:#fff;animation:spin 1s ease-in-out infinite;"></span> Processing...';
+            
+            var headers = { 'Content-Type': 'application/json' };
+            if (APP_DATA && APP_DATA.userData && APP_DATA.userData.token) {
+                headers['Authorization'] = 'Bearer ' + APP_DATA.userData.token;
+            }
+
+            fetch('/api/v1/payment/create', {
+                method: 'POST',
+                headers: headers,
+                body: JSON.stringify({ plan: planId })
+            })
+            .then(res => res.json())
+            .then(data => {
+                btnElem.disabled = false;
+                btnElem.innerHTML = originalText;
+                
+                if (!data.success || !data.order_id) {
+                    // Fallback to Razorpay Payment Link if backend fails
+                    window.location.href = 'https://rzp.io/l/' + fallbackLinkId;
+                    return;
+                }
+
+                var options = {
+                    "key": data.key_id,
+                    "amount": data.amount,
+                    "currency": data.currency,
+                    "name": "Digital Twin Verse",
+                    "description": "Premium Subscription",
+                    "order_id": data.order_id,
+                    "handler": function (response) {
+                        verifyNativePayment(response.razorpay_payment_id, response.razorpay_order_id, response.razorpay_signature);
+                    },
+                    "prefill": {
+                        "name": APP_DATA.userData.name || "",
+                        "email": APP_DATA.userData.email || "",
+                        "contact": APP_DATA.userData.phone || ""
+                    },
+                    "theme": { "color": "#2a7de1" }
+                };
+                var rzp1 = new Razorpay(options);
+                rzp1.on('payment.failed', function (response){
+                    showToast('⚠️', 'Payment failed. ' + response.error.description);
+                });
+                rzp1.open();
+            })
+            .catch(err => {
+                btnElem.disabled = false;
+                btnElem.innerHTML = originalText;
+                window.location.href = 'https://rzp.io/l/' + fallbackLinkId;
+            });
+        }
+
+        function verifyNativePayment(payment_id, order_id, signature) {
+            showToast('🔄', 'Verifying payment securely...');
+            var headers = { 'Content-Type': 'application/json' };
+            if (APP_DATA && APP_DATA.userData && APP_DATA.userData.token) {
+                headers['Authorization'] = 'Bearer ' + APP_DATA.userData.token;
+            }
+            
+            fetch('/api/v1/payment/verify', {
+                method: 'POST',
+                headers: headers,
+                body: JSON.stringify({
+                    razorpay_payment_id: payment_id,
+                    razorpay_order_id: order_id,
+                    razorpay_signature: signature
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.success) {
+                    showToast('✅', 'Payment successful! Premium Unlocked.');
+                    if (APP_DATA && APP_DATA.userData) {
+                        APP_DATA.userData.subscriptionExpiresAt = data.subscriptionExpiresAt;
+                        if (typeof syncData === 'function') syncData();
+                        updateSubscriptionTracker();
+                    }
+                    var modal = document.getElementById('rzp-payment-modal');
+                    if (modal) modal.style.display = 'none';
+                } else {
+                    showToast('❌', data.message || 'Payment verification failed.');
+                }
+            })
+            .catch(err => {
+                showToast('❌', 'Network error during verification.');
+            });
         }
 
         function openPaymentProofModal() {

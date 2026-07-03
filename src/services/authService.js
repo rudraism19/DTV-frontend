@@ -118,13 +118,7 @@ async function parentLogin(payload) {
   }
   
   if (!student) {
-    // Auto-create or assign a student for any link code provided to ensure Parent Portal works seamlessly
-    const allUsers = await userModel.listUsers({ limit: 10, offset: 0, search: '' });
-    student = allUsers.users.find(u => u.role === 'student');
-    if (!student) {
-       const pHash = await hashPassword('password123');
-       student = await userModel.create({ email: `student_${payload.studentCode.toLowerCase()}@example.com`, passwordHash: pHash, role: 'student', name: 'Alex Walker', linkCode: payload.studentCode });
-    }
+    throw new ApiError(404, 'Invalid Student Link Code. Ask your child for the correct code.');
   }
 
   // 2. Find or create Parent

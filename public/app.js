@@ -4225,15 +4225,24 @@
                 targetBtnId = 'pl_T6LP8q96flBl9y';
             }
 
-            // Check if Razorpay button rendered. If not, dynamically inject the script tag to force render!
+            // Always dynamically inject the script tag to force render when visible!
             var formElem = document.getElementById(targetFormId);
-            if (formElem && !formElem.querySelector('.razorpay-payment-button')) {
-                formElem.innerHTML = ''; // clear any failed/pending script tags
+            if (formElem) {
+                formElem.innerHTML = ''; // clear any failed/pending script tags or old iframes
+                
+                // Add the Razorpay button script
                 var scriptElem = document.createElement('script');
                 scriptElem.src = 'https://checkout.razorpay.com/v1/payment-button.js';
                 scriptElem.setAttribute('data-payment_button_id', targetBtnId);
                 scriptElem.async = true;
                 formElem.appendChild(scriptElem);
+
+                // Add a native fallback link underneath in case iframe gets blocked by mobile browser
+                var fallbackDiv = document.createElement('div');
+                fallbackDiv.style.marginTop = '15px';
+                fallbackDiv.style.textAlign = 'center';
+                fallbackDiv.innerHTML = `<a href="https://rzp.io/l/${targetBtnId}" target="_blank" style="color:#60a5fa; text-decoration:underline; font-size:0.9rem;">If the button above does not load or click, tap here to pay securely</a>`;
+                formElem.appendChild(fallbackDiv);
             }
         }
 

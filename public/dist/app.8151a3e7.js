@@ -3437,9 +3437,12 @@
             document.getElementById('hbg').classList.toggle('open');
             document.getElementById('mob').classList.toggle('open');
         }
-        window.addEventListener('scroll', function() {
-            document.getElementById('nav').classList.toggle('sc', window.scrollY > 40);
-        });
+        var navEl = document.getElementById('nav');
+        if (navEl) {
+            window.addEventListener('scroll', function() {
+                navEl.classList.toggle('sc', window.scrollY > 40);
+            }, { passive: true });
+        }
 
         /* ═══ DECORATIVE PARALLAX ═════════════════════════════════ */
         function initDecorativeMotion() {
@@ -4985,6 +4988,8 @@
             var cdTxt = document.getElementById('wa-cd-txt');
             if (cdEl) cdEl.textContent = count;
             if (cdTxt) cdTxt.textContent = '';
+            
+            clearInterval(waTimer);
             waTimer = setInterval(function() {
                 count--;
                 if (cdEl) cdEl.textContent = count;

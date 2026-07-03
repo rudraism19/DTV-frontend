@@ -89,8 +89,14 @@ indexPaths.forEach(indexPath => {
 const swPath = path.join(publicDir, 'service-worker.js');
 if (fs.existsSync(swPath)) {
     let swContent = fs.readFileSync(swPath, 'utf8');
-    swContent = swContent.replace(/const CACHE_NAME = '[^']+';/, `const CACHE_NAME = 'app-cache-${buildVersion}';`);
+    // Force a byte change by injecting the version as a comment if CACHE_NAME is missing
+    if (swContent.includes('const CACHE_NAME')) {
+        swContent = swContent.replace(/const CACHE_NAME = '[^']+';/, `const CACHE_NAME = 'app-cache-${buildVersion}';`);
+    } else {
+        swContent = swContent.replace(/\/\/ VERSION: .*/, '');
+        swContent += `\n// VERSION: ${buildVersion}`;
+    }
     fs.writeFileSync(swPath, swContent);
-    console.log('Updated service-worker.js with new CACHE_NAME.');
+    console.log('Updated service-worker.js with new version to force kill-switch activation.');
 }
 

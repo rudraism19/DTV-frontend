@@ -4988,6 +4988,8 @@
             var cdTxt = document.getElementById('wa-cd-txt');
             if (cdEl) cdEl.textContent = count;
             if (cdTxt) cdTxt.textContent = '';
+            
+            clearInterval(waTimer);
             waTimer = setInterval(function() {
                 count--;
                 if (cdEl) cdEl.textContent = count;

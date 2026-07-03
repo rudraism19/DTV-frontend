@@ -124,7 +124,6 @@
             color: var(--wh);
             overflow-x: hidden;
             position: relative;
-            overscroll-behavior-y: none; /* Prevents bouncing scroll glitch on Android */
             -webkit-tap-highlight-color: transparent;
             -webkit-font-smoothing: antialiased;
         }

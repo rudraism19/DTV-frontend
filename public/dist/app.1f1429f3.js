@@ -4267,15 +4267,15 @@
                 btnElem.innerHTML = originalText;
                 
                 if (!data.success || !data.order_id) {
-                    // Fallback to Razorpay Payment Button if backend keys are missing/failed
+                    // Fallback to Razorpay Hosted Payment Page if backend keys are missing/invalid
                     var formContainer = btnElem.parentNode;
                     btnElem.style.display = 'none';
-                    formContainer.innerHTML = '<p style="color:#93c5fd;font-size:0.95rem;margin-bottom:15px;font-weight:600;">Secure fallback activated. Please click the Razorpay button below to pay.</p>';
-                    var scriptElem = document.createElement('script');
-                    scriptElem.src = 'https://checkout.razorpay.com/v1/payment-button.js';
-                    scriptElem.setAttribute('data-payment_button_id', fallbackLinkId);
-                    scriptElem.async = true;
-                    formContainer.appendChild(scriptElem);
+                    formContainer.innerHTML = `
+                        <p style="color:#fca5a5;font-size:0.95rem;margin-bottom:15px;font-weight:600;">Standard checkout unavailable (check backend keys). Secure fallback activated.</p>
+                        <a href="https://pages.razorpay.com/${fallbackLinkId}/view" target="_blank" style="display:block; width: 100%; text-decoration:none; background: linear-gradient(135deg, #10b981, #059669); color: #fff; border: none; padding: 1.2rem; border-radius: 12px; font-size: 1.2rem; font-weight: 700; cursor: pointer; box-shadow: 0 10px 25px rgba(16, 185, 129, 0.4); text-align:center;">
+                            Proceed to Razorpay
+                        </a>
+                    `;
                     return;
                 }
 

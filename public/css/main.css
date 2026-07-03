@@ -4136,7 +4136,7 @@
             }
 
             .chat-panel {
-                width: calc(100vw - 2rem);
+                width: calc(100% - 2rem);
                 right: 1rem;
             }
 

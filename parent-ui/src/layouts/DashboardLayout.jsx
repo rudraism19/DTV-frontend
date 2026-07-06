@@ -97,7 +97,7 @@ export default function DashboardLayout() {
 
       {/* Real-Time Live Toast Alert */}
       {liveToast && (
-        <div className="fixed top-24 right-6 z-50 glass-panel border border-orange-500/40 p-4 rounded-2xl shadow-[0_0_30px_rgba(249,115,22,0.3)] max-w-sm animate-in fade-in slide-in-from-top-5 duration-300">
+        <div className="fixed top-24 right-6 z-50 glass-panel border border-orange-500/40 p-4 rounded-2xl shadow-xl max-w-sm animate-in fade-in slide-in-from-top-5 duration-300 bg-slate-900/95">
           <div className="flex items-center justify-between mb-1">
             <span className="text-xs font-bold text-orange-400 uppercase tracking-wider flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
@@ -256,7 +256,7 @@ export default function DashboardLayout() {
       {/* Mobile Menu Overlay */}
       {isMobileMenuOpen && (
         <div className="fixed inset-0 z-50 lg:hidden">
-          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setIsMobileMenuOpen(false)}></div>
+          <div className="fixed inset-0 bg-black/80" onClick={() => setIsMobileMenuOpen(false)}></div>
           <div className="fixed inset-y-0 left-0 w-72 glass-panel border-r border-white/10 flex flex-col">
             <div className="p-6 flex items-center justify-between">
               <div className="text-2xl font-bold text-white tracking-tight">Digital<span className="text-orange-400">Twin</span> Verse</div>
@@ -311,7 +311,7 @@ export default function DashboardLayout() {
       {/* Logout Confirmation Modal */}
       {showLogoutModal && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setShowLogoutModal(false)}></div>
+          <div className="fixed inset-0 bg-black/80" onClick={() => setShowLogoutModal(false)}></div>
           <div className="glass-panel border border-white/10 rounded-2xl p-6 max-w-sm w-full relative z-10 shadow-2xl scale-100 animate-in fade-in zoom-in duration-200">
             <h3 className="text-xl font-bold text-white mb-2">Sign Out</h3>
             <p className="text-sm text-text-muted mb-6">Are you sure you want to sign out of the Parent Portal? You will need your student link code to log back in.</p>

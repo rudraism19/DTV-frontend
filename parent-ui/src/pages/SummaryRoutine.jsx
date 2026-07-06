@@ -244,9 +244,9 @@ const SummaryRoutine = memo(function SummaryRoutine() {
 
       {/* Roadmap Modal */}
       {showRoadmapModal && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
-          <div className="fixed inset-0 bg-black/80 backdrop-blur-md" onClick={() => setShowRoadmapModal(false)}></div>
-          <div className="glass-panel border border-white/10 rounded-2xl w-full max-w-4xl max-h-[90vh] flex flex-col relative z-10 shadow-2xl scale-100 animate-in fade-in zoom-in duration-200">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="fixed inset-0 bg-black/90" onClick={() => setShowRoadmapModal(false)}></div>
+          <div className="glass-panel border border-white/10 rounded-2xl w-full max-w-4xl max-h-[90vh] flex flex-col relative z-10 scale-100 animate-in fade-in zoom-in duration-200">
             
             {/* Modal Header & AI Analysis */}
             <div className="p-6 sm:p-8 border-b border-white/10 bg-gradient-to-br from-blue-900/20 to-purple-900/20 flex-shrink-0 rounded-t-2xl relative overflow-hidden">

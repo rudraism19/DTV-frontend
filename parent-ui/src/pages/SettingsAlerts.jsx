@@ -90,7 +90,7 @@ const SettingsAlerts = memo(function SettingsAlerts() {
   return (
     <div className="space-y-8 relative">
       {toast && (
-        <div className="fixed top-24 right-10 z-50 max-w-md bg-slate-900/90 border border-orange-500/30 text-white p-4 rounded-2xl shadow-[0_0_30px_rgba(249,115,22,0.3)] backdrop-blur-xl flex items-center gap-3 animate-in fade-in slide-in-from-top-4 duration-300">
+        <div className="fixed top-24 right-10 z-50 max-w-md bg-slate-900/95 border border-orange-500/30 text-white p-4 rounded-2xl shadow-xl flex items-center gap-3 animate-in fade-in slide-in-from-top-4 duration-300">
           <CheckCircle2 className="text-orange-400 shrink-0" size={24} />
           <p className="text-sm font-medium leading-relaxed">{toast}</p>
         </div>

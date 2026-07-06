@@ -90,7 +90,7 @@ const GoalsCareer = memo(function GoalsCareer() {
   return (
     <div className="space-y-8 relative">
       {toast && (
-        <div className="fixed top-24 right-10 z-50 max-w-md bg-slate-900/90 border border-purple-500/30 text-white p-4 rounded-2xl shadow-[0_0_30px_rgba(168,85,247,0.3)] backdrop-blur-xl flex items-center gap-3 animate-in fade-in slide-in-from-top-4 duration-300">
+        <div className="fixed top-24 right-10 z-50 max-w-md bg-slate-900/95 border border-purple-500/30 text-white p-4 rounded-2xl shadow-xl flex items-center gap-3 animate-in fade-in slide-in-from-top-4 duration-300">
           <CheckCircle2 className="text-purple-400 shrink-0" size={24} />
           <p className="text-sm font-medium leading-relaxed">{toast}</p>
         </div>
@@ -283,9 +283,9 @@ const GoalsCareer = memo(function GoalsCareer() {
 
       {/* Interactive Career Simulation Modal */}
       {selectedCareer && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
-          <div className="fixed inset-0 bg-black/80 backdrop-blur-md" onClick={() => setSelectedCareer(null)}></div>
-          <div className="glass-panel border border-white/10 rounded-3xl w-full max-w-4xl max-h-[90vh] flex flex-col relative z-10 shadow-2xl scale-100 animate-in fade-in zoom-in duration-200">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="fixed inset-0 bg-black/90" onClick={() => setSelectedCareer(null)}></div>
+          <div className="glass-panel border border-white/10 rounded-3xl w-full max-w-4xl max-h-[90vh] flex flex-col relative z-10 scale-100 animate-in fade-in zoom-in duration-200">
             
             {/* Modal Header */}
             <div className="p-6 sm:p-8 border-b border-white/10 bg-gradient-to-br from-purple-900/30 to-blue-900/30 flex-shrink-0 rounded-t-3xl relative overflow-hidden">

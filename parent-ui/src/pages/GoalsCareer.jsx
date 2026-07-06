@@ -1,32 +1,42 @@
 import { Award, Briefcase, ChevronRight, PlayCircle, Trophy, Target, Sparkles, CheckCircle2, TrendingUp, Cpu, Star, HelpCircle, Code } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, memo } from 'react';
 import { fetchStudentData } from '../services/apiService';
 
-export default function GoalsCareer() {
+const GoalsCareer = memo(function GoalsCareer() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [selectedCareer, setSelectedCareer] = useState(null);
   const [activeTab, setActiveTab] = useState('simulation');
   const [toast, setToast] = useState(null);
 
+  const isMounted = useRef(true);
+
   useEffect(() => {
+    isMounted.current = true;
     const loadData = async () => {
       try {
         const studentCode = localStorage.getItem('studentCode') || 'DEMO-123';
         const result = await fetchStudentData(studentCode);
-        setData(result);
+        if (isMounted.current) setData(result);
       } catch (err) {
         console.error('Failed to load data', err);
       } finally {
-        setLoading(false);
+        if (isMounted.current) setLoading(false);
       }
     };
     loadData();
+    return () => { isMounted.current = false; };
   }, []);
+
+  useEffect(() => {
+    if (toast) {
+      const timer = setTimeout(() => setToast(null), 3500);
+      return () => clearTimeout(timer);
+    }
+  }, [toast]);
 
   const showToast = (msg) => {
     setToast(msg);
-    setTimeout(() => setToast(null), 3500);
   };
 
   if (loading || !data) {
@@ -93,7 +103,7 @@ export default function GoalsCareer() {
 
       {/* AI Career Readiness Assessment Banner */}
       <div className="glass-panel p-8 border-purple-500/30 relative overflow-hidden shadow-[0_10px_30px_rgba(168,85,247,0.1)]">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-purple-500/10 rounded-full blur-[80px] pointer-events-none"></div>
+        <div className="absolute top-0 right-0 w-96 h-96 rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(168,85,247,0.15) 0%, transparent 70%)' }}></div>
         <div className="flex items-center justify-between mb-6 relative z-10">
           <div className="flex items-center gap-2">
             <Cpu className="text-purple-400 animate-pulse" size={22} />
@@ -279,7 +289,7 @@ export default function GoalsCareer() {
             
             {/* Modal Header */}
             <div className="p-6 sm:p-8 border-b border-white/10 bg-gradient-to-br from-purple-900/30 to-blue-900/30 flex-shrink-0 rounded-t-3xl relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-80 h-80 bg-purple-500/10 rounded-full blur-[80px]"></div>
+              <div className="absolute top-0 right-0 w-80 h-80 rounded-full" style={{ background: 'radial-gradient(circle, rgba(168,85,247,0.15) 0%, transparent 70%)' }}></div>
               
               <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 relative z-10">
                 <div>
@@ -416,4 +426,6 @@ export default function GoalsCareer() {
 
     </div>
   );
-}
+});
+
+export default GoalsCareer;

@@ -2,7 +2,9 @@ import { BellRing, Smartphone, Mail, AlertTriangle, Clock, MessageSquare, CheckC
 import { useState, useEffect } from 'react';
 import { fetchStudentData } from '../services/apiService';
 
-export default function SettingsAlerts() {
+import { memo, useRef } from 'react';
+
+const SettingsAlerts = memo(function SettingsAlerts() {
   const [alerts, setAlerts] = useState({
     gradeDrop: true,
     screenTime: true,
@@ -18,13 +20,15 @@ export default function SettingsAlerts() {
   const [toast, setToast] = useState(null);
   const [studentInfo, setStudentInfo] = useState({ name: 'Kumar Kartikey', linkCode: localStorage.getItem('studentCode') || 'FC0D52' });
   const [downloadingType, setDownloadingType] = useState(null);
+  const isMounted = useRef(true);
 
   useEffect(() => {
+    isMounted.current = true;
     const loadData = async () => {
       try {
         const studentCode = localStorage.getItem('studentCode') || 'FC0D52';
         const result = await fetchStudentData(studentCode);
-        if (result && result.studentInfo) {
+        if (isMounted.current && result && result.studentInfo) {
           setStudentInfo(result.studentInfo);
         }
       } catch (err) {
@@ -32,7 +36,15 @@ export default function SettingsAlerts() {
       }
     };
     loadData();
+    return () => { isMounted.current = false; };
   }, []);
+
+  useEffect(() => {
+    if (toast) {
+      const timer = setTimeout(() => setToast(null), 4000);
+      return () => clearTimeout(timer);
+    }
+  }, [toast]);
 
   const studentName = studentInfo.name || 'Kumar Kartikey';
   const firstName = studentName.split(' ')[0];
@@ -44,7 +56,6 @@ export default function SettingsAlerts() {
 
   const showToast = (msg) => {
     setToast(msg);
-    setTimeout(() => setToast(null), 4000);
   };
 
   const handleTestWhatsApp = () => {
@@ -333,4 +344,6 @@ export default function SettingsAlerts() {
       </div>
     </div>
   );
-}
+});
+
+export default SettingsAlerts;

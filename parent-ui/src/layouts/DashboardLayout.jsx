@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { Calendar, Target, BookOpen, LogOut, Menu, X, Bell, Brain, ShieldCheck, Settings, Shield } from 'lucide-react';
 import { fetchStudentData, subscribeToLiveStream } from '../services/apiService';
@@ -17,15 +17,18 @@ export default function DashboardLayout() {
   const location = useLocation();
   const navigate = useNavigate();
 
+  const isMounted = useRef(true);
+
   useEffect(() => {
+    isMounted.current = true;
     const loadData = async () => {
       try {
         const studentCode = localStorage.getItem('studentCode') || 'FC0D52';
         const result = await fetchStudentData(studentCode);
-        if (result && result.studentInfo) {
+        if (isMounted.current && result && result.studentInfo) {
           setStudentInfo(result.studentInfo);
         }
-        if (result && result.notifications) {
+        if (isMounted.current && result && result.notifications) {
           setNotificationsList(result.notifications);
           setUnreadCount(result.notifications.filter(n => !n.is_read).length || 2);
         }
@@ -37,6 +40,7 @@ export default function DashboardLayout() {
 
     // Subscribe to real-time SSE stream
     const unsubscribe = subscribeToLiveStream((message) => {
+      if (!isMounted.current) return;
       if (message.type !== 'CONNECTED') {
         const title = `Live Update: ${message.type}`;
         const desc = message.data?.message || message.data?.title || JSON.stringify(message.data);
@@ -47,14 +51,21 @@ export default function DashboardLayout() {
           { id: Date.now(), title, message: desc, created_at: new Date().toISOString(), is_read: false },
           ...prev
         ]);
-
-        // Auto hide toast after 5s
-        setTimeout(() => setLiveToast(null), 5000);
       }
     });
 
-    return () => unsubscribe();
+    return () => {
+      isMounted.current = false;
+      unsubscribe();
+    };
   }, []);
+
+  useEffect(() => {
+    if (liveToast) {
+      const timer = setTimeout(() => setLiveToast(null), 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [liveToast]);
 
   const handleLogout = () => {
     localStorage.removeItem('parentToken');
@@ -78,10 +89,10 @@ export default function DashboardLayout() {
 
   return (
     <div className="flex h-screen bg-bg overflow-hidden relative">
-      {/* Background Mesh Gradient */}
+      {/* Background Mesh Gradient - Optimized without heavy CSS blurs */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0 pointer-events-none">
-        <div className="absolute top-[-20%] left-[-10%] w-[600px] h-[600px] bg-blue-600/10 rounded-full blur-[120px]"></div>
-        <div className="absolute bottom-[-20%] right-[-10%] w-[500px] h-[500px] bg-purple-600/10 rounded-full blur-[120px]"></div>
+        <div className="absolute top-[-20%] left-[-10%] w-[600px] h-[600px] rounded-full" style={{ background: 'radial-gradient(circle, rgba(37,99,235,0.15) 0%, transparent 70%)' }}></div>
+        <div className="absolute bottom-[-20%] right-[-10%] w-[500px] h-[500px] rounded-full" style={{ background: 'radial-gradient(circle, rgba(147,51,234,0.15) 0%, transparent 70%)' }}></div>
       </div>
 
       {/* Real-Time Live Toast Alert */}

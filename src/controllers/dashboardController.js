@@ -223,15 +223,12 @@ function renderDashboard(users, orders) {
 
 const index = async function(req, res, next) {
   try {
-    const result = await userModel.listUsers({ limit: 1000, offset: 0 });
+    const [result, orderRes] = await Promise.all([
+      userModel.listUsers({ limit: 1000, offset: 0 }),
+      db.query('SELECT * FROM orders ORDER BY created_at DESC LIMIT 100').catch(() => ({ rows: [] }))
+    ]);
     const users = result.users || [];
-    let orders = [];
-    try {
-      const orderRes = await db.query('SELECT * FROM orders ORDER BY created_at DESC LIMIT 100');
-      orders = orderRes.rows || [];
-    } catch (e) {
-      // orders table might be empty or not fully seeded yet
-    }
+    const orders = orderRes.rows || [];
     res.set('Content-Type', 'text/html; charset=utf-8');
     res.send(renderDashboard(users, orders));
   } catch (err) {

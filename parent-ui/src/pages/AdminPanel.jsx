@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, memo } from 'react';
 import { Shield, Search, Users, BookOpen, Activity, ArrowUpDown, ChevronLeft, ChevronRight, RefreshCw, FileText, CheckCircle2 } from 'lucide-react';
 import { fetchAdminData } from '../services/apiService';
 
-export default function AdminPanel() {
+const AdminPanel = memo(function AdminPanel() {
   const [data, setData] = useState({
     pagination: { page: 1, limit: 10, total: 12, totalPages: 2 },
     students: [],
@@ -17,25 +17,34 @@ export default function AdminPanel() {
   const [activeTab, setActiveTab] = useState('students');
   const [toast, setToast] = useState(null);
 
+  const isMounted = useRef(true);
+
   const loadData = async (currentPage = page, currentSearch = search, currentSort = sort, currentOrder = order) => {
     setLoading(true);
     try {
       const result = await fetchAdminData(currentPage, 10, currentSearch, currentSort, currentOrder);
-      if (result) {
+      if (result && isMounted.current) {
         setData(result);
       }
     } catch (err) {
       console.error('Error fetching admin dashboard data:', err);
     } finally {
-      setLoading(false);
+      if (isMounted.current) setLoading(false);
     }
   };
 
   useEffect(() => {
-    // eslint-disable-next-line
+    isMounted.current = true;
     loadData(page, search, sort, order);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    return () => { isMounted.current = false; };
   }, [page, sort, order]);
+
+  useEffect(() => {
+    if (toast) {
+      const timer = setTimeout(() => setToast(null), 4000);
+      return () => clearTimeout(timer);
+    }
+  }, [toast]);
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
@@ -51,7 +60,6 @@ export default function AdminPanel() {
 
   const showToast = (msg) => {
     setToast(msg);
-    setTimeout(() => setToast(null), 4000);
   };
 
   return (
@@ -348,4 +356,6 @@ export default function AdminPanel() {
 
     </div>
   );
-}
+});
+
+export default AdminPanel;

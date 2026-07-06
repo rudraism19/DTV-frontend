@@ -1,33 +1,43 @@
 import { Brain, MessageSquare, Zap, Activity, AlertTriangle, CheckCircle2, Sliders, RefreshCw, HelpCircle, ShieldAlert } from 'lucide-react';
 import { ResponsiveContainer, Radar, RadarChart, PolarGrid, PolarAngleAxis, Tooltip } from 'recharts';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, memo } from 'react';
 import { fetchStudentData } from '../services/apiService';
 
-export default function AIBehavioralProfile() {
+const AIBehavioralProfile = memo(function AIBehavioralProfile() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [socraticMode, setSocraticMode] = useState(true);
   const [strictPrompting, setStrictPrompting] = useState(true);
   const [toast, setToast] = useState(null);
 
+  const isMounted = useRef(true);
+
   useEffect(() => {
+    isMounted.current = true;
     const loadData = async () => {
       try {
         const studentCode = localStorage.getItem('studentCode') || 'DEMO-123';
         const result = await fetchStudentData(studentCode);
-        setData(result);
+        if (isMounted.current) setData(result);
       } catch (err) {
         console.error('Failed to load data', err);
       } finally {
-        setLoading(false);
+        if (isMounted.current) setLoading(false);
       }
     };
     loadData();
+    return () => { isMounted.current = false; };
   }, []);
+
+  useEffect(() => {
+    if (toast) {
+      const timer = setTimeout(() => setToast(null), 3500);
+      return () => clearTimeout(timer);
+    }
+  }, [toast]);
 
   const showToast = (msg) => {
     setToast(msg);
-    setTimeout(() => setToast(null), 3500);
   };
 
   if (loading || !data) {
@@ -92,7 +102,7 @@ export default function AIBehavioralProfile() {
         
         {/* Radar Chart */}
         <div className="lg:col-span-1 glass-panel border border-white/10 rounded-2xl p-6 relative overflow-hidden flex flex-col justify-between shadow-sm">
-          <div className="absolute top-0 right-0 w-48 h-48 bg-purple-500/10 rounded-full blur-[60px] pointer-events-none"></div>
+          <div className="absolute top-0 right-0 w-48 h-48 rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(168,85,247,0.15) 0%, transparent 70%)' }}></div>
           <div>
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-lg font-bold text-white">Cognitive Traits</h3>
@@ -273,4 +283,6 @@ export default function AIBehavioralProfile() {
       </div>
     </div>
   );
-}
+});
+
+export default AIBehavioralProfile;

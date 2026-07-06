@@ -1,8 +1,7 @@
 import React, { Suspense, lazy } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import Login from './pages/Login';
-import DashboardLayout from './layouts/DashboardLayout';
-
+const Login = lazy(() => import('./pages/Login'));
+const DashboardLayout = lazy(() => import('./layouts/DashboardLayout'));
 const SummaryRoutine = lazy(() => import('./pages/SummaryRoutine'));
 const GoalsCareer = lazy(() => import('./pages/GoalsCareer'));
 const StudyAcademics = lazy(() => import('./pages/StudyAcademics'));

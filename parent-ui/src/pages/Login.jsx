@@ -39,9 +39,9 @@ export default function Login() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-bg relative overflow-hidden">
-      {/* Background Orbs */}
-      <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-blue-600/20 rounded-full blur-[100px] pointer-events-none"></div>
-      <div className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-purple-600/20 rounded-full blur-[100px] pointer-events-none"></div>
+      {/* Background Orbs - Optimized without heavy CSS blurs */}
+      <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(37,99,235,0.2) 0%, transparent 70%)' }}></div>
+      <div className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(147,51,234,0.2) 0%, transparent 70%)' }}></div>
 
       <div className="w-full max-w-md p-8 glass-panel border border-white/10 rounded-2xl relative z-10 mx-4">
         <div className="text-center mb-10">

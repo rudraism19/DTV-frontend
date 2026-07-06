@@ -1,28 +1,32 @@
 import { CheckCircle2, Circle, Clock, Target, TrendingUp, User, Key, Calendar, Zap } from 'lucide-react';
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, memo } from 'react';
 import { fetchStudentData } from '../services/apiService';
 
 const FALLBACK_TIME = Date.now();
 
-export default function SummaryRoutine() {
+const SummaryRoutine = memo(function SummaryRoutine() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showRoadmapModal, setShowRoadmapModal] = useState(false);
 
+  const isMounted = useRef(true);
+
   useEffect(() => {
+    isMounted.current = true;
     const loadData = async () => {
       try {
         const studentCode = localStorage.getItem('studentCode') || 'DEMO-123';
         const result = await fetchStudentData(studentCode);
-        setData(result);
+        if (isMounted.current) setData(result);
       } catch (err) {
         console.error('Failed to load data', err);
       } finally {
-        setLoading(false);
+        if (isMounted.current) setLoading(false);
       }
     };
     loadData();
+    return () => { isMounted.current = false; };
   }, []);
 
   const routine = [
@@ -117,7 +121,7 @@ export default function SummaryRoutine() {
 
       {/* Next Step Achievement Banner */}
       <div className="glass-panel p-8 border-orange-500/30 relative overflow-hidden group hover:border-orange-500/50 transition-all duration-300 shadow-[0_10px_30px_rgba(249,115,22,0.1)]">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-orange-500/10 rounded-full blur-[80px] group-hover:bg-orange-500/20 transition-all pointer-events-none"></div>
+        <div className="absolute top-0 right-0 w-96 h-96 rounded-full group-hover:bg-orange-500/10 transition-all pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(249,115,22,0.15) 0%, transparent 70%)' }}></div>
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 relative z-10">
           <div>
             <div className="flex items-center gap-2 mb-2">
@@ -246,7 +250,7 @@ export default function SummaryRoutine() {
             
             {/* Modal Header & AI Analysis */}
             <div className="p-6 sm:p-8 border-b border-white/10 bg-gradient-to-br from-blue-900/20 to-purple-900/20 flex-shrink-0 rounded-t-2xl relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/10 rounded-full blur-[80px]"></div>
+              <div className="absolute top-0 right-0 w-64 h-64 rounded-full" style={{ background: 'radial-gradient(circle, rgba(59,130,246,0.15) 0%, transparent 70%)' }}></div>
               
               <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 relative z-10">
                 <div>
@@ -389,4 +393,6 @@ export default function SummaryRoutine() {
 
     </div>
   );
-}
+});
+
+export default SummaryRoutine;

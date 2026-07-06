@@ -9,29 +9,39 @@ const TODAY_SHORT = TODAY_ISO.split('T')[0];
 const YESTERDAY_ISO = new Date(NOW.getTime() - 86400000).toISOString();
 const YESTERDAY_SHORT = YESTERDAY_ISO.split('T')[0];
 
-export default function StudyAcademics() {
+import { memo } from 'react';
+
+const StudyAcademics = memo(function StudyAcademics() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [toast, setToast] = useState(null);
 
   useEffect(() => {
+    let isMounted = true;
     const loadData = async () => {
       try {
         const studentCode = localStorage.getItem('studentCode') || 'DEMO-123';
         const result = await fetchStudentData(studentCode);
-        setData(result);
+        if (isMounted) setData(result);
       } catch (err) {
         console.error('Failed to load data', err);
       } finally {
-        setLoading(false);
+        if (isMounted) setLoading(false);
       }
     };
     loadData();
+    return () => { isMounted = false; };
   }, []);
+
+  useEffect(() => {
+    if (toast) {
+      const timer = setTimeout(() => setToast(null), 3500);
+      return () => clearTimeout(timer);
+    }
+  }, [toast]);
 
   const showToast = (msg) => {
     setToast(msg);
-    setTimeout(() => setToast(null), 3500);
   };
 
   if (loading || !data) {
@@ -245,4 +255,6 @@ export default function StudyAcademics() {
       </div>
     </div>
   );
-}
+});
+
+export default StudyAcademics;

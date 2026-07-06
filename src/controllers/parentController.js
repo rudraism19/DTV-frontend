@@ -39,19 +39,36 @@ const getDashboard = asyncHandler(async (req, res) => {
   // Fetch real AI analytics & scores with WHY explanations
   const aiAnalytics = await aiAnalyticsEngine.generateStudentAnalytics(student.id);
 
-  // Fetch Relational Live Data
-  const coursesRes = await pool.query('SELECT * FROM courses ORDER BY created_at DESC LIMIT 5');
-  const quizzesRes = await pool.query('SELECT * FROM quiz_attempts WHERE student_id = $1 ORDER BY created_at DESC LIMIT 10', [student.id]);
-  const attendanceRes = await pool.query('SELECT * FROM attendance WHERE student_id = $1 ORDER BY date DESC LIMIT 14', [student.id]);
-  const goalsRes = await pool.query('SELECT * FROM goals WHERE student_id = $1 ORDER BY created_at DESC LIMIT 10', [student.id]);
-  const achievementsRes = await pool.query('SELECT * FROM achievements WHERE student_id = $1 ORDER BY awarded_at DESC LIMIT 10', [student.id]);
-  const sessionsRes = await pool.query('SELECT * FROM learning_sessions WHERE student_id = $1 ORDER BY start_time DESC LIMIT 10', [student.id]);
-  const careerRes = await pool.query('SELECT * FROM career_assessments WHERE student_id = $1 ORDER BY created_at DESC LIMIT 5', [student.id]);
-  const skillRes = await pool.query('SELECT * FROM skill_assessments WHERE student_id = $1 ORDER BY created_at DESC LIMIT 5', [student.id]);
-  const projectsRes = await pool.query('SELECT * FROM projects WHERE student_id = $1 ORDER BY created_at DESC LIMIT 5', [student.id]);
-  const certsRes = await pool.query('SELECT * FROM certificates WHERE student_id = $1 ORDER BY issued_at DESC LIMIT 5', [student.id]);
-  const loginRes = await pool.query('SELECT * FROM login_history WHERE user_id = $1 ORDER BY login_time DESC LIMIT 5', [student.id]);
-  const notifRes = await pool.query('SELECT * FROM notifications WHERE user_id = $1 ORDER BY created_at DESC LIMIT 10', [parentId]);
+  // Fetch Relational Live Data concurrently to prevent waterfall delays
+  const [
+    coursesRes,
+    quizzesRes,
+    attendanceRes,
+    goalsRes,
+    achievementsRes,
+    sessionsRes,
+    careerRes,
+    skillRes,
+    projectsRes,
+    certsRes,
+    loginRes,
+    notifRes,
+    activityQuery
+  ] = await Promise.all([
+    pool.query('SELECT * FROM courses ORDER BY created_at DESC LIMIT 5'),
+    pool.query('SELECT * FROM quiz_attempts WHERE student_id = $1 ORDER BY created_at DESC LIMIT 10', [student.id]),
+    pool.query('SELECT * FROM attendance WHERE student_id = $1 ORDER BY date DESC LIMIT 14', [student.id]),
+    pool.query('SELECT * FROM goals WHERE student_id = $1 ORDER BY created_at DESC LIMIT 10', [student.id]),
+    pool.query('SELECT * FROM achievements WHERE student_id = $1 ORDER BY awarded_at DESC LIMIT 10', [student.id]),
+    pool.query('SELECT * FROM learning_sessions WHERE student_id = $1 ORDER BY start_time DESC LIMIT 10', [student.id]),
+    pool.query('SELECT * FROM career_assessments WHERE student_id = $1 ORDER BY created_at DESC LIMIT 5', [student.id]),
+    pool.query('SELECT * FROM skill_assessments WHERE student_id = $1 ORDER BY created_at DESC LIMIT 5', [student.id]),
+    pool.query('SELECT * FROM projects WHERE student_id = $1 ORDER BY created_at DESC LIMIT 5', [student.id]),
+    pool.query('SELECT * FROM certificates WHERE student_id = $1 ORDER BY issued_at DESC LIMIT 5', [student.id]),
+    pool.query('SELECT * FROM login_history WHERE user_id = $1 ORDER BY login_time DESC LIMIT 5', [student.id]),
+    pool.query('SELECT * FROM notifications WHERE user_id = $1 ORDER BY created_at DESC LIMIT 10', [parentId]),
+    pool.query('SELECT * FROM activity_logs WHERE student_id = $1 ORDER BY performed_at DESC LIMIT 10', [student.id])
+  ]);
 
   // 1. Career Insights Map
   let careerInsights = careerRes.rows.map(c => ({
@@ -81,7 +98,6 @@ const getDashboard = asyncHandler(async (req, res) => {
   }
 
   // 2. Recent Activities Map
-  const activityQuery = await pool.query('SELECT * FROM activity_logs WHERE student_id = $1 ORDER BY performed_at DESC LIMIT 10', [student.id]);
   let recentActivities = activityQuery.rows.map(a => ({
     id: a.id,
     title: `Live Action: ${a.action_type}`,
@@ -265,9 +281,11 @@ const getStudentDetails = asyncHandler(async (req, res) => {
   }
 
   const aiAnalytics = await aiAnalyticsEngine.generateStudentAnalytics(studentId);
-  const quizRes = await pool.query('SELECT * FROM quiz_attempts WHERE student_id = $1 ORDER BY created_at DESC', [studentId]);
-  const attRes = await pool.query('SELECT * FROM attendance WHERE student_id = $1 ORDER BY date DESC', [studentId]);
-  const sessionRes = await pool.query('SELECT * FROM learning_sessions WHERE student_id = $1 ORDER BY start_time DESC', [studentId]);
+  const [quizRes, attRes, sessionRes] = await Promise.all([
+    pool.query('SELECT * FROM quiz_attempts WHERE student_id = $1 ORDER BY created_at DESC', [studentId]),
+    pool.query('SELECT * FROM attendance WHERE student_id = $1 ORDER BY date DESC', [studentId]),
+    pool.query('SELECT * FROM learning_sessions WHERE student_id = $1 ORDER BY start_time DESC', [studentId])
+  ]);
 
   res.json({
     student,
@@ -406,12 +424,14 @@ const getAdminDashboard = asyncHandler(async (req, res) => {
     queryParams = ['student', limit, offset, `%${search}%`];
   }
 
-  const countRes = await pool.query(countQuery, search ? ['student', `%${search}%`] : ['student']);
-  const totalStudents = parseInt(countRes.rows[0].count);
+  const [countRes, studentsRes, coursesRes, logsRes] = await Promise.all([
+    pool.query(countQuery, search ? ['student', `%${search}%`] : ['student']),
+    pool.query(dataQuery, queryParams),
+    pool.query('SELECT * FROM courses ORDER BY created_at DESC'),
+    pool.query('SELECT * FROM activity_logs ORDER BY performed_at DESC LIMIT 20')
+  ]);
 
-  const studentsRes = await pool.query(dataQuery, queryParams);
-  const coursesRes = await pool.query('SELECT * FROM courses ORDER BY created_at DESC');
-  const logsRes = await pool.query('SELECT * FROM activity_logs ORDER BY performed_at DESC LIMIT 20');
+  const totalStudents = parseInt(countRes.rows[0].count);
 
   res.json({
     pagination: {

@@ -231,10 +231,12 @@ document.addEventListener("DOMContentLoaded", () => {
                             if (reg && reg.waiting) {
                                 reg.waiting.postMessage('SKIP_WAITING');
                             }
-                            window.location.reload(true);
+                            console.log('Update available. Reload manually.');
+                            // window.location.reload(true);
                         });
                     } else {
-                        window.location.reload(true);
+                        console.log('Update available. Reload manually.');
+                        // window.location.reload(true);
                     }
                 }
             }
@@ -275,7 +277,8 @@ document.addEventListener("DOMContentLoaded", () => {
         navigator.serviceWorker.addEventListener('controllerchange', () => {
             if (!refreshing) {
                 refreshing = true;
-                window.location.reload(true);
+                console.log('Service worker updated. Reload prevented to stop infinite loops.');
+                // window.location.reload(true);
             }
         });
     }
